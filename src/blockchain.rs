@@ -18,7 +18,15 @@ pub struct Blockchain {
     unspent_outputs: HashSet<Hash>,
 }
 
-impl Blockchain {
+impl Default for Blockchain{
+    fn default () -> Self {
+        Blockchain {
+            blocks: vec![],
+            unspent_outputs: HashSet::new(),
+        }
+    }
+}
+impl Blockchain {    
     pub fn new () -> Self {
         Blockchain {
             blocks: vec![],

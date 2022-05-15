@@ -1,21 +1,57 @@
+use std::collections::HashSet;
+
 use blockchainlib::*;
 
 
-// 1. produce block, without minning and transactions
-fn main () {
-    //index: u32, timestamp: u128, prev_block_hash: Hash, transactions: Vec<Transaction>, difficulty: u128
+/// 1. produce block, without minning and transactions
+///```no_run
+/// fn main () {
+///     //index: u32, timestamp: u128, prev_block_hash: Hash, transactions: Vec<Transaction>, difficulty: u128
+///     let transaction:Transaction= Transaction {
+///         inputs: vec![ ],
+///         outputs: vec![]
+///     };
+///     let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],0);//,"Genesis Block".to_owned()
+///     println!("{:?}",&block);
+///     let h=block.hash();
+///     println!("Printed:{:?}",&h);
+///     block.hash=h;
+///     println!("Printed:{:?}",&block);
+/// }
+/// ```
+
+
+fn main () {    
     let transaction:Transaction= Transaction {
         inputs: vec![ ],
         outputs: vec![]
     };
-    let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],0);//,"Genesis Block".to_owned()
-    println!("{:?}",&block);
-    let h=block.hash();
-    println!("Printed:{:?}",&h);
-    block.hash=h;
-    println!("Printed:{:?}",&block);
-}
 
+    let difficulty= 0x00000fffffffffffffffffffffffffff;
+    let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],difficulty);//,"Genesis Block".to_owned()
+        
+    //println!("{:?}",&block);
+    block.mine();
+    println!("Mined genesis block :{:?}",&block);    
+
+    let mut last_hash=block.hash.clone();
+
+    let mut blockchain= Blockchain::default();
+    blockchain.blocks.push(block);
+
+    for i in 1..=10 { 
+        let transaction:Transaction= Transaction {
+            inputs: vec![ ],
+            outputs: vec![]
+        };
+        let  mut block = Block::new(i,now(), last_hash,vec![transaction],difficulty);//,"Genesis Block".to_owned()        
+        //println!("{:?}",&block);
+        block.mine();
+        println!("Mined  block :{:?}",&block);  
+        last_hash= block.hash.clone();
+        blockchain.blocks.push(block);
+    }
+}
 
 /* 
 fn main () {
@@ -83,3 +119,6 @@ fn main () {
     blockchain.update_with_block(block).expect("Failed to add block");
 }
 */
+
+
+//# ```compile_fail  /// ```should_panic    /// ```edition2018  /// ```ignore
