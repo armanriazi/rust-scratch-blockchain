@@ -13,7 +13,7 @@ pub struct Block {
 
 impl Debug for Block {
     fn fmt (&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "Block[{}]: {} at: {} with: {} nonce: {}",
+        write!(f, "Block[{}]: {} at: {} trx.len: {} nonce: {}",
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
@@ -23,12 +23,13 @@ impl Debug for Block {
     }
 }
 
+/// payload include transactions,difficulty,..
 impl Block {
     pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, transactions: Vec<Transaction>, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
-            hash: vec![0; 32],
+            hash: vec![0; 32], 
             prev_block_hash,
             nonce: 0,
             transactions,

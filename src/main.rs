@@ -1,5 +1,23 @@
 use blockchainlib::*;
 
+
+// 1. produce block, without minning and transactions
+fn main () {
+    //index: u32, timestamp: u128, prev_block_hash: Hash, transactions: Vec<Transaction>, difficulty: u128
+    let transaction:Transaction= Transaction {
+        inputs: vec![ ],
+        outputs: vec![]
+    };
+    let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],0);//,"Genesis Block".to_owned()
+    println!("{:?}",&block);
+    let h=block.hash();
+    println!("Printed:{:?}",&h);
+    block.hash=h;
+    println!("Printed:{:?}",&block);
+}
+
+
+/* 
 fn main () {
     let difficulty = 0x000fffffffffffffffffffffffffffff;
 
@@ -64,3 +82,4 @@ fn main () {
 
     blockchain.update_with_block(block).expect("Failed to add block");
 }
+*/
