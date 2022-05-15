@@ -1,0 +1,74 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [       
+        {  
+            "type": "lldb",
+            "request": "launch",
+            "name": "test-mod tests",
+            "program": "${workspaceFolder}/target/debug/deps/rust-scratche-blockchain",
+            "args": [ "tests", "--nocapture" ],
+            "cwd": "${workspaceFolder}",
+            "sourceMap": {},
+            "sourceLanguages": [ "rust" ],
+            "relativePathBase": "/mnt/home/rust-scratche-blockchain"
+        }, 
+        {
+            "type": "lldb",
+            "request": "custom",
+            "name": "Debug BIN",
+            "args": ["x64"],
+            "targetCreateCommands": [
+                "target create ${workspaceFolder}/src/main.rs"
+            ],
+            "processCreateCommands": [
+                "settings set target.run-args --release -- --bin",
+                "process launch"
+            ]
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Build LIBs",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--lib"
+                ]
+            },
+            "program": "${cargo:program}",
+            "args": []
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Test",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib"
+                ]
+            },
+            "program": "${cargo:program}",
+            "args": []
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug",
+            "program": "${workspaceFolder}/src/main.rs",
+            "args": ["x64"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+
+            "MIMode": "lldb"
+      
+        },
+        
+    ]
+}
