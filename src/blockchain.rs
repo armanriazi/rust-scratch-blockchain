@@ -16,6 +16,7 @@ pub enum BlockValidationErr {
 pub struct Blockchain {
     pub blocks: Vec<Block>,
     unspent_outputs: HashSet<Hash>,
+    
 }
 
 impl Default for Blockchain{
@@ -44,7 +45,7 @@ impl Blockchain {
         } else if i != 0 {
             // Not genesis block
             let prev_block = &self.blocks[i - 1];
-            if block.timestamp <= prev_block.timestamp {
+            if block.timestamp <= prev_block.timestamp { 
                 return Err(BlockValidationErr::AchronologicalTimestamp);
             } else if block.prev_block_hash != prev_block.hash {
                 return Err(BlockValidationErr::MismatchedPreviousHash);

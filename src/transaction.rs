@@ -7,17 +7,11 @@ pub struct Output {
     pub value: u64,
 }
 
-impl Hashable for Output {
-    fn bytes (&self) -> Vec<u8> {
-        let mut bytes = vec![];
 
-        bytes.extend(self.to_addr.as_bytes());
-        bytes.extend(&u64_bytes(&self.value));
-
-        bytes
-    }
-}
-
+/// Overspending = Where did the money come from? = inputs must be >= sum of values of generated outputs
+/// Double Spending = Is the money avaliable? = any one output is never used as an input more than once
+/// Impersonation= Who owns the money and who is sending it? = Solved by adding signature and smart contract(not cover in this example)
+/// Trx contain 2 pieces of info: Set of I/O that I=O - Value of TRXs=Sum(Inputs) Value of the Fee =Sum(Inputs)-Sum(Outputs)
 pub struct Transaction {
     pub inputs: Vec<Output>,
     pub outputs: Vec<Output>,
@@ -55,6 +49,17 @@ impl Transaction {
     pub fn is_coinbase (&self) -> bool {
         self.inputs.len() == 0
     }
+}
+
+impl Hashable for Output {
+    fn bytes (&self) -> Vec<u8> {
+        let mut bytes = vec![];
+
+        bytes.extend(self.to_addr.as_bytes());
+        bytes.extend(&u64_bytes(&self.value));
+
+        bytes
+     }
 }
 
 impl Hashable for Transaction {

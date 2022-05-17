@@ -1,6 +1,6 @@
-use std::collections::HashSet;
 
-use blockchainlib::*;
+
+use library_blockchain::*;
 
 
 /// 1. produce block, without minning and transactions
@@ -18,44 +18,46 @@ use blockchainlib::*;
 ///     block.hash=h;
 ///     println!("Printed:{:?}",&block);
 /// }
-/// ```
+/// 
+/// 2. block minning without transactions
+///```no_run
+// fn main () {    
+//     let transaction:Transaction= Transaction {
+//         inputs: vec![ ],
+//         outputs: vec![]
+//     };
 
-
-fn main () {    
-    let transaction:Transaction= Transaction {
-        inputs: vec![ ],
-        outputs: vec![]
-    };
-
-    let difficulty= 0x00000fffffffffffffffffffffffffff;
-    let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],difficulty);//,"Genesis Block".to_owned()
+//     let difficulty= 0x0fffffffffffffffffffffffffffffff;
+//     let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],difficulty);//,"Genesis Block".to_owned()
         
-    //println!("{:?}",&block);
-    block.mine();
-    println!("Mined genesis block :{:?}",&block);    
+//     //println!("{:?}",&block);
+//     block.mine();
+//     println!("Mined genesis block :{:?}",&block);    
 
-    let mut last_hash=block.hash.clone();
+//     let mut last_hash=block.hash.clone();
 
-    let mut blockchain= Blockchain::default();
-    blockchain.blocks.push(block);
+//     let mut blockchain= Blockchain::default();
+//     blockchain.blocks.push(block);
 
-    for i in 1..=10 { 
-        let transaction:Transaction= Transaction {
-            inputs: vec![ ],
-            outputs: vec![]
-        };
-        let  mut block = Block::new(i,now(), last_hash,vec![transaction],difficulty);//,"Genesis Block".to_owned()        
-        //println!("{:?}",&block);
-        block.mine();
-        println!("Mined  block :{:?}",&block);  
-        last_hash= block.hash.clone();
-        blockchain.blocks.push(block);
-    }
-}
+//     for i in 1..=10 { 
+//         let transaction:Transaction= Transaction {
+//             inputs: vec![ ],
+//             outputs: vec![]
+//         };
+//         let  mut block = Block::new(i,now(), last_hash,vec![transaction],difficulty);//,"Genesis Block".to_owned()        
+//         //println!("{:?}",&block);
+//         block.mine();
+//         println!("Mined  block :{:?}",&block);  
+//         last_hash= block.hash.clone();
+//         blockchain.blocks.push(block);
+//     }
+// }
+///```
 
-/* 
+// 3.All with transactions
+
 fn main () {
-    let difficulty = 0x000fffffffffffffffffffffffffffff;
+    let difficulty = 0x00ffffffffffffffffffffffffffffff;
 
     let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![
         Transaction {
@@ -81,7 +83,7 @@ fn main () {
 
     let mut blockchain = Blockchain::new();
 
-    blockchain.update_with_block(genesis_block).expect("Failed to add genesis block");
+    blockchain.update_with_block(genesis_block).expect("\n\nFailed to add genesis block");
 
     let mut block = Block::new(1, now(), last_hash, vec![
         Transaction {
@@ -100,7 +102,7 @@ fn main () {
             outputs: vec![
                 transaction::Output {
                     to_addr: "Alice".to_owned(),
-                    value: 360,
+                    value: 51,
                 },
                 transaction::Output {
                     to_addr: "Bob".to_owned(),
@@ -116,9 +118,9 @@ fn main () {
 
     last_hash = block.hash.clone();
 
-    blockchain.update_with_block(block).expect("Failed to add block");
+    blockchain.update_with_block(block).expect("\n\nFailed to add block");
 }
-*/
+
 
 
 //# ```compile_fail  /// ```should_panic    /// ```edition2018  /// ```ignore

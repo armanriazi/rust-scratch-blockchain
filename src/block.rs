@@ -3,6 +3,8 @@
 //#![feature(doc_cfg)]
 
 use std::fmt::{ self, Debug, Formatter };
+
+
 use super::*;
 
 
@@ -88,5 +90,6 @@ impl Hashable for Block {
 /// Actual Index, Block's hash fits stored difficulty value, Time is always increase, Actual previous block's hash
 /// Difficulty: the most significant 16 bytes of the hash of a block must be less than before it is considered "valid"(if those bytes are interoreted as a single number instead of a serices of bytes.)
 pub fn check_difficulty (hash: &Hash, difficulty: u128) -> bool {
-    difficulty > difficulty_bytes_as_u128(&hash)
+    let result=difficulty_bytes_as_u128(&hash);
+    difficulty > result
 }
