@@ -57,7 +57,7 @@ use library_blockchain::*;
 // 3.All with transactions
 
 fn main () {
-    let difficulty = 0x00ffffffffffffffffffffffffffffff;
+    let difficulty = 0x000fffffffffffffffffffffffffffff;
 
     let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![
         Transaction {
@@ -69,7 +69,7 @@ fn main () {
                 },
                 transaction::Output {
                     to_addr: "Bob".to_owned(),
-                    value: 7,
+                    value: 10,
                 },
             ],
         },
@@ -91,22 +91,26 @@ fn main () {
             outputs: vec![
                 transaction::Output {
                     to_addr: "Chris".to_owned(),
-                    value: 536,
+                    value: 560,
                 },
             ],
         },
         Transaction {
             inputs: vec![
-                blockchain.blocks[0].transactions[0].outputs[0].clone(),
+                blockchain.blocks[0].transactions[0].outputs[0].clone(),//if it to be 50 then we have to have sum(outputs)=50
             ],
             outputs: vec![
                 transaction::Output {
+                    to_addr: "Removeable output.it is Name-for rise error InsufficientInputValue".to_owned(),
+                    value: 0,
+                },
+                transaction::Output {
                     to_addr: "Alice".to_owned(),
-                    value: 51,
+                    value: 48,
                 },
                 transaction::Output {
                     to_addr: "Bob".to_owned(),
-                    value: 12,
+                    value: 3
                 },
             ],
         },
@@ -116,7 +120,7 @@ fn main () {
 
     println!("Mined block {:?}", &block);
 
-    last_hash = block.hash.clone();
+    //last_hash = block.hash.clone();
 
     blockchain.update_with_block(block).expect("\n\nFailed to add block");
 }

@@ -13,6 +13,8 @@ pub enum BlockValidationErr {
     InvalidCoinbaseTransaction,
 }
 
+/// On update_with_block() we check (+)Overspending, (+)Double Spending, (-)Impersonate
+
 pub struct Blockchain {
     pub blocks: Vec<Block>,
     unspent_outputs: HashSet<Hash>,
@@ -34,7 +36,7 @@ impl Blockchain {
             unspent_outputs: HashSet::new(),
         }
     }
-
+    
     pub fn update_with_block (&mut self, block: Block) -> Result<(), BlockValidationErr> {
         let i = self.blocks.len();
 

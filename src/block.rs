@@ -9,9 +9,18 @@ use super::*;
 
 
 /// payload include transactions,difficulty,..
+/// </br></br>
 /// Order store of bytes: there are 2 types big-endian like 00 00 00 2a, little-endian like (our choice) 2a 00 00 00, u128 is in edian order, so because this material 16bytes of our hash will appear at the end of out hash's byte sector. 
+/// </br></br>
 /// nonce is just field for changes in block as an arbitary that hashed along with the data. so generating the correct hash for a block is like the puzzle , and the nonce is the key to that puzzle. the process of finding that key is called mining.
-
+/// </br></br>
+/// Impersonation: This can be solved by adding a "Signature" to outpus to verify they are being spent by their owner.(We can't assume that whoever sent us the trx over the network is also the person who created the trx. For now we'll kind of ignore solving this problem. we might come back to it when we go over smart contracts)
+/// </br></br>
+/// DoubleSpending: Make Sure that any one output is never used as an input more than once. This can be done by maintaining a pool of unspent outputs and rejecting any trx that tries to spend outputs that don't exist in the pool.
+/// </br></br>
+/// Inputs: unused outputs from prev TRXs, Outputs: new outouts That can be used in future TRXs.
+/// </br></br>
+/// OverSpending: Sum(inputs)>=Sum(Outputs). I can't input 5 coins and be able to output 7. (on other hand inputs have to be greater since must be enough fee in input section for paying to miner.)
 pub struct Block {
     pub index: u32,
     pub timestamp: u128,
@@ -48,9 +57,14 @@ impl Block {
         }
     }
 /// 0xfff... lowest difficulty 
+/// </br>
 /// 0x000... => highest difficulty => taking more time=> more highest nonce=> the end of blockhash view see more zero so nonce 0 means end of of blockchash there isn'nt any zero
+/// </br></br>
 /// nonce is just field for changes in block as an arbitary that hashed along with the data. so generating the correct hash for a block is like the puzzle , and the nonce is the key to that puzzle. the process of finding that key is called mining.
-/// mining sterategy: 1.Generate nonce 2.Hash bytes 3.Check hash against difficulty(Insufficant? Go Step1 and Sufficient Go Step 4) 4. Add block to chain 5. Submit to peers
+/// </br></br>
+/// mining sterategy: 
+/// </br>
+/// 1.Generate nonce 2.Hash bytes 3.Check hash against difficulty(Insufficant? Go Step1 and Sufficient Go Step 4) 4. Add block to chain 5. Submit to peers
     pub fn mine (&mut self) {
       
         for nonce_attempt in 0..(u64::max_value()) {
@@ -65,6 +79,7 @@ impl Block {
 }
 
 /// Concatenate together all the bytes
+/// </br></br>
 /// Generate unique data fingerprint: the hash
 impl Hashable for Block {
     fn bytes (&self) -> Vec<u8> {

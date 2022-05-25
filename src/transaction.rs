@@ -8,10 +8,16 @@ pub struct Output {
 }
 
 
-/// Overspending = Where did the money come from? = inputs must be >= sum of values of generated outputs
-/// Double Spending = Is the money avaliable? = any one output is never used as an input more than once
-/// Impersonation= Who owns the money and who is sending it? = Solved by adding signature and smart contract(not cover in this example)
+/// Overspending = Where did the money come from?  inputs must be >= sum of values of generated outputs
+/// </br></br>
+/// Double Spending = Is the money avaliable? any one output is never used as an input more than once
+/// </br></br>
+/// Impersonation= Who owns the money and who is sending it?  Solved by adding signature and smart contract(not cover in this example)
+/// </br></br>
 /// Trx contain 2 pieces of info: Set of I/O that I=O - Value of TRXs=Sum(Inputs) Value of the Fee =Sum(Inputs)-Sum(Outputs)
+/// </br></br>
+/// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
+
 pub struct Transaction {
     pub inputs: Vec<Output>,
     pub outputs: Vec<Output>,
