@@ -1,5 +1,8 @@
 
 
+
+
+
 use library_blockchain::*;
 
 
@@ -58,18 +61,42 @@ use library_blockchain::*;
 
 fn main () {
     let difficulty = 0x000fffffffffffffffffffffffffffff;
+    let trx_output_data1 = r#"
+        {
+            "to_addr": "Alice",
+            "value": 50,
+            "weight": [
+                "1000",
+                "1500"
+            ]
+        }"#;
 
+        let trx_output_data2 = r#"
+        {
+            "to_addr": "Bob",
+            "value": 10,
+            "weight": [
+                "2000",
+                "1500"
+            ]
+        }"#;
+
+    let v1: Value = serde_json::from_str(trx_output_data1)?;
+    let v2: Value = serde_json::from_str(trx_output_data2)?;
+    //let serialized = serde_json::to_string(&point).unwrap();
     let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![
         Transaction {
             inputs: vec![ ],
             outputs: vec![
                 transaction::Output {
-                    to_addr: "Alice".to_owned(),
-                    value: 50,
+                    to_addr:v1.to_addr ,
+                    value:v1.to_addr,
+                    weight:v1.weight
                 },
                 transaction::Output {
-                    to_addr: "Bob".to_owned(),
-                    value: 10,
+                    to_addr:v2.to_addr,
+                    value:v2.value,
+                    weight:v2.weight
                 },
             ],
         },
