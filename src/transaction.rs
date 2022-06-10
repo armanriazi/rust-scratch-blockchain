@@ -4,7 +4,7 @@ use std::collections::HashSet;
 #[derive(Clone)]
 pub struct Output {
     pub to_addr: Address,
-    pub value: u64,
+    pub value: u64
 }
 
 

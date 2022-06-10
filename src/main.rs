@@ -3,9 +3,8 @@
 
 
 
-use library_blockchain::*;
-
-
+use library_blockchain::{*, transaction::Output};
+use serde::de::Error as Json_Error;
 /// 1. produce block, without minning and transactions
 ///```no_run
 /// fn main () {
@@ -81,22 +80,23 @@ fn main () {
             ]
         }"#;
 
-    let v1: Value = serde_json::from_str(trx_output_data1)?;
-    let v2: Value = serde_json::from_str(trx_output_data2)?;
+    //let v1 = serde_json::from_str(trx_output_data1);
+    //let v2= serde_json::from_str(trx_output_data2);
+    let v1 = trx_output_data1;
+    let v2= trx_output_data2;
     //let serialized = serde_json::to_string(&point).unwrap();
+
     let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![
         Transaction {
             inputs: vec![ ],
             outputs: vec![
                 transaction::Output {
-                    to_addr:v1.to_addr ,
-                    value:v1.to_addr,
-                    weight:v1.weight
+                    to_addr: "Alice".to_owned(),
+                    value: 50,
                 },
                 transaction::Output {
-                    to_addr:v2.to_addr,
-                    value:v2.value,
-                    weight:v2.weight
+                    to_addr: "Bob".to_owned(),
+                    value: 10,
                 },
             ],
         },
@@ -133,7 +133,7 @@ fn main () {
                 },
                 transaction::Output {
                     to_addr: "Alice".to_owned(),
-                    value: 48,
+                    value: 1,
                 },
                 transaction::Output {
                     to_addr: "Bob".to_owned(),
