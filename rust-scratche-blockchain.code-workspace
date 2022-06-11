@@ -12,6 +12,11 @@
 				"editorInlayHint.typeForeground": "#fdb6fdf0",
 				"editorInlayHint.parameterForeground": "#fdb6fdf0"
 			}
-		}
+		},
+		"[git-commit]": {
+			"javascript.autoClosingTags": false
+		},
+		"github.gitAuthentication": true,
+		"git.allowForcePush": true
 	}
 }
