@@ -19,30 +19,12 @@ impl TraitOutPut for Output{}
 /// </br></br>
 /// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
 
-trait TraitClosureTransaction{
-    fn new(&self, dyn FnMut(Vec<Output>) ->  Vec<Output>) -> Self where Self: Sized;
-}
-pub struct ClosureTransaction
+pub struct Transaction<T> where
+T: FnMut(Vec<Output>) -> Vec<Output>,
 {
-    pub calculation: dyn FnMut(Vec<Output>) -> Vec<Output>,        
-}
-
-impl TraitClosureTransaction for ClosureTransaction{
-    fn new(&self,calc) -> Self where Self: Sized {
-        &self.calculation=calc;
-    }
-}
-
-pub struct Transaction
-{
+    pub calculation: T,    
     pub inputs: Option<Vec<Output>>,
     pub outputs: Option<Vec<Output>>,
-}
-
-impl TraitClosureTransaction for Transaction{
-    fn new(&self) -> Self where Self: Sized {
-        todo!()
-    }
 }
 // macro_rules! call_on_self {
 //     ($receiver:ident, $F:ident) => {
@@ -60,10 +42,17 @@ fn return_closure_hash_data(in_or_out: &str)-> impl Fn(&Vec<Output>)-> HashSet<H
 }
 //fn vec_to_hashset(self:Vec<Output>) -> Box<dyn T> where T:HashSet<Hash>;
 
-
-impl Transaction
+impl<T> Transaction<T>
+where
+    T: Fn(Vec<Output>) -> Vec<Output>,
 {
-  
+    fn new(calculation: T) -> Transaction<T> {
+        Transaction {
+            calculation,
+            inputs: None,
+            outputs: None,
+        }
+    }
 
     fn inputs(&mut self, arg: Vec<Output>) -> Vec<Output> {
         match self.inputs {
@@ -89,14 +78,14 @@ impl Transaction
     }
     
     pub fn input_value (&self) -> u64 {
-        self.inputs.unwrap()
+        self.inputs
             .iter()
             .map(|input| input.value)
             .sum()
     }
 
     pub fn output_value (&self) -> u64 {
-        self.outputs.unwrap()
+        self.outputs
             .iter()
             .map(|output| output.value)
             .sum()
@@ -107,7 +96,7 @@ impl Transaction
         //let output=return_closure_hash_data("input");
         //output((&self.inputs))
 
-        let mut c = ClosureTransaction::new(|a| a);
+        let mut c = Transaction::new(|a| a);
 
         let v1 = c.value(1);
     }
@@ -120,13 +109,13 @@ impl Transaction
     }
 
     pub fn is_coinbase (&self) -> bool {
-        self.inputs.unwrap().len() == 0
+        self.inputs.len() == 0
     }
 }
 
 #[test]
 fn call_with_different_puts() {
-    let mut c =Transaction::new(|a| a);
+    let mut c = Transaction::new(|a| a);
     
     let mut input: Vec<Output> = Vec::new();
     let inpt=Output{to_addr:"Add1",value:10};
@@ -156,7 +145,7 @@ impl Hashable for Output {
      }
 }
 
-impl Hashable for Transaction {
+impl<T> Hashable for Transaction<T> {
     fn bytes (&self) -> Vec<u8> {
         let mut bytes = vec![];
 
