@@ -61,7 +61,8 @@ fn main () {
         
     let difficulty = 0x000fffffffffffffffffffffffffffff;    
     let trx1_outputs=sample_trx_json();
-    println!("{:#?}", trx1_outputs.unwrap());
+    //println!("{:#?}", trx1_outputs.unwrap());
+    
     //let v2= serde_json::from_str(trx_output_data2);
     //let v1 = trx_output_data1;
     //let v2= trx_output_data2;
@@ -72,7 +73,7 @@ fn main () {
     let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![genesis_trx], difficulty);
     genesis_block.mine();
 
-    //println!("Mined genesis block {:?}", &genesis_block);
+    println!("Mined genesis block {:?}", &genesis_block);
 
     let mut last_hash = genesis_block.hash.clone();
 
