@@ -98,8 +98,7 @@ impl Blockchain {
             }
 
             let coinbase_output_value = coinbase.puts.as_ref().unwrap().returns_closure_io(&IO::Output);
-
-            println!("coinbase_output_value:{}",&coinbase_output_value());            
+                    
 
             if coinbase_output_value() < total_fee {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);

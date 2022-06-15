@@ -1,5 +1,8 @@
+
+
 use library_blockchain::{*, transaction::OptionTransaction};
-use serde::de::Error as Json_Error;
+use serde_json::{Result, Value};
+
 /// 1. produce block, without minning and transactions
 ///```no_run
 /// fn main () {
@@ -52,30 +55,13 @@ use serde::de::Error as Json_Error;
 ///```
 
 // 3.All with transactions
-
+#[allow(dead_code)]
+#[allow(unused_mut)]
 fn main () {
-    let difficulty = 0x000fffffffffffffffffffffffffffff;
-    let trx_output_data1 = r#"
-        {
-            "to_addr": "Alice",
-            "value": 50,
-            "weight": [
-                "1000",
-                "1500"
-            ]
-        }"#;
-
-        let trx_output_data2 = r#"
-        {
-            "to_addr": "Bob",
-            "value": 10,
-            "weight": [
-                "2000",
-                "1500"
-            ]
-        }"#;
-
-    //let v1 = serde_json::from_str(trx_output_data1);
+        
+    let difficulty = 0x000fffffffffffffffffffffffffffff;    
+    let trx1_outputs=sample_trx_json();
+    println!("{:#?}", trx1_outputs.unwrap());
     //let v2= serde_json::from_str(trx_output_data2);
     //let v1 = trx_output_data1;
     //let v2= trx_output_data2;
@@ -130,5 +116,42 @@ fn main () {
 }
 
 
+fn sample_trx_json() -> Result<Vec<ModelValue>> {
+    let trx1_output = "{
+        \"to_addr\": \"Chris\",
+        \"value\": \"0\"
+    }";
 
+    // let trx2_output = r#"
+    // {
+    //     "to_addr": "Removeable output.it is Name-for rise error InsufficientInputValue",
+    //     "value": 0
+    // }"#;
+
+    // let trx2_output = r#"
+    // {
+    //     "to_addr": "Alice",
+    //     "value": 47
+    // }"#;
+
+    // let trx2_output = r#"
+    // {
+    //     "to_addr": "Bob",
+    //     "value": 3
+    // }"#;
+
+    let mut output_values:Vec<ModelValue> = vec![];
+    let trx1_output_value:ModelValue=serde_json::from_str(trx1_output).unwrap();
+    output_values.push(trx1_output_value);    
+
+    Ok(output_values)
+
+}
+
+
+#[derive(serde::Deserialize, Debug)]
+pub struct ModelValue {
+    pub to_addr: String,
+    pub value: String,
+}
 //# ```compile_fail  /// ```should_panic    /// ```edition2018  /// ```ignore
