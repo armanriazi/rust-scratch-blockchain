@@ -5,6 +5,8 @@
 use std::fmt::{ self, Debug, Formatter };
 
 
+use crate::transaction::OptionTransaction;
+
 use super::*;
 
 
@@ -27,7 +29,7 @@ pub struct Block {
     pub hash: Hash,
     pub prev_block_hash: Hash,
     pub nonce: u64,
-    pub transactions: Vec<Transaction>,
+    pub option_transactions: Vec<OptionTransaction>,
     pub difficulty: u128, 
 }
 
@@ -37,7 +39,7 @@ impl Debug for Block {
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
-            &self.transactions.len(),
+            &self.option_transactions.len(),
             &self.nonce,
         )
     }
@@ -45,14 +47,14 @@ impl Debug for Block {
 
 
 impl Block {
-    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, transactions: Vec<Transaction>, difficulty: u128) -> Self {
+    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: Vec<OptionTransaction>, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
             hash: vec![0; 32], 
             prev_block_hash,
             nonce: 0,
-            transactions,
+            option_transactions,
             difficulty,
         }
     }
@@ -90,9 +92,9 @@ impl Hashable for Block {
         bytes.extend(&self.prev_block_hash);
         bytes.extend(&u64_bytes(&self.nonce));
         bytes.extend(
-            self.transactions
+            self.option_transactions
                 .iter()
-                .flat_map(|transaction| transaction.bytes())
+                .flat_map(|transaction| transaction.puts.as_ref().unwrap().bytes())
                 .collect::<Vec<u8>>()
         );
         bytes.extend(&u128_bytes(&self.difficulty));

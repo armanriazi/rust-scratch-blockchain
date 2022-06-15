@@ -1,8 +1,5 @@
-
-
-use library_blockchain::*;
-
-
+use library_blockchain::{*, transaction::OptionTransaction};
+use serde::de::Error as Json_Error;
 /// 1. produce block, without minning and transactions
 ///```no_run
 /// fn main () {
@@ -58,23 +55,35 @@ use library_blockchain::*;
 
 fn main () {
     let difficulty = 0x000fffffffffffffffffffffffffffff;
+    let trx_output_data1 = r#"
+        {
+            "to_addr": "Alice",
+            "value": 50,
+            "weight": [
+                "1000",
+                "1500"
+            ]
+        }"#;
 
-    let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![
-        Transaction {
-            inputs: vec![ ],
-            outputs: vec![
-                transaction::Output {
-                    to_addr: "Alice".to_owned(),
-                    value: 50,
-                },
-                transaction::Output {
-                    to_addr: "Bob".to_owned(),
-                    value: 10,
-                },
-            ],
-        },
-    ], difficulty);
+        let trx_output_data2 = r#"
+        {
+            "to_addr": "Bob",
+            "value": 10,
+            "weight": [
+                "2000",
+                "1500"
+            ]
+        }"#;
 
+    //let v1 = serde_json::from_str(trx_output_data1);
+    //let v2= serde_json::from_str(trx_output_data2);
+    //let v1 = trx_output_data1;
+    //let v2= trx_output_data2;
+    //let serialized = serde_json::to_string(&point).unwrap();
+
+
+    let genesis_trx= Transaction::default();    
+    let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![genesis_trx], difficulty);
     genesis_block.mine();
 
     println!("Mined genesis block {:?}", &genesis_block);
@@ -85,36 +94,31 @@ fn main () {
 
     blockchain.update_with_block(genesis_block).expect("\n\nFailed to add genesis block");
 
-    let mut block = Block::new(1, now(), last_hash, vec![
-        Transaction {
-            inputs: vec![ ],
-            outputs: vec![
-                transaction::Output {
-                    to_addr: "Chris".to_owned(),
-                    value: 560,
-                },
-            ],
+    let sample_trx1= Transaction::new( vec![],vec![
+            transaction::Value {
+                to_addr: "Chris".to_owned(),
+                value: 0,
+            },
+        ]);
+    
+    let sample_trx2= Transaction::new( vec![
+        blockchain.blocks[0].option_transactions[0].puts.as_ref().unwrap().outputs[0].clone(),//if it to be 50 then we have to have sum(outputs)=50
+    ],
+    vec![
+        transaction::Value {
+            to_addr: "Removeable output.it is Name-for rise error InsufficientInputValue".to_owned(),
+            value: 0,
         },
-        Transaction {
-            inputs: vec![
-                blockchain.blocks[0].transactions[0].outputs[0].clone(),//if it to be 50 then we have to have sum(outputs)=50
-            ],
-            outputs: vec![
-                transaction::Output {
-                    to_addr: "Removeable output.it is Name-for rise error InsufficientInputValue".to_owned(),
-                    value: 0,
-                },
-                transaction::Output {
-                    to_addr: "Alice".to_owned(),
-                    value: 48,
-                },
-                transaction::Output {
-                    to_addr: "Bob".to_owned(),
-                    value: 3
-                },
-            ],
+        transaction::Value {
+            to_addr: "Alice".to_owned(),
+            value: 47,
         },
-    ], difficulty);
+        transaction::Value {
+            to_addr: "Bob".to_owned(),
+            value: 3
+        },
+    ]);    
+    let mut block = Block::new(1, now(), last_hash, vec![sample_trx1,sample_trx2], difficulty);
 
     block.mine();
 

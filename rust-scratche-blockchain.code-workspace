@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"workbench.colorCustomizations": {
+			"[Default Dark+]": {
+				"editorInlayHint.foreground": "#868686f0",
+				"editorInlayHint.background": "#3d3d3d48",
+				"editorInlayHint.typeForeground": "#fdb6fdf0",
+				"editorInlayHint.parameterForeground": "#fdb6fdf0"
+			}
+		},
+		"[git-commit]": {
+			"javascript.autoClosingTags": false
+		},
+		"github.gitAuthentication": true,
+		"git.allowForcePush": true
+	}
+}
