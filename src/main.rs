@@ -1,7 +1,7 @@
 
 
-use library_blockchain::{*, transaction::OptionTransaction};
-use serde_json::{Result, Value};
+use library_blockchain::{*};
+use serde_json::{Result};
 
 /// 1. produce block, without minning and transactions
 ///```no_run
@@ -62,7 +62,7 @@ fn main () {
     let difficulty = 0x000fffffffffffffffffffffffffffff;    
     let trx1_outputs=sample_trx_json();
     //println!("{:#?}", trx1_outputs.unwrap());
-    
+
     //let v2= serde_json::from_str(trx_output_data2);
     //let v1 = trx_output_data1;
     //let v2= trx_output_data2;

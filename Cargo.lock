@@ -504,6 +504,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tracing-subscriber",
+ "utils",
 ]
 
 [[package]]
@@ -769,6 +770,10 @@ dependencies = [
  "matches",
  "percent-encoding",
 ]
+
+[[package]]
+name = "utils"
+version = "0.1.0"
 
 [[package]]
 name = "valuable"

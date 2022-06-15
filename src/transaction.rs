@@ -15,20 +15,19 @@
 // }
 use super::*;
 use std::collections::HashSet;
-use std::cmp::Ordering;
-use std::ops::Deref;
 
-#[derive(Eq,Debug,Clone)]
+
+#[derive(Debug,Clone)]
 pub struct Value {
     pub to_addr: Address,
     pub value: u64,
 }
 
-impl PartialEq<Value> for Value {
-    fn eq(&self, other: &Value) -> bool {
-        self.to_addr== other.to_addr && self.value== other.value 
-    }
-}
+// impl PartialEq<Value> for Value {
+//     fn eq(&self, other: &Value) -> bool {
+//         self.to_addr== other.to_addr && self.value== other.value 
+//     }
+// }
 
 /// Overspending = Where did the money come from?  inputs must be >= sum of values of generated outputs
 /// </br></br>

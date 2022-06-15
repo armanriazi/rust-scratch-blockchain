@@ -29,7 +29,13 @@ unstable-doc-cfg = []
 [package.metadata.docs.rs]
 features = ["unstable-doc-cfg"]
 
+[workspace]
+members = [
+    "utils"
+]
+
 [dependencies]
+utils = { path = "./utils" }
 # json output
 json = "0.12.4"
 doc-cfg = { version = "0.1" }
