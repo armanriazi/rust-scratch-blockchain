@@ -72,7 +72,7 @@ fn main () {
     let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![genesis_trx], difficulty);
     genesis_block.mine();
 
-    println!("Mined genesis block {:?}", &genesis_block);
+    //println!("Mined genesis block {:?}", &genesis_block);
 
     let mut last_hash = genesis_block.hash.clone();
 
