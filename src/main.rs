@@ -1,7 +1,8 @@
 
 
 use library_blockchain::{*};
-use serde_json::{Result};
+use serde_json::json;
+use serde::{ser::{Serialize, SerializeStruct}, Deserializer};
 
 /// 1. produce block, without minning and transactions
 ///```no_run
@@ -60,9 +61,11 @@ use serde_json::{Result};
 fn main () {
         
     let difficulty = 0x000fffffffffffffffffffffffffffff;    
-    let trx1_outputs=sample_trx_json();
-    //println!("{:#?}", trx1_outputs.unwrap());
+//    let trx_serialized=
+    sample_trx_json();    
+    //dbg!(&trx_serialized);
 
+    
     //let v2= serde_json::from_str(trx_output_data2);
     //let v1 = trx_output_data1;
     //let v2= trx_output_data2;
@@ -117,11 +120,80 @@ fn main () {
 }
 
 
-fn sample_trx_json() -> Result<Vec<ModelValue>> {
-    let trx1_output = "{
-        \"to_addr\": \"Chris\",
-        \"value\": \"0\"
-    }";
+
+fn sample_trx_json()  {//->  Result<Vec<ModelValue>,Error>
+
+    let mut vec_outputs_model:Vec<ModelValue> = vec![];     
+    let mut vec_inputs_model:Vec<ModelValue> = vec![];     
+    
+
+    let chris = json!({
+    "transaction1":{    
+    "to_addr": "Chris",
+    "value": "0",   
+    "io_type":"o"
+    }
+    });
+
+    let transaction1=chris["transaction1"].as_object().unwrap();    
+    
+    let puts_model:ModelValue= ModelValue{
+        to_addr:transaction1["to_addr"].as_str().unwrap().to_owned(),
+        value:transaction1["value"].as_str().unwrap().parse::<u64>().unwrap()
+    };
+    
+    if let Some(trx1)=transaction1["io_type"].as_str() {
+        if trx1=="o" {
+            vec_outputs_model.push(puts_model)
+        }
+        else if trx1=="i" {
+            vec_inputs_model.push(puts_model)
+        }        
+    }    
+
+    dbg!(vec_inputs_model);
+    dbg!(vec_outputs_model);
+
+    //Ok(output_values)
+
+}
+
+
+#[derive(serde::Deserialize,serde::Serialize,Debug)]
+ struct ModelValue {
+     to_addr: String,
+     value: u64     
+}
+
+
+
+
+//-----------------------Commnents---------------------//
+
+    // let trx1_output = "{
+    //     \"to_addr\": \"Chris\",
+    //     \"value\": \"0\"        
+    // }";
+// let mut output_values:Vec<ModelValue> = vec![];
+//     let trx1_output_value:ModelValue=serde_json::from_str(&trx1_output).unwrap();
+//     output_values.push(trx1_output_value);    
+
+
+// impl Serialize for ModelValue {
+//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+//     where
+//         S: serde::Serializer,
+//     {
+//         let mut s = serializer.serialize_struct("ModelValue", 1)?;
+//         s.serialize_field("to_addr", &self.to_addr)?;
+//         s.serialize_field("value", &self.value)?;        
+//         s.end()
+//     }
+// }
+
+
+
+
 
     // let trx2_output = r#"
     // {
@@ -141,18 +213,7 @@ fn sample_trx_json() -> Result<Vec<ModelValue>> {
     //     "value": 3
     // }"#;
 
-    let mut output_values:Vec<ModelValue> = vec![];
-    let trx1_output_value:ModelValue=serde_json::from_str(trx1_output).unwrap();
-    output_values.push(trx1_output_value);    
-
-    Ok(output_values)
-
-}
 
 
-#[derive(serde::Deserialize, Debug)]
-pub struct ModelValue {
-    pub to_addr: String,
-    pub value: String,
-}
+
 //# ```compile_fail  /// ```should_panic    /// ```edition2018  /// ```ignore
