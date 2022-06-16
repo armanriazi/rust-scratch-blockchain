@@ -1,7 +1,5 @@
-
-
 use library_blockchain::{*};
-use serde_json::json;
+use serde_json::{json, Value};
 use serde::{ser::{Serialize, SerializeStruct}, Deserializer};
 
 /// 1. produce block, without minning and transactions
@@ -121,45 +119,88 @@ fn main () {
 
 
 
-fn sample_trx_json()  {//->  Result<Vec<ModelValue>,Error>
+fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
 
-    let mut vec_outputs_model:Vec<ModelValue> = vec![];     
-    let mut vec_inputs_model:Vec<ModelValue> = vec![];     
-    
+    let mut transactions:Vec<Transaction> = vec![];             
 
-    let chris = json!({
-    "transaction1":{    
-    "to_addr": "Chris",
-    "value": "0",   
-    "io_type":"o"
-    }
+    let json_transaction = json!({
+    "transactions":[{
+            "transaction1":[
+                {
+                    "inputs":{                     
+                    },
+                    "outputs":{
+                        "to_addr": "Chris",
+                        "value": "0",   
+                        "io_type":"o"
+                    }
+                }
+            ],
+            "transaction2":[
+                {
+                    "inputs":{                  
+                    },
+                    "outputs":{
+                        "to_addr": "Yani",
+                        "value": "0",
+                        "io_type":"o"                               
+                    }    
+                }
+            ],
+            "transaction3":[
+                {
+                    "inputs":{                  
+                    },
+                    "outputs":{
+                        "to_addr": "Yani",
+                        "value": "0",
+                        "io_type":"o"                               
+                    }    
+                }
+            ]
+        }]
     });
-
-    let transaction1=chris["transaction1"].as_object().unwrap();    
     
-    let puts_model:ModelValue= ModelValue{
-        to_addr:transaction1["to_addr"].as_str().unwrap().to_owned(),
-        value:transaction1["value"].as_str().unwrap().parse::<u64>().unwrap()
-    };
-    
-    if let Some(trx1)=transaction1["io_type"].as_str() {
-        if trx1=="o" {
-            vec_outputs_model.push(puts_model)
-        }
-        else if trx1=="i" {
-            vec_inputs_model.push(puts_model)
-        }        
-    }    
 
-    dbg!(vec_inputs_model);
-    dbg!(vec_outputs_model);
+    let serde_values_transactions:serde_json::Value= serde_json::from_value(json_transaction).unwrap();
+    let values_transactions=serde_values_transactions["transactions"].clone(); 
+    //println!("{:#?}",values_transactions); 
+    let list=["transaction1","transaction2","transaction3"];
+    for item in list {        
+        let trx=(values_transactions[0].as_object().unwrap()).get(item).unwrap();   
+        let trx_inputs=(trx[0].as_object().unwrap()).get("inputs").unwrap();    
+        let trx_outputs=(trx[0].as_object().unwrap()).get("outputs").unwrap();    
 
-    //Ok(output_values)
+        // let trx_inputs_model:ModelValue= ModelValue{
+        //     to_addr:trx_inputs["to_addr"].as_str().unwrap().to_owned(),
+        //     value:trx_inputs["value"].as_str().unwrap().parse::<u64>().unwrap()
+        // };
+        let trx_outputs_model:ModelValue= ModelValue{
+            to_addr:trx_outputs["to_addr"].as_str().unwrap().to_owned(),
+            value:trx_outputs["value"].as_str().unwrap().parse::<u64>().unwrap()
+        };
 
+        //println!("{:#?}",trx_inputs_model); 
+        println!("{:#?}",trx_outputs_model); 
+        
+        // let new_transaction= Transaction::new( vec![
+        //     transaction::Value {
+        //         to_addr: trx_inputs_model.to_addr,
+        //         value: trx_inputs_model.value,
+        //     },
+        // ],vec![
+        //     transaction::Value {
+        //         to_addr: trx_outputs_model.to_addr,
+        //         value: trx_outputs_model.value,
+        //     },
+        // ]);
+        // transactions.push(new_transaction.puts.unwrap());
+    }            
+    Ok(transactions)
 }
 
 
-#[derive(serde::Deserialize,serde::Serialize,Debug)]
+#[derive(serde::Deserialize,serde::Serialize,Debug,Clone)]
  struct ModelValue {
      to_addr: String,
      value: u64     
