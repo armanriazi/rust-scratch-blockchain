@@ -1,3 +1,6 @@
+
+use std::{fmt, error::Error};
+
 use library_blockchain::{*};
 use serde_json::{json, Value};
 use serde::{ser::{Serialize, SerializeStruct}, Deserializer};
@@ -60,8 +63,8 @@ fn main () {
         
     let difficulty = 0x000fffffffffffffffffffffffffffff;    
 //    let trx_serialized=
-    sample_trx_json();    
-    //dbg!(&trx_serialized);
+sample_trx_json();
+    //dbg!(sample_trx_json().unwrap().iter().collect::<Vec<_>>());    
 
     
     //let v2= serde_json::from_str(trx_output_data2);
@@ -127,35 +130,41 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
     "transactions":[{
             "transaction1":[
                 {
-                    "inputs":{                     
-                    },
-                    "outputs":{
-                        "to_addr": "Chris",
+                    "inputs":[{          
+                        "to_addr": "I",
                         "value": "0",   
-                        "io_type":"o"
-                    }
+                    }],
+                    "outputs":[{
+                        "to_addr": "Chris",
+                        "value": "0",
+                    }]
                 }
             ],
             "transaction2":[
                 {
-                    "inputs":{                  
-                    },
-                    "outputs":{
-                        "to_addr": "Yani",
-                        "value": "0",
-                        "io_type":"o"                               
-                    }    
+                    "inputs":[{          
+                        "to_addr": "II",
+                        "value": "0",           
+                    },{
+                        "to_addr": "III",
+                        "value": "47",    
+                    }],
+                    "outputs":[{
+                                               
+                    }]
                 }
             ],
             "transaction3":[
                 {
-                    "inputs":{                  
-                    },
-                    "outputs":{
-                        "to_addr": "Yani",
-                        "value": "0",
-                        "io_type":"o"                               
-                    }    
+                    "inputs":[{                  
+                    }],
+                    "outputs":[{
+                        "to_addr": "Alice",
+                        "value": "47",                            
+                    },{
+                        "to_addr": "Bob",
+                        "value": "3",                            
+                    }]    
                 }
             ]
         }]
@@ -166,37 +175,93 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
     let values_transactions=serde_values_transactions["transactions"].clone(); 
     //println!("{:#?}",values_transactions); 
     let list=["transaction1","transaction2","transaction3"];
-    for item in list {        
-        let trx=(values_transactions[0].as_object().unwrap()).get(item).unwrap();   
-        let trx_inputs=(trx[0].as_object().unwrap()).get("inputs").unwrap();    
-        let trx_outputs=(trx[0].as_object().unwrap()).get("outputs").unwrap();    
+    
 
-        // let trx_inputs_model:ModelValue= ModelValue{
-        //     to_addr:trx_inputs["to_addr"].as_str().unwrap().to_owned(),
-        //     value:trx_inputs["value"].as_str().unwrap().parse::<u64>().unwrap()
-        // };
-        let trx_outputs_model:ModelValue= ModelValue{
-            to_addr:trx_outputs["to_addr"].as_str().unwrap().to_owned(),
-            value:trx_outputs["value"].as_str().unwrap().parse::<u64>().unwrap()
-        };
+    if(!values_transactions[0].is_null()){
+        for item in list {        
 
-        //println!("{:#?}",trx_inputs_model); 
-        println!("{:#?}",trx_outputs_model); 
-        
-        // let new_transaction= Transaction::new( vec![
-        //     transaction::Value {
-        //         to_addr: trx_inputs_model.to_addr,
-        //         value: trx_inputs_model.value,
-        //     },
-        // ],vec![
-        //     transaction::Value {
-        //         to_addr: trx_outputs_model.to_addr,
-        //         value: trx_outputs_model.value,
-        //     },
-        // ]);
-        // transactions.push(new_transaction.puts.unwrap());
-    }            
-    Ok(transactions)
+
+            let mut trx_inputs_model_vec :Vec<ModelValue> = vec![];  
+            let trx=(values_transactions[0].as_object().unwrap()).get(item).unwrap();   
+            
+            if(!trx.is_null()){                
+                let trx_inputs=(trx[0].as_object().unwrap()).get("inputs").unwrap();                
+                                
+                if(!(trx_inputs.is_null()) && !(trx_inputs.as_array().is_none())){                    
+                    let trx_inputs_vec=trx_inputs.as_array().unwrap();                    
+                    
+
+                    for item_internal_inputs in trx_inputs_vec {                                                              
+                        let mut trx_inputs_model:ModelValue=ModelValue{
+                            to_addr: String::from(""),
+                            value: 0,
+                        };
+                        
+                        if(!item_internal_inputs.is_null()){
+                        
+                            if (!(item_internal_inputs["value"].is_null() && item_internal_inputs["to_addr"].is_null())){                      
+                                    trx_inputs_model= ModelValue{
+                                        to_addr:item_internal_inputs["to_addr"].as_str().unwrap().to_owned(),
+                                        value:item_internal_inputs["value"].as_str().unwrap().parse::<u64>().unwrap()
+                                    };
+                                    trx_inputs_model_vec.push(trx_inputs_model);                                       
+                            }
+                            
+                    }
+                    }
+                }
+                
+               
+                    let mut trx_outputs_model_vec :Vec<ModelValue> = vec![];  
+                    let trx_outputs=(trx[0].as_object().unwrap()).get("outputs").unwrap();                
+                                    
+                    if(!(trx_outputs.is_null()) && !(trx_outputs.as_array().is_none())){                    
+                        let trx_outputs_vec=trx_outputs.as_array().unwrap();                    
+                        
+    
+                        for item_internal_outputs in trx_outputs_vec {                                                              
+                            let mut trx_outputs_model:ModelValue=ModelValue{
+                                to_addr: String::from(""),
+                                value: 0,
+                            };
+                            
+                            if(!item_internal_outputs.is_null()){
+                            
+                                if (!(item_internal_outputs["value"].is_null() && item_internal_outputs["to_addr"].is_null())){                      
+                                        trx_outputs_model= ModelValue{
+                                            to_addr:item_internal_outputs["to_addr"].as_str().unwrap().to_owned(),
+                                            value:item_internal_outputs["value"].as_str().unwrap().parse::<u64>().unwrap()
+                                        };
+                                        trx_outputs_model_vec.push(trx_outputs_model);                                        
+                                }
+                                
+                        }
+                    }
+                    
+                  
+                    
+                    // let new_transaction= Transaction::new( vec![
+                    //     transaction::Value {
+                    //         to_addr: trx_inputs_model.to_addr,
+                    //         value: trx_inputs_model.value,
+                    //     },
+                    // ],vec![
+                    //     transaction::Value {
+                    //         to_addr: trx_outputs_model.to_addr,
+                    //         value: trx_outputs_model.value,
+                    //     },
+                    // ]);
+                    // transactions.push(new_transaction.puts.unwrap());                   
+              }         
+              
+              println!("Printed:{:?}",trx_inputs_model_vec);
+              println!("-----------------");
+              println!("Printed:{:?}",trx_outputs_model_vec);
+              
+            }
+        }     
+    }       
+        Ok(transactions)
 }
 
 
@@ -206,8 +271,59 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
      value: u64     
 }
 
+#[derive(Debug)] // Allow the use of "{:?}" format specifier
+enum CustomError {
+    //o(IoError),
+    //Utf8(Utf8Error),
+    StringParse(std::string::ParseError),
+    SerdeJson(serde_json::Error),
+    Other,
+}
+
+impl CustomError{
+  
+}
+// Allow the use of "{}" format specifier
+impl fmt::Display for CustomError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            CustomError::StringParse(ref cause) => write!(f, "StringParse Error: {}", cause),
+            CustomError::SerdeJson(ref cause) => write!(f, "SerdeJson Error: {}", cause),
+            CustomError::Other => write!(f, "Unknown error!"),
+        }
+    }
+}
+
+// Allow this type to be treated like an error
+impl std::error::Error for CustomError{
+    fn description(&self) -> &str {
+        match *self {
+            CustomError::StringParse(ref cause) => cause.description(),
+            CustomError::SerdeJson(ref cause) => cause.description(),
+            CustomError::Other => "Unknown error!",
+        }
+    }
+// Use an Option<&Error>. This is the return type of Error.cause().
+    fn cause(&self) -> Option<&dyn std::error::Error> {
+        match *self {
+            CustomError::StringParse(ref cause) => Some(cause),
+            CustomError::SerdeJson(ref cause) => Some(cause),
+            CustomError::Other => None,
+        }
+    }
+}
 
 
+impl From<std::string::ParseError> for CustomError {
+    fn from(cause: std::string::ParseError) -> CustomError {
+        CustomError::StringParse(cause)
+    }
+}
+impl From<serde_json::Error> for CustomError {
+    fn from(cause: serde_json::Error) -> CustomError {
+        CustomError::SerdeJson(cause)
+    }
+}
 
 //-----------------------Commnents---------------------//
 

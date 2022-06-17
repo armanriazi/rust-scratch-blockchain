@@ -42,7 +42,7 @@ pub struct Value {
 pub struct OptionTransaction {
     pub puts: Option<Transaction>
 }
-//#[derive(PartialOrd,PartialEq,Eq,Debug)]
+#[derive(Debug)]
 pub struct Transaction {
     pub inputs: Vec<Value>,
     pub outputs: Vec<Value>,
