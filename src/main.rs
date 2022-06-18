@@ -1,9 +1,9 @@
 
-use std::{fmt, error::Error};
-
+use std::{fmt};
 use library_blockchain::{*};
-use serde_json::{json, Value};
-use serde::{ser::{Serialize, SerializeStruct}, Deserializer};
+use library_blockchain::transaction::Value as ModelValue;
+use serde_json::{json};
+
 
 /// 1. produce block, without minning and transactions
 ///```no_run
@@ -63,8 +63,8 @@ fn main () {
         
     let difficulty = 0x000fffffffffffffffffffffffffffff;    
 //    let trx_serialized=
-sample_trx_json();
-    //dbg!(sample_trx_json().unwrap().iter().collect::<Vec<_>>());    
+
+    dbg!(sample_trx_json().unwrap().iter().collect::<Vec<_>>());    
 
     
     //let v2= serde_json::from_str(trx_output_data2);
@@ -177,17 +177,17 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
     let list=["transaction1","transaction2","transaction3"];
     
 
-    if(!values_transactions[0].is_null()){
+    if !values_transactions[0].is_null(){
         for item in list {        
 
 
             let mut trx_inputs_model_vec :Vec<ModelValue> = vec![];  
             let trx=(values_transactions[0].as_object().unwrap()).get(item).unwrap();   
             
-            if(!trx.is_null()){                
+            if !trx.is_null(){                
                 let trx_inputs=(trx[0].as_object().unwrap()).get("inputs").unwrap();                
                                 
-                if(!(trx_inputs.is_null()) && !(trx_inputs.as_array().is_none())){                    
+                if !(trx_inputs.is_null()) && !(trx_inputs.as_array().is_none()){                    
                     let trx_inputs_vec=trx_inputs.as_array().unwrap();                    
                     
 
@@ -197,9 +197,9 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
                             value: 0,
                         };
                         
-                        if(!item_internal_inputs.is_null()){
+                        if !item_internal_inputs.is_null(){
                         
-                            if (!(item_internal_inputs["value"].is_null() && item_internal_inputs["to_addr"].is_null())){                      
+                            if !(item_internal_inputs["value"].is_null() && item_internal_inputs["to_addr"].is_null()){                      
                                     trx_inputs_model= ModelValue{
                                         to_addr:item_internal_inputs["to_addr"].as_str().unwrap().to_owned(),
                                         value:item_internal_inputs["value"].as_str().unwrap().parse::<u64>().unwrap()
@@ -215,7 +215,7 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
                     let mut trx_outputs_model_vec :Vec<ModelValue> = vec![];  
                     let trx_outputs=(trx[0].as_object().unwrap()).get("outputs").unwrap();                
                                     
-                    if(!(trx_outputs.is_null()) && !(trx_outputs.as_array().is_none())){                    
+                    if !(trx_outputs.is_null()) && !(trx_outputs.as_array().is_none()){                    
                         let trx_outputs_vec=trx_outputs.as_array().unwrap();                    
                         
     
@@ -225,9 +225,9 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
                                 value: 0,
                             };
                             
-                            if(!item_internal_outputs.is_null()){
+                            if !item_internal_outputs.is_null(){
                             
-                                if (!(item_internal_outputs["value"].is_null() && item_internal_outputs["to_addr"].is_null())){                      
+                                if !(item_internal_outputs["value"].is_null() && item_internal_outputs["to_addr"].is_null()){                      
                                         trx_outputs_model= ModelValue{
                                             to_addr:item_internal_outputs["to_addr"].as_str().unwrap().to_owned(),
                                             value:item_internal_outputs["value"].as_str().unwrap().parse::<u64>().unwrap()
@@ -240,36 +240,26 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
                     
                   
                     
-                    // let new_transaction= Transaction::new( vec![
-                    //     transaction::Value {
-                    //         to_addr: trx_inputs_model.to_addr,
-                    //         value: trx_inputs_model.value,
-                    //     },
-                    // ],vec![
-                    //     transaction::Value {
-                    //         to_addr: trx_outputs_model.to_addr,
-                    //         value: trx_outputs_model.value,
-                    //     },
-                    // ]);
-                    // transactions.push(new_transaction.puts.unwrap());                   
+                    let new_transaction= Transaction::new(trx_inputs_model_vec,trx_outputs_model_vec);
+                    transactions.push(new_transaction.puts.unwrap());                   
               }         
-              
-              println!("Printed:{:?}",trx_inputs_model_vec);
-              println!("-----------------");
-              println!("Printed:{:?}",trx_outputs_model_vec);
-              
+
             }
         }     
     }       
+//   let err = std::fmt::Error::Err("NaN".parse::<u32>());
+//   println!("Printed:{:?}",err);
+
+  
         Ok(transactions)
 }
 
 
-#[derive(serde::Deserialize,serde::Serialize,Debug,Clone)]
- struct ModelValue {
-     to_addr: String,
-     value: u64     
-}
+// #[derive(serde::Deserialize,serde::Serialize,Debug,Clone)]
+//  struct ModelValue {
+//      to_addr: String,
+//      value: u64     
+// }
 
 #[derive(Debug)] // Allow the use of "{:?}" format specifier
 enum CustomError {
@@ -280,9 +270,7 @@ enum CustomError {
     Other,
 }
 
-impl CustomError{
-  
-}
+
 // Allow the use of "{}" format specifier
 impl fmt::Display for CustomError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -294,16 +282,14 @@ impl fmt::Display for CustomError {
     }
 }
 
-// Allow this type to be treated like an error
 impl std::error::Error for CustomError{
-    fn description(&self) -> &str {
-        match *self {
-            CustomError::StringParse(ref cause) => cause.description(),
-            CustomError::SerdeJson(ref cause) => cause.description(),
-            CustomError::Other => "Unknown error!",
-        }
-    }
-// Use an Option<&Error>. This is the return type of Error.cause().
+    // fn source(&self) -> Option<&(dyn std::error::Error)> {
+    //     match *self {
+    //         CustomError::StringParse(ref cause) => Some(cause),
+    //         CustomError::SerdeJson(ref cause) => Some(cause),
+    //         CustomError::Other => None,
+    //     }
+    // }
     fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             CustomError::StringParse(ref cause) => Some(cause),
@@ -311,6 +297,8 @@ impl std::error::Error for CustomError{
             CustomError::Other => None,
         }
     }
+
+
 }
 
 
