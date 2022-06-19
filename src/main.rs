@@ -1,11 +1,13 @@
 
-use std::{fmt};
+use std::{fmt, env, fs};
 use library_blockchain::{*};
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
-use serde_json::{json};
+use serde::__private::de::IdentifierDeserializer;
 use std::env::{var,set_var};
+use serde_json::{json};
 
-/// 1. produce block, without minning and transactions
+pub  mod sample;
+/// 1. Produce block, without minning and transactions
 ///```no_run
 /// fn main () {
 ///     //index: u32, timestamp: u128, prev_block_hash: Hash, transactions: Vec<Transaction>, difficulty: u128
@@ -20,53 +22,91 @@ use std::env::{var,set_var};
 ///     block.hash=h;
 ///     println!("Printed:{:?}",&block);
 /// }
-/// 
-/// 2. block minning without transactions
+
+/// 2. Block minning without transactions
 ///```no_run
-// fn main () {    
-//     let transaction:Transaction= Transaction {
-//         inputs: vec![ ],
-//         outputs: vec![]
-//     };
-
-//     let difficulty= 0x0fffffffffffffffffffffffffffffff;
-//     let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],difficulty);//,"Genesis Block".to_owned()
-        
-//     //println!("{:?}",&block);
-//     block.mine();
-//     println!("Mined genesis block :{:?}",&block);    
-
-//     let mut last_hash=block.hash.clone();
-
-//     let mut blockchain= Blockchain::default();
-//     blockchain.blocks.push(block);
-
-//     for i in 1..=10 { 
-//         let transaction:Transaction= Transaction {
-//             inputs: vec![ ],
-//             outputs: vec![]
-//         };
-//         let  mut block = Block::new(i,now(), last_hash,vec![transaction],difficulty);//,"Genesis Block".to_owned()        
-//         //println!("{:?}",&block);
-//         block.mine();
-//         println!("Mined  block :{:?}",&block);  
-//         last_hash= block.hash.clone();
-//         blockchain.blocks.push(block);
-//     }
-// }
+/// fn main () {    
+///    let transaction:Transaction= Transaction {
+///        inputs: vec![ ],
+///        outputs: vec![]
+///    };/
+///    let difficulty= 0x0fffffffffffffffffffffffffffffff;
+///    let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],difficulty);//,"Genesis Block".to_owned()     
+///    //println!("{:?}",&block);
+///    block.mine();
+///    println!("Mined genesis block :{:?}",&block);    /
+///    let mut last_hash=block.hash.clone();/
+///    let mut blockchain= Blockchain::default();
+///    blockchain.blocks.push(block);/
+///    for i in 1..=10 { 
+///        let transaction:Transaction= Transaction {
+///            inputs: vec![ ],
+///            outputs: vec![]
+///        };
+///        let  mut block = Block::new(i,now(), last_hash,vec![transaction],difficulty);//,"Genesis Block".to_owned()        
+///        //println!("{:?}",&block);
+///        block.mine();
+///        println!("Mined  block :{:?}",&block);  
+///        last_hash= block.hash.clone();
+///        blockchain.blocks.push(block);
+///    }
+///}
 ///```
 
-// 3.All with transactions
+/// 3. Almost of features supported
+
+
 #[allow(dead_code)]
 #[allow(unused_mut)]
 fn main () {
-        
-    let difficulty = 0x000fffffffffffffffffffffffffffff;    
-//    let trx_serialized=
-
+    let mut s = String::new();
+    std::io::stdin()
+        .read_line(&mut s)
+        .expect("Failed to read line");
+        println!("#{:?}",s);
+    //let difficulty = 0x0fffffffffffffffffffffffffffffff;        
+    //write!("{:X}","0x00000000fffffffffffffffffffffff");
+    set_var("DIFFICULTY", "0x000ffffffffffffffffffffffffffff");
+    let e = var_ret_difficulty("0x000ffffffffffffffffffffffffffff");
+    //let difficulty = (&e.trim().parse::<u128>()).as_ref().unwrap();     
+    let bytes = e.as_bytes().to_vec();    
+    let difficulty=difficulty_bytes_as_u128(&bytes);
+    let x= Difficulty{Num:e};
+    println!("#{:X}",x);
     
-   let transactions_genesis_block= vec![Transaction::default()];   
-    //let transactions_genesis_block=sample_trx_json_default(|| sample_trx_json_data_genesis_block()).unwrap();    
+    let mut args: Vec<String> = env::args().collect();
+    let mut transactions_block2:Vec<OptionTransaction>=vec![];
+
+    // println!("Seleceted Mode On: {}", &args[1]);
+    // println!("Transaction Names List are: {}", &args[2]);    
+    // println!("By File Name: {}", &args[3]);
+
+    if  args.len()<=1 {
+        println!("Please select a runner mode\n Help(file path transaction_list, object transaction_list, or module transaction_list)\n Default is cargo run object transation1,transaction2");        
+        args.push("object".to_owned());
+        args.push("transation1,transaction2".to_owned());        
+        transactions_block2= sample_trx_object_default().unwrap();  
+    }
+    if  args[1].as_str()=="file" {        
+            let file_contents = fs::read_to_string(&args[3])
+            .expect("Something went wrong reading the file");
+            println!("******************************\n");
+            println!("With text:\n{}", file_contents);    
+            println!("******************************\n");
+            transactions_block2=sample_trx_json_default(&args[3],|| sample_trx_json_data_block2_from_file(&file_contents)).unwrap();       
+        }
+        else if args[1].as_str()=="object" {                  
+             transactions_block2= sample_trx_object_default().unwrap();            
+        }
+        else if args[1].as_str()=="module" {                    
+             transactions_block2=sample_trx_json_default(&args[2],|| sample::sample_trx_json_data_block2()).unwrap();   
+        }
+        else{
+         println!("something else!");
+    }
+    
+    let transactions_genesis_block= vec![Transaction::default()];   
+   //let transactions_genesis_block=sample_trx_json_default(transaction_name_list,|| sample_trx_json_data_genesis_block()).unwrap();    
 
     let mut genesis_block = Block::new(0, now(), vec![0; 32], transactions_genesis_block, difficulty);
     genesis_block.mine();
@@ -77,10 +117,8 @@ fn main () {
 
     let mut blockchain = Blockchain::new();
 
-    blockchain.update_with_block(genesis_block).expect("\n\nFailed to add genesis block");
-
-    //let transactions_block2= sample_trx_object_default().unwrap();
-    let transactions_block2=sample_trx_json_default(|| sample_trx_json_data_block2()).unwrap();   
+    blockchain.update_with_block(genesis_block).expect("\n\nFailed to add genesis block");    
+  
     let mut block = Block::new(1, now(), last_hash,transactions_block2, difficulty);
 
     block.mine();
@@ -92,67 +130,35 @@ fn main () {
     blockchain.update_with_block(block).expect("\n\nFailed to add block");
 }
 
+static mut NumUu: u128=0;
 
-fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,std::io::Error>{
-    return Ok(json!({
-        "transactions":[{
-                "transaction0":[
-                    {
-                        "inputs":[{                                     
-                        }],
-                        "outputs":[{
-                            "to_addr": "Alice",
-                            "value": "50",
-                        },
-                        {
-                            "to_addr": "Bob",
-                            "value": "10",
-                        }]
-                    }
-                ],
-            }]
-        }))
+#[derive(PartialEq, Debug)]
+struct Difficulty{
+    Num:String
 }
+impl fmt::UpperHex for Difficulty {
+    fn fmt(mut self: &Difficulty, f: &mut fmt::Formatter) -> fmt::Result {
+        let bytes = self.Num.as_bytes().to_vec();    
+        let  difficulty=difficulty_bytes_as_u128(&bytes);  
+         
+    //  unsafe {
+    //     //std::mem::transmute(NumUu as u128);
+    //     NumUu+=difficulty;
+    //    // NumUu=*(difficulty as *const u128)
+    // };
 
-fn sample_trx_json_data_block2() -> Result<serde_json::Value,std::io::Error>{
-    return Ok(json!({
-        "transactions":[{
-                "transaction1":[
-                    {
-                        "inputs":[{                  
-                        }],
-                        "outputs":[{
-                            "to_addr": "Alex",
-                            "value": "0",                            
-                        },{
-                            "to_addr": "Alice",
-                            "value": "47",                            
-                        },{
-                            "to_addr": "Bob",
-                            "value": "3",                            
-                        }]    
-
-                       
-                    }
-                ],              
-                "transaction2":[
-                    {
-                       "inputs":[{                                                               
-                        }],
-                        "outputs":[{
-                            "to_addr": "Alice",
-                            "value": "0",
-                        },{
-                            "to_addr": "Nashu",
-                            "value": "0",
-                        }]
-                    }
-                ]
-            }]
-        }))
+        let hexa = u128::from(difficulty) << 64;
+        write!(f, "{:X}", hexa)
+    }
 }
-
-fn sample_trx_json_default<F>(f : F) -> Result<Vec<OptionTransaction>,std::io::Error>
+// impl fmt::Display for Difficulty {
+//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//         match *self {            
+//             Difficulty::Num(num) => write!(f,"{:X}",num), // <4>
+//         }
+//         }
+// }
+fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<OptionTransaction>,std::io::Error>
 where
         F: FnOnce()->  Result<serde_json::Value,std::io::Error>     
     {    
@@ -160,7 +166,7 @@ where
     let values_transactions=serde_values_transactions["transactions"].clone(); 
 
     let mut transactions:Vec<OptionTransaction> = vec![];     
-    let list=["transaction1","transaction2"];
+    let list=library_utils::ustringslicer::split_comma_wordlist(trx_name_from_file);
     
 
     if ! &values_transactions[0].is_null(){
@@ -261,11 +267,38 @@ fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,std::io::Error>
 
     Ok(transactions) 
 }
-// #[derive(serde::Deserialize,serde::Serialize,Debug,Clone)]
-//  struct ModelValue {
-//      to_addr: String,
-//      value: u64     
+
+
+pub fn sample_trx_json_data_block2_from_file(file:&str) -> Result<serde_json::Value,std::io::Error>{
+    return Ok(json!(&file))
+}
+
+
+pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
+    var("DIFFICULTY").unwrap_or(difficulty_arg.to_owned())    
+}
+
+// fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,std::io::Error>{
+//     return Ok(json!({
+//         "transactions":[{
+//                 "transaction0":[
+//                     {
+//                         "inputs":[{                                     
+//                         }],
+//                         "outputs":[{
+//                             "to_addr": "Alice",
+//                             "value": "50",
+//                         },
+//                         {
+//                             "to_addr": "Bob",
+//                             "value": "10",
+//                         }]
+//                     }
+//                 ],
+//             }]
+//         }))
 // }
+
 
 #[derive(Debug)] // Allow the use of "{:?}" format specifier
 enum CustomError {
@@ -287,7 +320,6 @@ impl fmt::Display for CustomError {
         }
     }
 }
-
 impl std::error::Error for CustomError{
     // fn source(&self) -> Option<&(dyn std::error::Error)> {
     //     match *self {
@@ -306,8 +338,6 @@ impl std::error::Error for CustomError{
 
 
 }
-
-
 impl From<std::string::ParseError> for CustomError {
     fn from(cause: std::string::ParseError) -> CustomError {
         CustomError::StringParse(cause)
@@ -322,6 +352,11 @@ impl From<serde_json::Error> for CustomError {
 
 
 //-----------------------Commnents---------------------//
+// #[derive(serde::Deserialize,serde::Serialize,Debug,Clone)]
+//  struct ModelValue {
+//      to_addr: String,
+//      value: u64     
+// }
 
     // let trx1_output = "{
     //     \"to_addr\": \"Chris\",
