@@ -1,9 +1,9 @@
 
 use std::{fmt};
 use library_blockchain::{*};
-use library_blockchain::transaction::Value as ModelValue;
+use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use serde_json::{json};
-
+use std::env::{var,set_var};
 
 /// 1. produce block, without minning and transactions
 ///```no_run
@@ -64,17 +64,11 @@ fn main () {
     let difficulty = 0x000fffffffffffffffffffffffffffff;    
 //    let trx_serialized=
 
-    dbg!(sample_trx_json().unwrap().iter().collect::<Vec<_>>());    
-
     
-    //let v2= serde_json::from_str(trx_output_data2);
-    //let v1 = trx_output_data1;
-    //let v2= trx_output_data2;
-    //let serialized = serde_json::to_string(&point).unwrap();
+   let transactions_genesis_block= vec![Transaction::default()];   
+    //let transactions_genesis_block=sample_trx_json_default(|| sample_trx_json_data_genesis_block()).unwrap();    
 
-
-    let genesis_trx= Transaction::default();    
-    let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![genesis_trx], difficulty);
+    let mut genesis_block = Block::new(0, now(), vec![0; 32], transactions_genesis_block, difficulty);
     genesis_block.mine();
 
     println!("Mined genesis block {:?}", &genesis_block);
@@ -85,31 +79,9 @@ fn main () {
 
     blockchain.update_with_block(genesis_block).expect("\n\nFailed to add genesis block");
 
-    let sample_trx1= Transaction::new( vec![],vec![
-            transaction::Value {
-                to_addr: "Chris".to_owned(),
-                value: 0,
-            },
-        ]);
-    
-    let sample_trx2= Transaction::new( vec![
-        blockchain.blocks[0].option_transactions[0].puts.as_ref().unwrap().outputs[0].clone(),//if it to be 50 then we have to have sum(outputs)=50
-    ],
-    vec![
-        transaction::Value {
-            to_addr: "Removeable output.it is Name-for rise error InsufficientInputValue".to_owned(),
-            value: 0,
-        },
-        transaction::Value {
-            to_addr: "Alice".to_owned(),
-            value: 47,
-        },
-        transaction::Value {
-            to_addr: "Bob".to_owned(),
-            value: 3
-        },
-    ]);    
-    let mut block = Block::new(1, now(), last_hash, vec![sample_trx1,sample_trx2], difficulty);
+    //let transactions_block2= sample_trx_object_default().unwrap();
+    let transactions_block2=sample_trx_json_default(|| sample_trx_json_data_block2()).unwrap();   
+    let mut block = Block::new(1, now(), last_hash,transactions_block2, difficulty);
 
     block.mine();
 
@@ -121,65 +93,79 @@ fn main () {
 }
 
 
+fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,std::io::Error>{
+    return Ok(json!({
+        "transactions":[{
+                "transaction0":[
+                    {
+                        "inputs":[{                                     
+                        }],
+                        "outputs":[{
+                            "to_addr": "Alice",
+                            "value": "50",
+                        },
+                        {
+                            "to_addr": "Bob",
+                            "value": "10",
+                        }]
+                    }
+                ],
+            }]
+        }))
+}
 
-fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
+fn sample_trx_json_data_block2() -> Result<serde_json::Value,std::io::Error>{
+    return Ok(json!({
+        "transactions":[{
+                "transaction1":[
+                    {
+                        "inputs":[{                  
+                        }],
+                        "outputs":[{
+                            "to_addr": "Alex",
+                            "value": "0",                            
+                        },{
+                            "to_addr": "Alice",
+                            "value": "47",                            
+                        },{
+                            "to_addr": "Bob",
+                            "value": "3",                            
+                        }]    
 
-    let mut transactions:Vec<Transaction> = vec![];             
+                       
+                    }
+                ],              
+                "transaction2":[
+                    {
+                       "inputs":[{                                                               
+                        }],
+                        "outputs":[{
+                            "to_addr": "Alice",
+                            "value": "0",
+                        },{
+                            "to_addr": "Nashu",
+                            "value": "0",
+                        }]
+                    }
+                ]
+            }]
+        }))
+}
 
-    let json_transaction = json!({
-    "transactions":[{
-            "transaction1":[
-                {
-                    "inputs":[{          
-                        "to_addr": "I",
-                        "value": "0",   
-                    }],
-                    "outputs":[{
-                        "to_addr": "Chris",
-                        "value": "0",
-                    }]
-                }
-            ],
-            "transaction2":[
-                {
-                    "inputs":[{          
-                        "to_addr": "II",
-                        "value": "0",           
-                    },{
-                        "to_addr": "III",
-                        "value": "47",    
-                    }],
-                    "outputs":[{
-                                               
-                    }]
-                }
-            ],
-            "transaction3":[
-                {
-                    "inputs":[{                  
-                    }],
-                    "outputs":[{
-                        "to_addr": "Alice",
-                        "value": "47",                            
-                    },{
-                        "to_addr": "Bob",
-                        "value": "3",                            
-                    }]    
-                }
-            ]
-        }]
-    });
-    
-
-    let serde_values_transactions:serde_json::Value= serde_json::from_value(json_transaction).unwrap();
+fn sample_trx_json_default<F>(f : F) -> Result<Vec<OptionTransaction>,std::io::Error>
+where
+        F: FnOnce()->  Result<serde_json::Value,std::io::Error>     
+    {    
+    let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
     let values_transactions=serde_values_transactions["transactions"].clone(); 
-    //println!("{:#?}",values_transactions); 
-    let list=["transaction1","transaction2","transaction3"];
+
+    let mut transactions:Vec<OptionTransaction> = vec![];     
+    let list=["transaction1","transaction2"];
     
 
-    if !values_transactions[0].is_null(){
-        for item in list {        
+    if ! &values_transactions[0].is_null(){
 
+        for item in list {        
 
             let mut trx_inputs_model_vec :Vec<ModelValue> = vec![];  
             let trx=(values_transactions[0].as_object().unwrap()).get(item).unwrap();   
@@ -207,11 +193,10 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
                                     trx_inputs_model_vec.push(trx_inputs_model);                                       
                             }
                             
-                    }
-                    }
+                      }
+                    }                    
                 }
-                
-               
+                               
                     let mut trx_outputs_model_vec :Vec<ModelValue> = vec![];  
                     let trx_outputs=(trx[0].as_object().unwrap()).get("outputs").unwrap();                
                                     
@@ -237,11 +222,9 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
                                 
                         }
                     }
-                    
-                  
-                    
+                                                          
                     let new_transaction= Transaction::new(trx_inputs_model_vec,trx_outputs_model_vec);
-                    transactions.push(new_transaction.puts.unwrap());                   
+                    transactions.push(new_transaction);                   
               }         
 
             }
@@ -249,12 +232,35 @@ fn sample_trx_json() ->  Result<Vec<Transaction>,std::io::Error>{
     }       
 //   let err = std::fmt::Error::Err("NaN".parse::<u32>());
 //   println!("Printed:{:?}",err);
-
-  
-        Ok(transactions)
+ 
+    Ok(transactions)
 }
 
+fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,std::io::Error>{
 
+    let mut transactions:Vec<OptionTransaction> = vec![];     
+    
+    let sample_trx2= Transaction::new( 
+        vec![            
+        ],vec![
+            transaction::Value {
+                to_addr: "Alex".to_owned(),
+                value: 0,
+            },
+            transaction::Value {
+                to_addr: "Alice".to_owned(),
+                value: 47,
+            },
+            transaction::Value {
+                to_addr: "Bob".to_owned(),
+                value: 3
+            },
+        ]);    
+
+    transactions.push(sample_trx2);
+
+    Ok(transactions) 
+}
 // #[derive(serde::Deserialize,serde::Serialize,Debug,Clone)]
 //  struct ModelValue {
 //      to_addr: String,
@@ -312,6 +318,8 @@ impl From<serde_json::Error> for CustomError {
         CustomError::SerdeJson(cause)
     }
 }
+
+
 
 //-----------------------Commnents---------------------//
 
