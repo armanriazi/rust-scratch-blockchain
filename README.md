@@ -5,6 +5,8 @@
  
 > The Next reason is to using some **features of Rust-Lang** that I had wanted to implement it after learning Rust.
 
+> Used json in the main runner of the project so we consume json transactions as a data-offline blockchain.
+
 > As you follow materials you can see (future work) which means you can add these concepts to the project. I have some **idea** that you can affort on it to completing future works.
 
 > *Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
@@ -12,6 +14,21 @@
 
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
+### Instructions for working with
+
+```
+cargo {difficulty} {mode} {name of transactions} {file name}
+```
+{difficulty}: 0x000fffffffffffffffffffffffffffff must be 32 byte
+{mode}: object, module, file
+{name of transactions} with comma seperator
+{file name} index directory of the project Sample.json
+
+> Example: 
+
+```
+cargo 0x000fffffffffffffffffffffffffffff file transaction1,transaction2 Sample.json
+```
 
 ### Used Concepts
 
