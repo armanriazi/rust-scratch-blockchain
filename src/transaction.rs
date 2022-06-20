@@ -15,20 +15,19 @@
 // }
 use super::*;
 use std::collections::HashSet;
-use std::cmp::Ordering;
-use std::ops::Deref;
 
-#[derive(Eq,Debug,Clone)]
+
+#[derive(Debug,Clone)]
 pub struct Value {
     pub to_addr: Address,
     pub value: u64,
 }
 
-impl PartialEq<Value> for Value {
-    fn eq(&self, other: &Value) -> bool {
-        self.to_addr== other.to_addr && self.value== other.value 
-    }
-}
+// impl PartialEq<Value> for Value {
+//     fn eq(&self, other: &Value) -> bool {
+//         self.to_addr== other.to_addr && self.value== other.value 
+//     }
+// }
 
 /// Overspending = Where did the money come from?  inputs must be >= sum of values of generated outputs
 /// </br></br>
@@ -40,10 +39,12 @@ impl PartialEq<Value> for Value {
 /// </br></br>
 /// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
 
+#[derive(Debug)]
 pub struct OptionTransaction {
     pub puts: Option<Transaction>
 }
-//#[derive(PartialOrd,PartialEq,Eq,Debug)]
+
+#[derive(Debug)]
 pub struct Transaction {
     pub inputs: Vec<Value>,
     pub outputs: Vec<Value>,
@@ -100,7 +101,7 @@ impl Transaction {
             },
             transaction::Value {
                 to_addr: "Bob".to_owned(),
-                value: 10,
+                value: 50,
             },
         ])
     }
@@ -114,7 +115,7 @@ impl Transaction {
         })}
     }
 
-    fn trx_data<F>(&mut self, mut f: F) // We bring in self, but only f is generic F. f is the closure    
+   pub fn trx_data<F>(&mut self, mut f: F) // We bring in self, but only f is generic F. f is the closure    
     where
         F: FnMut(&mut Vec<Value>, &mut Vec<Value>), // The closure takes mutable vectors of u32
                                                 // which are the year and population data

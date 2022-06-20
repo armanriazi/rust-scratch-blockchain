@@ -2,7 +2,7 @@ use crate::transaction::Put;
 use crate::transaction::IO as IO;
 use super::*;
 use std::collections::HashSet;
-
+use library_utils::ucalculate::add as uadd;
 
 #[derive(Debug)]
 pub enum BlockValidationErr {
@@ -84,6 +84,8 @@ impl Blockchain {
                 let input_value= transaction.puts.as_ref().unwrap().returns_closure_io(&IO::Input);
                 let output_value = transaction.puts.as_ref().unwrap().returns_closure_io(&IO::Output);
 
+                //let aa=uadd(input_value(),output_value());
+                //println!("Printed:{:?}",aa);
                 
                 if &output_value()>&input_value() {
                     return Err(BlockValidationErr::InsufficientInputValue);
@@ -92,14 +94,13 @@ impl Blockchain {
                 let fee = &input_value()-&output_value();
 
                 total_fee += fee;
-
+                
                 block_spent.extend(input_hashes);
                 block_created.extend(transaction.puts.as_ref().unwrap().output_hashes());
             }
 
             let coinbase_output_value = coinbase.puts.as_ref().unwrap().returns_closure_io(&IO::Output);
-
-            println!("coinbase_output_value:{}",&coinbase_output_value());            
+                    
 
             if coinbase_output_value() < total_fee {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
