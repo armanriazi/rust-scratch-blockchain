@@ -1,4 +1,6 @@
 
+use std::io::{BufRead, BufReader};
+use std::time::Duration;
 use std::{fmt, env, fs};
 use library_blockchain::{*};
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
@@ -59,21 +61,26 @@ pub  mod sample;
 #[allow(dead_code)]
 #[allow(unused_mut)]
 fn main () {
-    let mut s = String::new();
-    std::io::stdin()
-        .read_line(&mut s)
-        .expect("Failed to read line");
-        println!("#{:?}",s);
-    //let difficulty = 0x0fffffffffffffffffffffffffffffff;        
-    //write!("{:X}","0x00000000fffffffffffffffffffffff");
-    set_var("DIFFICULTY", "0x000ffffffffffffffffffffffffffff");
-    let e = var_ret_difficulty("0x000ffffffffffffffffffffffffffff");
-    //let difficulty = (&e.trim().parse::<u128>()).as_ref().unwrap();     
-    let bytes = e.as_bytes().to_vec();    
-    let difficulty=difficulty_bytes_as_u128(&bytes);
-    let x= Difficulty{Num:e};
-    println!("#{:X}",x);
+
     
+    let difficulty = 0x0fffffffffffffffffffffffffffffff;        
+    //write!("{:X}","0x00000000fffffffffffffffffffffff");
+    set_var("DIFFICULTY", "0x000fffffffffffffffffffffffffffff");
+    let mut d=var_ret_difficulty("0x000fffffffffffffffffffffffffffff").to_b;
+    //library_utils::ustrtou128::safe_string_to_u128u(&mut difficulty);
+    let mut fbuffer: Vec<u8> = vec![];
+    let mut first= String::new();
+    let mut buffer= std::io::BufReader::new(d.as_bytes());
+    let yy=std::io::BufRead::read_line(&mut buffer, &mut first).unwrap();
+    let rrrr:<u128 as From<NonZeroU128>>=yy.into();
+    println!("{}",rrrr);
+    
+
+
+    // let difficulty=difficulty_bytes_as_u128(&buf);  
+    // let hexa = u128::from(difficulty) << 64;
+    // println!("{hexa}");
+
     let mut args: Vec<String> = env::args().collect();
     let mut transactions_block2:Vec<OptionTransaction>=vec![];
 
@@ -130,7 +137,6 @@ fn main () {
     blockchain.update_with_block(block).expect("\n\nFailed to add block");
 }
 
-static mut NumUu: u128=0;
 
 #[derive(PartialEq, Debug)]
 struct Difficulty{
