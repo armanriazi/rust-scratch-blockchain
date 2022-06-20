@@ -10,7 +10,7 @@
 > *Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
 
 
-### How To Contribute[Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
+### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
 
 ### Used Concepts
