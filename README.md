@@ -19,10 +19,13 @@
 ```
 cargo {difficulty} {mode} {name of transactions} {file name}
 ```
-{difficulty}: 0x000fffffffffffffffffffffffffffff must be 32 byte
-{mode}: object, module, file
-{name of transactions} with comma seperator
-{file name} index directory of the project Sample.json
+> {difficulty}: 0x000fffffffffffffffffffffffffffff must be 32 byte
+
+> {mode}: object, module, file
+
+> {name of transactions} with comma seperator
+
+> {file name} index directory of the project Sample.json
 
 > Example: 
 
