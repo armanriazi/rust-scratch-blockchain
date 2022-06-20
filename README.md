@@ -1,5 +1,5 @@
 ### Currently Status: Under Refactoring
-> The repo is a prerequisite of the Substrate-Framework and it would be more nice to practice too.
+> The repo is a **prerequisite of the Substrate-Framework** and it would be nicer to practice too.
 
 > The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of providing **testbed environment of Blockchain**.
  
