@@ -1,5 +1,7 @@
 
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Write};
+use std::net::ToSocketAddrs;
+use std::str::from_utf8;
 use std::time::Duration;
 use std::{fmt, env, fs};
 use library_blockchain::{*};
@@ -62,24 +64,19 @@ pub  mod sample;
 #[allow(unused_mut)]
 fn main () {
 
-    
-    let difficulty = 0x0fffffffffffffffffffffffffffffff;        
-    //write!("{:X}","0x00000000fffffffffffffffffffffff");
     set_var("DIFFICULTY", "0x000fffffffffffffffffffffffffffff");
-    let mut d=var_ret_difficulty("0x000fffffffffffffffffffffffffffff").to_b;
-    //library_utils::ustrtou128::safe_string_to_u128u(&mut difficulty);
-    let mut fbuffer: Vec<u8> = vec![];
-    let mut first= String::new();
-    let mut buffer= std::io::BufReader::new(d.as_bytes());
-    let yy=std::io::BufRead::read_line(&mut buffer, &mut first).unwrap();
-    let rrrr:<u128 as From<NonZeroU128>>=yy.into();
-    println!("{}",rrrr);
+    let  difficulty_str=var_ret_difficulty("0x000fffffffffffffffffffffffffffff"); 
     
+    let diff_str = difficulty_str.trim().to_lowercase().to_string();
+    let diff_digits = diff_str.strip_prefix("0x").unwrap();
+    let difficulty = u128::from_str_radix(diff_digits, 16).unwrap();
+    let diff_bytes = difficulty.to_le_bytes();
+    
+    let de_diff_bytes = diff_bytes;
+    let de_diff = u128::from_le_bytes(de_diff_bytes);
+    let de_diff_str = format!("0x{de_diff:032x}");
 
-
-    // let difficulty=difficulty_bytes_as_u128(&buf);  
-    // let hexa = u128::from(difficulty) << 64;
-    // println!("{hexa}");
+    assert_eq!(diff_str, de_diff_str);
 
     let mut args: Vec<String> = env::args().collect();
     let mut transactions_block2:Vec<OptionTransaction>=vec![];
@@ -137,33 +134,13 @@ fn main () {
     blockchain.update_with_block(block).expect("\n\nFailed to add block");
 }
 
-
-#[derive(PartialEq, Debug)]
-struct Difficulty{
-    Num:String
+fn read_le_u128(input: &mut &[u8]) -> u128 {
+    let (int_bytes, rest) = input.split_at(std::mem::size_of::<u128>());
+    *input = rest;
+    u128::from_le_bytes(int_bytes.try_into().unwrap())
 }
-impl fmt::UpperHex for Difficulty {
-    fn fmt(mut self: &Difficulty, f: &mut fmt::Formatter) -> fmt::Result {
-        let bytes = self.Num.as_bytes().to_vec();    
-        let  difficulty=difficulty_bytes_as_u128(&bytes);  
-         
-    //  unsafe {
-    //     //std::mem::transmute(NumUu as u128);
-    //     NumUu+=difficulty;
-    //    // NumUu=*(difficulty as *const u128)
-    // };
 
-        let hexa = u128::from(difficulty) << 64;
-        write!(f, "{:X}", hexa)
-    }
-}
-// impl fmt::Display for Difficulty {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         match *self {            
-//             Difficulty::Num(num) => write!(f,"{:X}",num), // <4>
-//         }
-//         }
-// }
+
 fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<OptionTransaction>,std::io::Error>
 where
         F: FnOnce()->  Result<serde_json::Value,std::io::Error>     
@@ -410,4 +387,32 @@ impl From<serde_json::Error> for CustomError {
 
 
 
+    // #[derive(PartialEq, Debug)]
+// struct Difficulty(u128);
+
+// impl fmt::UpperHex for Difficulty {
+//     fn fmt(mut self: &Difficulty, f: &mut fmt::Formatter) -> fmt::Result {
+//         //let bytes = self.0.as_bytes().to_vec();    
+//         //let  difficulty=difficulty_bytes_as_u128(&bytes);           
+//     //  unsafe {
+//     //     //std::mem::transmute(NumUu as u128);
+//     //     NumUu+=difficulty;
+//     //    // NumUu=*(difficulty as *const u128)
+//     // };
+
+//     //let val = self.0;
+//     //fmt::UpperHex::fmt(&val, f)
+
+//         let hexa = u128::from(self.0);
+//         write!(f, "#{:X}", hexa)
+//     }
+// }
+
+// impl fmt::Display for Difficulty {
+//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//         match *self {            
+//             Difficulty::Num(num) => write!(f,"{:X}",num), // <4>
+//         }
+//         }
+// }
 //# ```compile_fail  /// ```should_panic    /// ```edition2018  /// ```ignore
