@@ -150,10 +150,7 @@ these also support a form of inheritance that’s common in most object oriented
 	
 > After the method signature, instead of providing an implementation within curly brackets, we use a semicolon.
 	
-> This interface consists of associated items, which come in three varieties:
-	> > functions
-	> > types
-	> > constants
+> This interface consists of associated items, which come in three varieties: functions, types, constants.
 	
 > All traits define an implicit type parameter Self that refers to "the type that is implementing this interface".
 	
