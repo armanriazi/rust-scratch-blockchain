@@ -41,7 +41,7 @@ To define methods, Rust programmers use an impl block
    > The borrow checker checks that all access to data is legal, which allows Rust to prevent safety issues. Learning how this works will, at the very least, speed up your development time by helping you avoid run-ins with the compiler. More significantly though, learning to work with the borrow checker allows you to build larger software systems with confidence. It underpins the term fearless concurrency.
   
 #### Borrowchecker•Lifetime(Passed)
-  -> Lifetime=Timetolive=Subset of their scope
+	-> Lifetime=Timetolive=Subset of their scope
 	
 >  Make hypotheses about whether or not your experiments will pass the borrow checker before you compile reference in Rust has a lifetime, which is the scope for which that reference is valid. Most of the time, lifetimes are implicit and inferred, just like most of the time, types are inferred. We must annotate types when multiple types are possible. In a similar way, we must annotate lifetimes when the lifetimes of references could be related in a few different ways.
 	
@@ -80,7 +80,7 @@ All references in Rust have a lifetime, even if they are not explicitly annotate
 	
 >> the LOC('existence time' or Line of code) between when a location is first used in a certain way, and when that usage stops.
 	
-> lifetime of that value:
+> Lifetime of that value:
 	
 >> the LOC (or actual time) between when a value is created, and when that value is dropped.
 	
