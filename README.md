@@ -1,5 +1,7 @@
 ### Currently Status: Under Refactoring
-> The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of having **testbed environment of Blockchain**.
+> The repo is a prerequisite Substrate framework and it would be more nice to practice too.
+
+> The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of providing **testbed environment of Blockchain**.
  
 > The Next reason is to using some **features of Rust-Lang** that I had wanted to implement it after learning Rust.
 
