@@ -1,16 +1,17 @@
-### Currently Status: Under Refactoring
+
 > The repo is a **prerequisite of the Substrate-Framework** and it would be nicer to practice too.
 
 > The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of providing **testbed environment of Blockchain**.
  
 > The Next reason is to using some **features of Rust-Lang** that I had wanted to implement it after learning Rust.
 
-> Used json in the main runner of the project so that consume **json** transactions as a **data-offline** blockchain.
+> Used json in the main runner of the project so that consume **json** transactions as a **offchain** blockchain.
 
 > As you follow materials you can see (future work) which means you can add these concepts to the project. I have some **idea** that you can affort on it to completing future works.
 
 > *Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
 
+> Currently Status: Under Refactoring
 
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
@@ -32,6 +33,16 @@ cargo {difficulty} {mode} {name of transactions} {file name}
 ```
 cargo 0x000fffffffffffffffffffffffffffff file transaction1,transaction2 Sample.json
 ```
+
+### Features
+
+Modular
+
+Switch Closures 
+
+Json& Object Value Data
+
+Cryptography-Hashing Alogrithm SHA-1
 
 ### Used Concepts
 
