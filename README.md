@@ -5,7 +5,7 @@
  
 > The Next reason is to using some **features of Rust-Lang** that I had wanted to implement it after learning Rust.
 
-> Used json in the main runner of the project so we consume json transactions as a data-offline blockchain.
+> Used json in the main runner of the project so that consume **json** transactions as a **data-offline** blockchain.
 
 > As you follow materials you can see (future work) which means you can add these concepts to the project. I have some **idea** that you can affort on it to completing future works.
 
