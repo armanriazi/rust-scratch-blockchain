@@ -139,9 +139,9 @@ these also support a form of inheritance that’s common in most object oriented
 > After the method signature, instead of providing an implementation within curly brackets, we use a semicolon.
 	
 > This interface consists of associated items, which come in three varieties:
->> 	functions
->> 	types
->> 	constants
+>> functions
+>> types
+>> constants
 	
 > All traits define an implicit type parameter Self that refers to "the type that is implementing this interface".
 	
@@ -156,6 +156,7 @@ these also support a form of inheritance that’s common in most object oriented
 
 #### Binding•Match(Passed)
   > The compiler automatically references the Some, and since we're borrowing, name is bound as ref name automatically as well. If we were mutating:
+	
   ```
    //https://blog.rust-lang.org/2018/05/10/Rust-1.26.html#nicer-match-bindings
   // `self` has type `&List`, and `*self` has type `List`, matching on a
@@ -244,15 +245,17 @@ At any given time, you can have either (but not both of) one mutable reference o
 > Race conditions, where threads are accessing data or resources in an inconsistent order Deadlocks, where two threads are waiting for each other to finish using a resource the other thread has, preventing both threads from continuing Bugs that happen only in certain situations and are hard to reproduce and fix reliably.
   
 #### Thread•Strateges(future work)
-  -> Priority Performance
+	-> Priority Performance
 	
 > Stealing_Join: execute code in parallel when there are idle CPUs to handle it.
 	
 > When join is called from outside the thread pool, the calling thread will block while the closures execute in the pool. When join is called within the pool, the calling thread still actively participates in the thread pool. It will begin by executing closure A (on the current thread). While it is doing that, it will advertise closure B as being available for other threads to execute. Once closure A has completed, the current thread will try to execute closure B; if however closure B has been stolen, then it will look for other work while waiting for the thief to fully execute closure B. (This is the typical work-stealing strategy).
 Send is require because we have jump from quick func(thread a) to part func(thread b) frequently.
+	
 > Atomic: types provide primitive shared-memory communication between threads, and are the building blocks of other concurrent types.
 This module defines atomic versions of a select number of primitive types, including AtomicBool, AtomicIsize, AtomicUsize, AtomicI8, AtomicU16, etc. Atomic types present operations that, when used correctly, synchronize updates between threads.
 Each method takes an Ordering which represents the strength of the memory barrier for that operation. These orderings are the same as the C++20 atomic orderings. For more information see the nomicon.
+	
 > Atomic variables are safe to share between threads (they implement Sync) but they do not themselves provide the mechanism for sharing and follow the threading model of Rust. The most common way to share an atomic variable is to put it into an Arc (an atomically-reference-counted shared pointer).
 Atomic types may be stored in static variables, initialized using the constant initializers like AtomicBool::new. Atomic statics are often used for lazy global initialization.
 	
