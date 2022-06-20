@@ -5,7 +5,7 @@
 ### Used Concepts
 
 #### Memoization•Lazy•Evaluation(Passed)  
-  > We can create a struct that will hold the closure and the resulting value of calling the closure.
+   > We can create a struct that will hold the closure and the resulting value of calling the closure.
   
 > The struct will execute the closure only if we need the resulting value, and it will cache the resulting value so the rest of our code doesn’t have to be responsible for saving and reusing the result.
 > 
@@ -14,13 +14,7 @@
 > 
 > FnMut can change the environment because it mutably borrows values.
 > 
-> Fn borrows values from the environment immutably.
-> 
-> FnOnce: takes the whole value.
-> 
-> FnMut: takes a mutable reference.
-> 
-> Fn: takes a regular reference.
+> Fn borrows values from the environment immutably. FnOnce: takes the whole value. FnMut: takes a mutable reference. Fn: takes a regular reference.
 
 #### Coercion(Passed)
   > Deref coercion is a convenience that Rust performs on arguments to functions and methods. Deref coercion works only on types that implement the Deref trait. Deref coercion converts such a type into a reference to another type. For example, deref coercion can convert &String to &str because String implements the Deref trait such that it returns &str. 
@@ -34,6 +28,7 @@ Similar to how you use the Deref trait to override the * operator on immutable r
 #### Operation(Passed)
   -> Methods are functions that are coupled to some object.
   From a syntactic point of view, these are just functions that don’t need to specify one of their arguments. Rather than calling open() and passing a File object in as an argument (read(f, buffer)), methods allow the main object to be implicit in the function call (f.read(buffer)) using the dot operator.
+	
 > There are a number of theoretical differences between methods and functions, but a detailed discussion of those computer science topics is available in other books. Briefly, functions are regarded as pure, meaning their behavior is determined solely by their arguments. Methods are inherently impure, given that one of their arguments is effectively a side effect. These are muddy waters, though. Functions are perfectly capable of acting on side effects themselves. Moreover, methods are implemented with functions. And, to add an exception to an exception, objects sometimes implement static methods, which do not include implicit arguments.
 To define methods, Rust programmers use an impl block
   
@@ -42,33 +37,57 @@ To define methods, Rust programmers use an impl block
   
 #### Borrowchecker•Lifetime(Passed)
   -> Lifetime=Timetolive=Subset of their scope
+	
   Make hypotheses about whether or not your experiments will pass the borrow checker before you compile
 > reference in Rust has a lifetime, which is the scope for which that reference is valid. Most of the time, lifetimes are implicit and inferred, just like most of the time, types are inferred. We must annotate types when multiple types are possible. In a similar way, we must annotate lifetimes when the lifetimes of references could be related in a few different ways.
+	
 > The main aim of lifetimes is to prevent dangling references, which cause a program to reference data other than the data it’s intended to reference.
 All references in Rust have a lifetime, even if they are not explicitly annotated. The compiler is capable of implicitly assigning lifetimes. 
 > A value’s lifetime is the period when accessing that value is valid behavior. A function’s local variables live until the function returns, while global variables might live for the life of the program.
+	
 > The notion of ownership is rather limited. An owner cleans up when its values’ lifetimes end.
+	
 > <'a, 'b> declares two lifetime variables, 'a and 'b, within the scope of
+	
 > j: &'b i32 binds the lifetime variable 'b to the lifetime of j. The syntax reads as “parameter j is a reference to an i32 with lifetime b.”
-> Although every parameter has a lifetime, these checks are typically invisible as the compiler can infer most lifetimes by itself
+	
+> Although every parameter has a lifetime, these checks are typically invisible as the compiler can infer most lifetimes by itself.
+	
 > All values bound to a given lifetime must live as long as the last access to any value bound to that lifetime.
+	
 > No lifetime annotations are required when calling a function.
+	
 > Using two lifetime parameters (a and b) indicates that the lifetimes of i and j are decoupled.
 > fn add_with_lifetimes<'a, 'b>(i: &'a i32, j: &'b i32) -> i32 {}
-> Lifetime annotations don’t change how long any of the references live. Just as functions can accept any type when the signature specifies a generic type parameter, > > functions can accept references with any lifetime by specifying a generic lifetime parameter.
+	
+> Lifetime annotations don’t change how long any of the references live. Just as functions can accept any type when the signature specifies a generic type parameter, functions can accept references with any lifetime by specifying a generic lifetime parameter.
+	
 > Lifetime annotations describe the relationships of the lifetimes of multiple references to each other without affecting the lifetimes.
+	
 > The lifetime annotations indicate that the references first and second must both live as long as that generic lifetime.
+	
 > Lifetimes on function or method parameters are called input lifetimes, and lifetimes on return values are called output lifetimes.
+	
 > Although every parameter has a lifetime, these checks are typically invisible as the compiler can infer most lifetimes by itself
+	
 > All values bound to a given lifetime must live as long as the last access to any value bound to that lifetime.
+	
 > No lifetime annotations are required when calling a function.
+	
 > Using two lifetime parameters (a and b) indicates that the lifetimes of i and j are decoupled.
+	
 > fn add_with_lifetimes<'a, 'b>(i: &'a i32, j: &'b i32) -> i32 {}
+	
 > lifetime of that usage: 
-> the LOC('existence time' or Line of code) between when a location is first used in a certain way, and when that usage stops.
-> lifetime of that value:
-> the LOC (or actual time) between when a value is created, and when that value is dropped.
+	
+>> the LOC('existence time' or Line of code) between when a location is first used in a certain way, and when that usage stops.
+	
+>> lifetime of that value:
+	
+>> the LOC (or actual time) between when a value is created, and when that value is dropped.
+	
 > Might be useful when discussing open file descriptors, but also irrelevant here.
+	
 > Ultimately, lifetime syntax is about connecting the lifetimes of various parameters and return values of functions. Once they’re connected, Rust has enough information to allow memory-safe operations and disallow operations that would create dangling pointers or otherwise violate memory safety.
 
      
