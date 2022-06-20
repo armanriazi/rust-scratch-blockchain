@@ -29,14 +29,16 @@ Similar to how you use the Deref trait to override the * operator on immutable r
   > DSTs or unsized types': str(but not &str-So although a &T is a single value that stores the memory address of where the T is located, a &str is two values: the address of the str and its length. Rust has a particular trait called the Sized trait to determine whether or not a type’s size is known at compile time. This trait is automatically implemented for everything whose size is known at compile time. In addition, Rust implicitly adds a bound on Sized to every generic function. 
 
 #### Operation(Passed)
-  -> Methods are functions that are coupled to some object.
-  From a syntactic point of view, these are just functions that don’t need to specify one of their arguments. Rather than calling open() and passing a File object in as an argument (read(f, buffer)), methods allow the main object to be implicit in the function call (f.read(buffer)) using the dot operator.
+	-> Methods are functions that are coupled to some object.
+	
+  > From a syntactic point of view, these are just functions that don’t need to specify one of their arguments. Rather than calling open() and passing a File object in as an argument (read(f, buffer)), methods allow the main object to be implicit in the function call (f.read(buffer)) using the dot operator.
 	
 > There are a number of theoretical differences between methods and functions, but a detailed discussion of those computer science topics is available in other books. Briefly, functions are regarded as pure, meaning their behavior is determined solely by their arguments. Methods are inherently impure, given that one of their arguments is effectively a side effect. These are muddy waters, though. Functions are perfectly capable of acting on side effects themselves. Moreover, methods are implemented with functions. And, to add an exception to an exception, objects sometimes implement static methods, which do not include implicit arguments.
 To define methods, Rust programmers use an impl block
   
 #### Borrowchecker(Passed)
-  > The borrow checker checks that all access to data is legal, which allows Rust to prevent safety issues. Learning how this works will, at the very least, speed up your development time by helping you avoid run-ins with the compiler. More significantly though, learning to work with the borrow checker allows you to build larger software systems with confidence. It underpins the term fearless concurrency.
+	
+   > The borrow checker checks that all access to data is legal, which allows Rust to prevent safety issues. Learning how this works will, at the very least, speed up your development time by helping you avoid run-ins with the compiler. More significantly though, learning to work with the borrow checker allows you to build larger software systems with confidence. It underpins the term fearless concurrency.
   
 #### Borrowchecker•Lifetime(Passed)
   -> Lifetime=Timetolive=Subset of their scope
@@ -78,7 +80,7 @@ All references in Rust have a lifetime, even if they are not explicitly annotate
 	
 >> the LOC('existence time' or Line of code) between when a location is first used in a certain way, and when that usage stops.
 	
->> lifetime of that value:
+> lifetime of that value:
 	
 >> the LOC (or actual time) between when a value is created, and when that value is dropped.
 	
