@@ -1,7 +1,15 @@
 ### Currently Status: Under Refactoring
-> The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of having testbed environment of Blockchain.
+> The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of having **testbed environment of Blockchain**.
  
-> The Next reason is to using some features of Rust-Lang that I had wanted to implement it after learning Rust.
+> The Next reason is to using some **features of Rust-Lang** that I had wanted to implement it after learning Rust.
+
+> As you follow materials you can see (future work) which means you can add these concepts to the project. I have some **idea** that you can affort on it to completing future works.
+
+> *Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
+
+### How To Contribute(Easy)
+[HowToContribute](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
+
 
 ### Used Concepts
 
@@ -134,8 +142,10 @@ so it doesn’t know which method implemented on which type to call. Instead, at
 #### Trait(Passed)
   > We can use traits to define shared behavior in an abstract way. We can use trait bounds to specify that a generic type can be any type that has certain behavior.
 Traits are similar to a feature often called interfaces in other languages, although with some differences.
-What is a trait? A trait is a language feature that is analogous to an interface, protocol, or contract. If you have a background in object-oriented programming, consider a trait to be an abstract base class. If you have a background in functional programming, Rust’s traits are close to Haskell’s type classes
+	
+> What is a trait? A trait is a language feature that is analogous to an interface, protocol, or contract. If you have a background in object-oriented programming, consider a trait to be an abstract base class. If you have a background in functional programming, Rust’s traits are close to Haskell’s type classes
 these also support a form of inheritance that’s common in most object oriented languages. For now, though, the thing to remember is that traits represent common behavior (Or reusable codes like println!)that types opt into via the syntax impl Trait for Type.
+	
 > After the method signature, instead of providing an implementation within curly brackets, we use a semicolon.
 	
 > This interface consists of associated items, which come in three varieties:
@@ -303,5 +313,4 @@ Wrapping unsafe code in a safe abstraction prevents uses of unsafe from leaking 
 
 > e.g Post type. This type will use the state pattern and will hold a value that will be one of three state objects representing the various states a post can be in—draft, waiting for review, or published. Changing from one state to another will be managed internally within the Post type. The states change in response to the methods called by our library’s users on the Post instance, but they don’t have to manage the state changes directly. Also, users can’t make a mistake with the states, like publishing a post before it’s reviewed.
 
-### How To Contribute(Easy)
-[HowToContribute](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
+
