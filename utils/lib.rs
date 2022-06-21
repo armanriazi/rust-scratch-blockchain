@@ -9,13 +9,13 @@ pub mod stringtou128;
 #[cfg(test)]
 mod tests {
     use super::*;
-    static DIFFICULTY_STR:&str="0x000fffffffffffffffffffffffffff00";    
-    static DIFFICULTY_128:u128=0x000fffffffffffffffffffffffffff00;        
+    static DIFFICULTY_STR:&str="0x00ffffffffffffffffffffffffffff00";    
+    static DIFFICULTY_128:u128=0x00ffffffffffffffffffffffffffff00;        
     #[test]
     fn func_string_to_u128(){
          
         let difficulty=crate::stringtou128::string_to_u128(&DIFFICULTY_STR.to_string());
-        assert_eq!(difficulty,0x000fffffffffffffffffffffffffff00);
+        assert_eq!(difficulty,0x00ffffffffffffffffffffffffffff00);
     }
     // #[test]
     // fn func_bytes_to_u128(){        

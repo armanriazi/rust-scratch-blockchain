@@ -1,0 +1,35 @@
+{
+"transactions":[{
+    "transaction1":[
+        {
+            "inputs":[{                  
+            }],
+            "outputs":[{
+                "to_addr": "Alex",
+                "value": "0"                           
+            },{
+                "to_addr": "Alice",
+                "value": "0"                            
+            },{
+                "to_addr": "Bob",
+                "value": "0"                            
+            }]    
+
+           
+        }
+    ],              
+    "transaction2":[
+        {
+           "inputs":[{                                                               
+            }],
+            "outputs":[{
+                "to_addr": "Alice",
+                "value": "0"
+            },{
+                "to_addr": "Nashu",
+                "value": "0"
+            }]
+        }
+    ]
+}]        
+}

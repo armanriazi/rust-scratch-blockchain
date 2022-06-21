@@ -114,11 +114,11 @@ impl Transaction {
         Self::new(vec![], vec![
             transaction::Value {
                 to_addr: "Alice".to_owned(),
-                value: 50,
+                value: 0,
             },
             transaction::Value {
                 to_addr: "Bob".to_owned(),
-                value: 50,
+                value: 0,
             },
         ])
     }
@@ -144,8 +144,8 @@ impl Transaction {
 
 
 
-    pub fn is_coinbase (&self) -> bool {       
-        self.inputs.len() == 0
+    pub fn is_coinbase (&self) -> bool {               
+     (&self.inputs).len() as u8 == 0
     }
 }
 
