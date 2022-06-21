@@ -40,15 +40,15 @@ cargo watch -x run
 
 ### Features
 
-Modular
+- [✓] Modular
 
-Switch Closures 
+- [✓] Error Handling
 
-Error Handling
+- [✓] Json& Object Value Data
 
-Json& Object Value Data
+- [✓] Closure(Functional Programming)
 
-Cryptography-Hashing Alogrithm SHA-1
+- [✓] Cryptography-Hashing Alogrithm SHA-1
 
 ### Used Concepts
 
