@@ -52,7 +52,7 @@ cargo watch -x run
 
 - [✓] Closure(Functional Programming)
 
-- [✓] Cryptography-Hashing Alogrithm SHA-1
+- [✓] Cryptography-Hashing Alogrithm SHA-256
 
 ### Used Concepts
 

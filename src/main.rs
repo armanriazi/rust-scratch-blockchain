@@ -1,5 +1,4 @@
-use std::error::{Error, self};
-use std::{fmt, env, fs};
+use std::{env, fs};
 use library_blockchain::{*};
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use library_utils::{slicer, stringtou128::string_to_u128};
@@ -126,8 +125,11 @@ fn main() -> Result<(), CustomError> {
 }
 
 
+#[allow(dead_code)]
+#[allow(unused_mut)]
+#[allow(unused)]
 fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<OptionTransaction>,CustomError>
-where
+        where
         F: FnOnce()->  Result<serde_json::Value,CustomError>     
     {    
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
@@ -245,11 +247,10 @@ pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
     match env::var("DIFFICULTY") {
         Ok(val) => val,
         Err(e) => {
-            eprintln!("🦀 we don't detect env variable DIFFICULTY! We used default difficulty🦀");
+            eprintln!("🦀{e}! We used default difficulty🦀");
             env::var("DIFFICULTY").unwrap_or(difficulty_arg.to_owned())
       }
-    }
-    //var("DIFFICULTY");//.unwrap_or(difficulty_arg.to_owned())    
+    }  
 }
 
 // fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,CustomError>{
@@ -272,54 +273,4 @@ pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
 //             }]
 //         }))
 // }
-
-
-/// Allow the use of "{:?}" format specifier
-#[derive(Debug)] 
-pub enum CustomError {
-    StringParse(std::string::ParseError),
-    SerdeJson(serde_json::Error),
-    IO(std::io::Error),
-    Other,
-}
-
-
-// Allow the use of "{}" format specifier
-impl fmt::Display for CustomError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            CustomError::StringParse(ref cause) => write!(f, "StringParse Error: {}", cause),
-            CustomError::SerdeJson(ref cause) => write!(f, "SerdeJson Error: {}", cause),
-            CustomError::IO(ref cause) => write!(f, "IO Error: {}", cause),
-            CustomError::Other => write!(f, "Unknown error!"),
-        }
-    }
-}
-impl std::error::Error for CustomError{
-    fn cause(&self) -> Option<&dyn std::error::Error> {
-        match *self {
-            CustomError::StringParse(ref cause) => Some(cause),
-            CustomError::SerdeJson(ref cause) => Some(cause),
-            CustomError::IO(ref cause) => Some(cause),
-            CustomError::Other => None,
-        }
-    }
-
-
-}
-impl From<std::string::ParseError> for CustomError {
-    fn from(cause: std::string::ParseError) -> CustomError {
-        CustomError::StringParse(cause)
-    }
-}
-impl From<serde_json::Error> for CustomError {
-    fn from(cause: serde_json::Error) -> CustomError {
-        CustomError::SerdeJson(cause)
-    }
-}    
-impl From<std::io::Error> for CustomError {
-        fn from(cause: std::io::Error) -> CustomError {
-            CustomError::IO(cause)
-        }    
-}
 

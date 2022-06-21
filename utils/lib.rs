@@ -4,6 +4,7 @@ pub mod calculate;
 pub mod slicer;
 pub mod stringtou128;
 
+#[allow(unused_imports)]
 #[allow(dead_code)]
 #[cfg(test)]
 mod tests {

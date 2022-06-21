@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use std::ops::*;
 
 pub fn add<T: std::ops::Add<Output = T>>(i: T, j: T) -> T {

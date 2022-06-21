@@ -9,6 +9,7 @@ pub use crate::transaction::Transaction;
 type Hash = Vec<u8>;
 type Address = String;
 
+use std::fmt;
 // Credit: https://stackoverflow.com/a/44378174/2773837
 use std::time::{ SystemTime, UNIX_EPOCH };
 
@@ -86,3 +87,54 @@ pub fn difficulty_bytes_as_u128 (v: &Vec<u8>) -> u128 {
     ((v[17] as u128) << 0x1 * 8) |
     ((v[16] as u128) << 0x0 * 8)
 }
+
+
+/// Allow the use of "{:?}" format specifier
+#[derive(Debug)] 
+pub enum CustomError {
+    StringParse(std::string::ParseError),
+    SerdeJson(serde_json::Error),
+    IO(std::io::Error),
+    Other,
+}
+
+
+// Allow the use of "{}" format specifier
+impl fmt::Display for CustomError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            CustomError::StringParse(ref cause) => write!(f, "StringParse Error: {}", cause),
+            CustomError::SerdeJson(ref cause) => write!(f, "SerdeJson Error: {}", cause),
+            CustomError::IO(ref cause) => write!(f, "IO Error: {}", cause),
+            CustomError::Other => write!(f, "Unknown error!"),
+        }
+    }
+}
+impl std::error::Error for CustomError{
+    fn cause(&self) -> Option<&dyn std::error::Error> {
+        match *self {
+            CustomError::StringParse(ref cause) => Some(cause),
+            CustomError::SerdeJson(ref cause) => Some(cause),
+            CustomError::IO(ref cause) => Some(cause),
+            CustomError::Other => None,
+        }
+    }
+
+
+}
+impl From<std::string::ParseError> for CustomError {
+    fn from(cause: std::string::ParseError) -> CustomError {
+        CustomError::StringParse(cause)
+    }
+}
+impl From<serde_json::Error> for CustomError {
+    fn from(cause: serde_json::Error) -> CustomError {
+        CustomError::SerdeJson(cause)
+    }
+}    
+impl From<std::io::Error> for CustomError {
+        fn from(cause: std::io::Error) -> CustomError {
+            CustomError::IO(cause)
+        }    
+}
+
