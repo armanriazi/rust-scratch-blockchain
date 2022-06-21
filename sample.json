@@ -30,6 +30,24 @@
                 "value": "0"
             }]
         }
+    ],              
+    "transaction3":[
+        {
+           "inputs":[{       
+            "to_addr": "Alice",
+            "value": "100"
+            },{
+            "to_addr": "Nashu",
+            "value": "0"                                                        
+            }],
+            "outputs":[{
+                "to_addr": "Babak",
+                "value": "100"
+            },{
+                "to_addr": "Alice",
+                "value": "5"
+            }]
+        }
     ]
 }]        
 }
