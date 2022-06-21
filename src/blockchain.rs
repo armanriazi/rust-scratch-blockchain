@@ -69,7 +69,7 @@ impl Blockchain {
             let mut block_created: HashSet<Hash> = HashSet::new();
             let mut total_fee = 0;
 
-            for transaction in option_transactions {
+            for &transaction in option_transactions.iter().next(  ) {
                 let input_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Input);
                 let output_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Output);
                 
@@ -85,7 +85,9 @@ impl Blockchain {
 
                 //let aa=uadd(input_value(),output_value());
                 //println!("Printed:{:?}",aa);
-                
+                let a=&output_value();
+                let b=&input_value();
+
                 if &output_value()>&input_value() {
                     return Err(BlockValidationErr::InsufficientInputValue);
                 }
