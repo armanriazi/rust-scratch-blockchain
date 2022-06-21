@@ -2,7 +2,6 @@ use crate::transaction::Put;
 use crate::transaction::IO as IO;
 use super::*;
 use std::collections::HashSet;
-use library_utils::ucalculate::add as uadd;
 
 #[derive(Debug)]
 pub enum BlockValidationErr {
@@ -17,7 +16,6 @@ pub enum BlockValidationErr {
 }
 
 /// On update_with_block() we check (+)Overspending, (+)Double Spending, (-)Impersonate
-
 pub struct Blockchain {
     pub blocks: Vec<Block>,
     unspent_outputs: HashSet<Hash>,
