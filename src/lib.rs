@@ -85,8 +85,4 @@ pub fn difficulty_bytes_as_u128 (v: &Vec<u8>) -> u128 {
     ((v[18] as u128) << 0x2 * 8) |
     ((v[17] as u128) << 0x1 * 8) |
     ((v[16] as u128) << 0x0 * 8)
-
-  
-    
 }
-

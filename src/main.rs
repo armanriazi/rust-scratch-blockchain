@@ -1,14 +1,9 @@
-
-use std::io::{BufRead, BufReader, Write};
-use std::net::ToSocketAddrs;
-use std::str::from_utf8;
-use std::time::Duration;
+use std::error::{Error, self};
 use std::{fmt, env, fs};
 use library_blockchain::{*};
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
-use serde::__private::de::IdentifierDeserializer;
-use serde::de::Error;
-use std::env::{var,set_var};
+use library_utils::{slicer, stringtou128::string_to_u128};
+use std::env::{set_var};
 use serde_json::{json};
 
 pub  mod sample;
@@ -63,25 +58,15 @@ pub  mod sample;
 
 #[allow(dead_code)]
 #[allow(unused_mut)]
-fn main () {
 
-    
+fn main() -> Result<(), CustomError> {
     let  difficulty_str=var_ret_difficulty("0x000fffffffffffffffffffffffffffff"); 
     if difficulty_str.is_empty(){
         set_var("DIFFICULTY", "0x000fffffffffffffffffffffffffffff");
     }
 
-    let diff_str = difficulty_str.trim().to_lowercase().to_string();
-    let diff_digits = diff_str.strip_prefix("0x").unwrap();
-    let difficulty = u128::from_str_radix(diff_digits, 16).unwrap();
-    let diff_bytes = difficulty.to_le_bytes();
+    let difficulty=string_to_u128(&difficulty_str);
     
-    let de_diff_bytes = diff_bytes;
-    let de_diff = u128::from_le_bytes(de_diff_bytes);
-    let de_diff_str = format!("0x{de_diff:032x}");
-
-    assert_eq!(diff_str, de_diff_str);
-
     let mut args: Vec<String> = env::args().collect();
     let mut transactions_block2:Vec<OptionTransaction>=vec![];
 
@@ -136,24 +121,20 @@ fn main () {
     //last_hash = block.hash.clone();
 
     blockchain.update_with_block(block).expect("\n\nFailed to add block");
-}
 
-fn read_le_u128(input: &mut &[u8]) -> u128 {
-    let (int_bytes, rest) = input.split_at(std::mem::size_of::<u128>());
-    *input = rest;
-    u128::from_le_bytes(int_bytes.try_into().unwrap())
+    Ok(())
 }
 
 
-fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<OptionTransaction>,std::io::Error>
+fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<OptionTransaction>,CustomError>
 where
-        F: FnOnce()->  Result<serde_json::Value,std::io::Error>     
+        F: FnOnce()->  Result<serde_json::Value,CustomError>     
     {    
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
     let values_transactions=serde_values_transactions["transactions"].clone(); 
 
     let mut transactions:Vec<OptionTransaction> = vec![];     
-    let list=library_utils::ustringslicer::split_comma_wordlist(trx_name_from_file);
+    let list=slicer::split_comma_wordlist(trx_name_from_file);
     
 
     if ! &values_transactions[0].is_null(){
@@ -223,13 +204,12 @@ where
             }
         }     
     }       
-//   let err = std::fmt::Error::Err("NaN".parse::<u32>());
-//   println!("Printed:{:?}",err);
+
  
     Ok(transactions)
 }
 
-fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,std::io::Error>{
+fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,CustomError>{
 
     let mut transactions:Vec<OptionTransaction> = vec![];     
     
@@ -256,7 +236,7 @@ fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,std::io::Error>
 }
 
 
-pub fn sample_trx_json_data_block2_from_file(file:&str) -> Result<serde_json::Value,std::io::Error>{
+pub fn sample_trx_json_data_block2_from_file(file:&str) -> Result<serde_json::Value, CustomError>{
     return Ok(json!(&file))
 }
 
@@ -264,12 +244,15 @@ pub fn sample_trx_json_data_block2_from_file(file:&str) -> Result<serde_json::Va
 pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
     match env::var("DIFFICULTY") {
         Ok(val) => val,
-        Err(e) => env::var("DIFFICULTY").unwrap_or(difficulty_arg.to_owned()),
+        Err(e) => {
+            eprintln!("🦀 we don't detect env variable DIFFICULTY! We used default difficulty🦀");
+            env::var("DIFFICULTY").unwrap_or(difficulty_arg.to_owned())
+      }
     }
     //var("DIFFICULTY");//.unwrap_or(difficulty_arg.to_owned())    
 }
 
-// fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,std::io::Error>{
+// fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,CustomError>{
 //     return Ok(json!({
 //         "transactions":[{
 //                 "transaction0":[
@@ -291,12 +274,12 @@ pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
 // }
 
 
-#[derive(Debug)] // Allow the use of "{:?}" format specifier
-enum CustomError {
-    //o(IoError),
-    //Utf8(Utf8Error),
+/// Allow the use of "{:?}" format specifier
+#[derive(Debug)] 
+pub enum CustomError {
     StringParse(std::string::ParseError),
     SerdeJson(serde_json::Error),
+    IO(std::io::Error),
     Other,
 }
 
@@ -307,22 +290,17 @@ impl fmt::Display for CustomError {
         match *self {
             CustomError::StringParse(ref cause) => write!(f, "StringParse Error: {}", cause),
             CustomError::SerdeJson(ref cause) => write!(f, "SerdeJson Error: {}", cause),
+            CustomError::IO(ref cause) => write!(f, "IO Error: {}", cause),
             CustomError::Other => write!(f, "Unknown error!"),
         }
     }
 }
 impl std::error::Error for CustomError{
-    // fn source(&self) -> Option<&(dyn std::error::Error)> {
-    //     match *self {
-    //         CustomError::StringParse(ref cause) => Some(cause),
-    //         CustomError::SerdeJson(ref cause) => Some(cause),
-    //         CustomError::Other => None,
-    //     }
-    // }
     fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             CustomError::StringParse(ref cause) => Some(cause),
             CustomError::SerdeJson(ref cause) => Some(cause),
+            CustomError::IO(ref cause) => Some(cause),
             CustomError::Other => None,
         }
     }
@@ -338,89 +316,10 @@ impl From<serde_json::Error> for CustomError {
     fn from(cause: serde_json::Error) -> CustomError {
         CustomError::SerdeJson(cause)
     }
+}    
+impl From<std::io::Error> for CustomError {
+        fn from(cause: std::io::Error) -> CustomError {
+            CustomError::IO(cause)
+        }    
 }
 
-
-
-//-----------------------Commnents---------------------//
-// #[derive(serde::Deserialize,serde::Serialize,Debug,Clone)]
-//  struct ModelValue {
-//      to_addr: String,
-//      value: u64     
-// }
-
-    // let trx1_output = "{
-    //     \"to_addr\": \"Chris\",
-    //     \"value\": \"0\"        
-    // }";
-// let mut output_values:Vec<ModelValue> = vec![];
-//     let trx1_output_value:ModelValue=serde_json::from_str(&trx1_output).unwrap();
-//     output_values.push(trx1_output_value);    
-
-
-// impl Serialize for ModelValue {
-//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-//     where
-//         S: serde::Serializer,
-//     {
-//         let mut s = serializer.serialize_struct("ModelValue", 1)?;
-//         s.serialize_field("to_addr", &self.to_addr)?;
-//         s.serialize_field("value", &self.value)?;        
-//         s.end()
-//     }
-// }
-
-
-
-
-
-    // let trx2_output = r#"
-    // {
-    //     "to_addr": "Removeable output.it is Name-for rise error InsufficientInputValue",
-    //     "value": 0
-    // }"#;
-
-    // let trx2_output = r#"
-    // {
-    //     "to_addr": "Alice",
-    //     "value": 47
-    // }"#;
-
-    // let trx2_output = r#"
-    // {
-    //     "to_addr": "Bob",
-    //     "value": 3
-    // }"#;
-
-
-
-
-    // #[derive(PartialEq, Debug)]
-// struct Difficulty(u128);
-
-// impl fmt::UpperHex for Difficulty {
-//     fn fmt(mut self: &Difficulty, f: &mut fmt::Formatter) -> fmt::Result {
-//         //let bytes = self.0.as_bytes().to_vec();    
-//         //let  difficulty=difficulty_bytes_as_u128(&bytes);           
-//     //  unsafe {
-//     //     //std::mem::transmute(NumUu as u128);
-//     //     NumUu+=difficulty;
-//     //    // NumUu=*(difficulty as *const u128)
-//     // };
-
-//     //let val = self.0;
-//     //fmt::UpperHex::fmt(&val, f)
-
-//         let hexa = u128::from(self.0);
-//         write!(f, "#{:X}", hexa)
-//     }
-// }
-
-// impl fmt::Display for Difficulty {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         match *self {            
-//             Difficulty::Num(num) => write!(f,"{:X}",num), // <4>
-//         }
-//         }
-// }
-//# ```compile_fail  /// ```should_panic    /// ```edition2018  /// ```ignore

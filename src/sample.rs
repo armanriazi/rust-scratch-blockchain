@@ -1,7 +1,9 @@
 use serde_json::{json};
 
-pub fn sample_trx_json_data_block2() -> Result<serde_json::Value,std::io::Error>{
-    return Ok(json!({
+use crate::CustomError;
+
+pub fn sample_trx_json_data_block2() -> Result<serde_json::Value,CustomError>{
+     Ok(json!({
         "transactions":[{
                 "transaction1":[
                     {

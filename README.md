@@ -1,4 +1,6 @@
 
+## Welcome To The Home Blockchain Of 🦀Rustaceans
+
 > The repo is a **prerequisite of the Substrate-Framework** and it would be nicer to practice too.
 
 > The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of providing **testbed environment of Blockchain**.
@@ -42,7 +44,9 @@ cargo watch -x run
 
 - [✓] Modular
 
-- [✓] Error Handling
+- [✓] UnitTest(future work)
+
+- [✓] Customized Error Handling
 
 - [✓] Json& Object Value Data
 
@@ -214,7 +218,7 @@ these also support a form of inheritance that’s common in most object oriented
 #### - [✗] Datarace•Rustaceans
   > Note: The opposite of referencing by using & is dereferencing, which is accomplished with the dereference operator, *.
 
-#### [-] Nan
+#### [-] Nan(philosophy)
   > Floating-point types include “not a number” values (represented in Rust syntax as NAN values) to handle these cases.
 	
 > NAN values poison other numbers. Almost all operations interacting with NAN return NAN. Another thing to be mindful of is that, by definition, NAN values are never equal. 
