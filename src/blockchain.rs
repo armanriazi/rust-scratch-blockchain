@@ -72,11 +72,12 @@ impl Blockchain {
             let mut total_fee = 0;
 
             for transaction in option_transactions {
-                let input_hashes = transaction.puts.as_ref().unwrap().input_hashes();
-
+                let input_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Input);
+                let output_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Output);
+                
                 if
-                    !(&input_hashes - &self.unspent_outputs).is_empty() ||
-                    !(&input_hashes & &block_spent).is_empty()
+                    !(&input_hashes() - &self.unspent_outputs).is_empty() ||
+                    !(&input_hashes() & &block_spent).is_empty()
                 {
                     return Err(BlockValidationErr::InvalidInput);
                 }
@@ -95,8 +96,8 @@ impl Blockchain {
 
                 total_fee += fee;
                 
-                block_spent.extend(input_hashes);
-                block_created.extend(transaction.puts.as_ref().unwrap().output_hashes());
+                block_spent.extend(input_hashes());
+                block_created.extend(output_hashes());
             }
 
             let coinbase_output_value = coinbase.puts.as_ref().unwrap().returns_closure_io(&IO::Output);
@@ -105,7 +106,8 @@ impl Blockchain {
             if coinbase_output_value() < total_fee {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
             } else {
-                block_created.extend(coinbase.puts.as_ref().unwrap().output_hashes());
+                let coinbase_output_hashes=coinbase.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Output);
+                block_created.extend(coinbase_output_hashes());
             }
 
             self.unspent_outputs.retain(|output| !block_spent.contains(output));
