@@ -7,6 +7,7 @@ use std::{fmt, env, fs};
 use library_blockchain::{*};
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use serde::__private::de::IdentifierDeserializer;
+use serde::de::Error;
 use std::env::{var,set_var};
 use serde_json::{json};
 
@@ -64,9 +65,12 @@ pub  mod sample;
 #[allow(unused_mut)]
 fn main () {
 
-    set_var("DIFFICULTY", "0x000fffffffffffffffffffffffffffff");
-    let  difficulty_str=var_ret_difficulty("0x000fffffffffffffffffffffffffffff"); 
     
+    let  difficulty_str=var_ret_difficulty("0x000fffffffffffffffffffffffffffff"); 
+    if difficulty_str.is_empty(){
+        set_var("DIFFICULTY", "0x000fffffffffffffffffffffffffffff");
+    }
+
     let diff_str = difficulty_str.trim().to_lowercase().to_string();
     let diff_digits = diff_str.strip_prefix("0x").unwrap();
     let difficulty = u128::from_str_radix(diff_digits, 16).unwrap();
@@ -258,7 +262,11 @@ pub fn sample_trx_json_data_block2_from_file(file:&str) -> Result<serde_json::Va
 
 
 pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
-    var("DIFFICULTY").unwrap_or(difficulty_arg.to_owned())    
+    match env::var("DIFFICULTY") {
+        Ok(val) => val,
+        Err(e) => env::var("DIFFICULTY").unwrap_or(difficulty_arg.to_owned()),
+    }
+    //var("DIFFICULTY");//.unwrap_or(difficulty_arg.to_owned())    
 }
 
 // fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,std::io::Error>{

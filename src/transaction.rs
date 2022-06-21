@@ -55,15 +55,13 @@ pub enum IO{
 }
 
 //pub trait Put where Self: Sized {}
-pub trait SuperTransaction {
-  
-}
+pub trait SuperTransaction {}
 
 
  pub trait Put where
     Self: SuperTransaction{
      fn returns_closure_io(&self,io: &IO) -> Box<(dyn Fn() -> u64 + '_)>;
-    //fn put(&self)->u64;    
+     fn returns_closure_io_hash(&self,io: &IO) -> Box<(dyn Fn() -> HashSet<Hash> + '_)>;
 }
 
 impl SuperTransaction for Transaction {}
@@ -85,6 +83,25 @@ impl Put for Transaction {
                  .iter()
                 .map(|output| output.value)
                 .sum()
+            })
+          }
+        }  
+    }
+
+    fn returns_closure_io_hash(&self,io: &IO) -> Box<(dyn Fn() -> HashSet<Hash> + '_)> {
+        match io {
+         IO::Input => {Box::new(|| {
+            self.inputs
+            .iter()
+            .map(|input| input.hash())
+            .collect::<HashSet<Hash>>()
+            })   
+         }  
+         IO::Output => {Box::new(|| {
+            self.outputs
+            .iter()
+            .map(|output| output.hash())
+            .collect::<HashSet<Hash>>()
             })
           }
         }  
@@ -125,19 +142,7 @@ impl Transaction {
                                                   // We can do whatever we want with the closure
     }
 
-    pub fn input_hashes (&self) -> HashSet<Hash> {
-        self.inputs
-            .iter()
-            .map(|input| input.hash())
-            .collect::<HashSet<Hash>>()
-    }
 
-    pub fn output_hashes (&self) -> HashSet<Hash> {
-        self.outputs
-            .iter()
-            .map(|output| output.hash())
-            .collect::<HashSet<Hash>>()
-    }
 
     pub fn is_coinbase (&self) -> bool {       
         self.inputs.len() == 0
