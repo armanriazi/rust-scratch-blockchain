@@ -40,8 +40,8 @@ fn main() -> Result<(), CustomError> {
             .expect("Something went wrong reading the file");
             //println!("******************************\n");
             //println!("With text:\n{}", &file_contents);    
-            println!("******************************\n");
-            transactions_block2=sample_trx_json_default(&trx_name,|| sample_trx_json_data_block2_from_file(&file_contents))?;       
+            println!("**************************************************************");
+            transactions_block2=sample_trx_json_default(&trx_name,|| sample_trx_json_data_block2_from_file(&file_contents)).unwrap();       
         }
         else if &mode=="object" {                              
              transactions_block2= sample_trx_object_default()?;            

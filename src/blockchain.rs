@@ -1,5 +1,6 @@
 use crate::transaction::Put;
 use crate::transaction::IO as IO;
+use crate::transaction::IOH as IOH;
 use super::*;
 use std::collections::HashSet;
 
@@ -60,8 +61,10 @@ impl Blockchain {
             }
         }
         
-        println!("outter{:?}", &block.index);
+        //println!("outter{:?}", &block.index);
 
+        
+        println!("block {:?}", block);
         if let Some((coinbase, option_transactions)) =  block.option_transactions.split_first(){
             if ! coinbase.puts.as_ref().unwrap().is_coinbase() {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
@@ -73,10 +76,10 @@ impl Blockchain {
             
             
             for transaction in option_transactions {
-                println!("Inner{:?}", &transaction);
+                println!("Inner{:?}", transaction);
  
-                let input_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Input);
-                let output_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Output);
+                let input_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Input);
+                let output_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Output);
                 
                 if
                     !(&input_hashes() - &self.unspent_outputs).is_empty() ||
@@ -112,7 +115,7 @@ impl Blockchain {
             if coinbase_output_value() < total_fee {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
             } else {
-                let coinbase_output_hashes=coinbase.puts.as_ref().unwrap().returns_closure_io_hash(&IO::Output);
+                let coinbase_output_hashes=coinbase.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Output);
                 block_created.extend(coinbase_output_hashes());
             }
 

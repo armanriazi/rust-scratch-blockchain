@@ -1,4 +1,4 @@
-{
+
 "transactions":[{
     "transaction1":[
         {
@@ -6,10 +6,10 @@
             }],
             "outputs":[{
                 "to_addr": "Alex",
-                "value": "0"                           
+                "value": "100"                           
             },{
                 "to_addr": "Alice",
-                "value": "0"                            
+                "value": "200"                            
             },{
                 "to_addr": "Bob",
                 "value": "0"                            
@@ -35,7 +35,7 @@
         {
            "inputs":[{       
             "to_addr": "Alice",
-            "value": "100"
+            "value": "0"
             },{
             "to_addr": "Nashu",
             "value": "0"                                                        
@@ -50,4 +50,3 @@
         }
     ]
 }]        
-}

@@ -53,6 +53,10 @@ pub enum IO{
     Input,
     Output
 }
+pub enum IOH{
+    Input,
+    Output
+}
 
 //pub trait Put where Self: Sized {}
 pub trait SuperTransaction {}
@@ -61,7 +65,7 @@ pub trait SuperTransaction {}
  pub trait Put where
     Self: SuperTransaction{
      fn returns_closure_io(&self,io: &IO) -> Box<(dyn Fn() -> u64 + '_)>;
-     fn returns_closure_io_hash(&self,io: &IO) -> Box<(dyn Fn() -> HashSet<Hash> + '_)>;
+     fn returns_closure_io_hash(&self,io: &IOH) -> Box<(dyn Fn() -> HashSet<Hash> + '_)>;
 }
 
 impl SuperTransaction for Transaction {}
@@ -88,16 +92,16 @@ impl Put for Transaction {
         }  
     }
 
-    fn returns_closure_io_hash(&self,io: &IO) -> Box<(dyn Fn() -> HashSet<Hash> + '_)> {
+    fn returns_closure_io_hash(&self,io: &IOH) -> Box<(dyn Fn() -> HashSet<Hash> + '_)> {
         match io {
-         IO::Input => {Box::new(|| {
+            IOH::Input => {Box::new(|| {
             self.inputs
             .iter()
             .map(|input| input.hash())
             .collect::<HashSet<Hash>>()
             })   
          }  
-         IO::Output => {Box::new(|| {
+         IOH::Output => {Box::new(|| {
             self.outputs
             .iter()
             .map(|output| output.hash())
