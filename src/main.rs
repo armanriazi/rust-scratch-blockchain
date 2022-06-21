@@ -4,97 +4,53 @@ use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use library_utils::{slicer, stringtou128::string_to_u128};
 use std::env::{set_var};
 use serde_json::{json};
-
 pub  mod sample;
-/// 1. Produce block, without minning and transactions
-///```no_run
-/// fn main () {
-///     //index: u32, timestamp: u128, prev_block_hash: Hash, transactions: Vec<Transaction>, difficulty: u128
-///     let transaction:Transaction= Transaction {
-///         inputs: vec![ ],
-///         outputs: vec![]
-///     };
-///     let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],0);//,"Genesis Block".to_owned()
-///     println!("{:?}",&block);
-///     let h=block.hash();
-///     println!("Printed:{:?}",&h);
-///     block.hash=h;
-///     println!("Printed:{:?}",&block);
-/// }
-
-/// 2. Block minning without transactions
-///```no_run
-/// fn main () {    
-///    let transaction:Transaction= Transaction {
-///        inputs: vec![ ],
-///        outputs: vec![]
-///    };/
-///    let difficulty= 0x0fffffffffffffffffffffffffffffff;
-///    let  mut block = Block::new(0,now(), vec![0; 32],vec![transaction],difficulty);//,"Genesis Block".to_owned()     
-///    //println!("{:?}",&block);
-///    block.mine();
-///    println!("Mined genesis block :{:?}",&block);    /
-///    let mut last_hash=block.hash.clone();/
-///    let mut blockchain= Blockchain::default();
-///    blockchain.blocks.push(block);/
-///    for i in 1..=10 { 
-///        let transaction:Transaction= Transaction {
-///            inputs: vec![ ],
-///            outputs: vec![]
-///        };
-///        let  mut block = Block::new(i,now(), last_hash,vec![transaction],difficulty);//,"Genesis Block".to_owned()        
-///        //println!("{:?}",&block);
-///        block.mine();
-///        println!("Mined  block :{:?}",&block);  
-///        last_hash= block.hash.clone();
-///        blockchain.blocks.push(block);
-///    }
-///}
-///```
-
-/// 3. Almost of features supported
-
 
 #[allow(dead_code)]
 #[allow(unused_mut)]
-
 fn main() -> Result<(), CustomError> {
-    let  difficulty_str=var_ret_difficulty("0x000fffffffffffffffffffffffffffff"); 
+    let  difficulty_str=var_ret_difficulty("0x00ffffffffffffffffffffffffffffff"); 
     if difficulty_str.is_empty(){
-        set_var("DIFFICULTY", "0x000fffffffffffffffffffffffffffff");
+        set_var("DIFFICULTY", "0x00ffffffffffffffffffffffffffffff");
     }
 
     let difficulty=string_to_u128(&difficulty_str);
     
+
     let mut args: Vec<String> = env::args().collect();
     let mut transactions_block2:Vec<OptionTransaction>=vec![];
 
-    // println!("Seleceted Mode On: {}", &args[1]);
-    // println!("Transaction Names List are: {}", &args[2]);    
-    // println!("By File Name: {}", &args[3]);
+    let mut mode=String::default();
+    let mut trx_name=String::default();
+    let mut file_name=String::default();
 
-    if  args.len()<=1 {
+    if  (&args).len()<=1 {
         println!("Please select a runner mode\n Help(file path transaction_list, object transaction_list, or module transaction_list)\n Default is cargo run object transation1,transaction2");        
         args.push("object".to_owned());
         args.push("transation1,transaction2".to_owned());        
-        transactions_block2= sample_trx_object_default().unwrap();  
+        transactions_block2= sample_trx_object_default()?;  
     }
-    if  args[1].as_str()=="file" {        
-            let file_contents = fs::read_to_string(&args[3])
+    else {
+        mode=(&args[1]).trim().to_lowercase();
+        trx_name=(&args[2]).trim().to_lowercase();
+        file_name=(&args[3]).trim().to_lowercase(); 
+    }
+    if  &mode =="file" {                
+            let file_contents = fs::read_to_string(&file_name)
             .expect("Something went wrong reading the file");
-            println!("******************************\n");
-            println!("With text:\n{}", file_contents);    
-            println!("******************************\n");
-            transactions_block2=sample_trx_json_default(&args[3],|| sample_trx_json_data_block2_from_file(&file_contents)).unwrap();       
+            //println!("******************************\n");
+            //println!("With text:\n{}", &file_contents);    
+            println!("**************************************************************");
+            transactions_block2=sample_trx_json_default(&trx_name,|| sample_trx_json_data_block2_from_file(&file_contents)).unwrap();       
         }
-        else if args[1].as_str()=="object" {                  
-             transactions_block2= sample_trx_object_default().unwrap();            
+        else if &mode=="object" {                              
+             transactions_block2= sample_trx_object_default()?;            
         }
-        else if args[1].as_str()=="module" {                    
-             transactions_block2=sample_trx_json_default(&args[2],|| sample::sample_trx_json_data_block2()).unwrap();   
+        else if &mode=="module" {                    
+             transactions_block2=sample_trx_json_default(&trx_name,|| sample::sample_trx_json_data_block2())?;   
         }
         else{
-         println!("something else!");
+         println!("The mode is not selected!");
     }
     
     let transactions_genesis_block= vec![Transaction::default()];   
@@ -112,7 +68,6 @@ fn main() -> Result<(), CustomError> {
     blockchain.update_with_block(genesis_block).expect("\n\nFailed to add genesis block");    
   
     let mut block = Block::new(1, now(), last_hash,transactions_block2, difficulty);
-
     block.mine();
 
     println!("Mined block {:?}", &block);
@@ -133,12 +88,13 @@ fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<O
         F: FnOnce()->  Result<serde_json::Value,CustomError>     
     {    
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
+   
     let values_transactions=serde_values_transactions["transactions"].clone(); 
 
     let mut transactions:Vec<OptionTransaction> = vec![];     
     let list=slicer::split_comma_wordlist(trx_name_from_file);
     
-
+    println!("{:?}",&list);
     if ! &values_transactions[0].is_null(){
 
         for item in list {        
@@ -212,7 +168,7 @@ fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<O
 }
 
 fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,CustomError>{
-
+    println!("Selected mode is object!");
     let mut transactions:Vec<OptionTransaction> = vec![];     
     
     let sample_trx2= Transaction::new( 
@@ -238,8 +194,9 @@ fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,CustomError>{
 }
 
 
-pub fn sample_trx_json_data_block2_from_file(file:&str) -> Result<serde_json::Value, CustomError>{
-    return Ok(json!(&file))
+pub fn sample_trx_json_data_block2_from_file(file_contents:&str) -> Result<serde_json::Value, CustomError>{
+    println!("Selected mode is file!");
+    return Ok(json!(&file_contents))
 }
 
 
@@ -252,25 +209,3 @@ pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
       }
     }  
 }
-
-// fn sample_trx_json_data_genesis_block() -> Result<serde_json::Value,CustomError>{
-//     return Ok(json!({
-//         "transactions":[{
-//                 "transaction0":[
-//                     {
-//                         "inputs":[{                                     
-//                         }],
-//                         "outputs":[{
-//                             "to_addr": "Alice",
-//                             "value": "50",
-//                         },
-//                         {
-//                             "to_addr": "Bob",
-//                             "value": "10",
-//                         }]
-//                     }
-//                 ],
-//             }]
-//         }))
-// }
-
