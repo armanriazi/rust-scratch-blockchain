@@ -15,9 +15,9 @@
 // }
 use super::*;
 use std::collections::HashSet;
+use serde::{Deserialize, Serialize};
 
-
-#[derive(Debug,Clone)]
+#[derive(Debug,Clone,Deserialize,Serialize)]
 pub struct Value {
     pub to_addr: Address,
     pub value: u64,
@@ -39,12 +39,12 @@ pub struct Value {
 /// </br></br>
 /// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
 
-#[derive(Debug)]
+#[derive(Debug,Deserialize,Serialize)]
 pub struct OptionTransaction {
     pub puts: Option<Transaction>
 }
 
-#[derive(Debug)]
+#[derive(Debug,Deserialize,Serialize)]
 pub struct Transaction {
     pub inputs: Vec<Value>,
     pub outputs: Vec<Value>,

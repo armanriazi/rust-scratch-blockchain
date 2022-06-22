@@ -42,7 +42,7 @@ fn main() -> Result<(), CustomError> {
             let file_contents = fs::read_to_string(&file_name)
             .expect("Something went wrong reading the file");
             //println!("******************************\n");
-            //println!("With text:\n{}", &file_contents);    
+            //println!("With text:\n{} {}", &file_contents, &trx_name);    
             println!("**************************************************************");
             transactions_block2=sample_trx_json_default(&trx_name,|| sample_trx_json_data_block2_from_file(&file_contents)).unwrap();       
         }
@@ -92,8 +92,12 @@ fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<O
     {    
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
    
-    let values_transactions=serde_values_transactions["transactions"].clone(); 
+    println!("{}",&serde_values_transactions);
 
+    let values_transactions=serde_values_transactions["transactions"].clone(); 
+    dbg!("\nValueeeeeeeeeeeeeeee\n");
+    dbg!(&values_transactions);
+    
     let mut transactions:Vec<OptionTransaction> = vec![];     
     let list=slicer::split_comma_wordlist(trx_name_from_file);
     
@@ -192,10 +196,14 @@ fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,CustomError>{
     Ok(transactions) 
 }
 
-
 pub fn sample_trx_json_data_block2_from_file(file_contents:&str) -> Result<serde_json::Value, CustomError>{
     println!("Selected mode is file!");
-    return Ok(json!(&file_contents))
+    //dbg!(json!(&file_contents));
+    let  js=json!(file_contents);
+    let s="\"transactions\":[{\"transaction1\":[\"inputs\":[{\"to_addr\":\"Alice\",\"value\":\"47\"},{\"to_addr\":\"Bob\",\"value\":\"3\"}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\": \"46\"},{\"to_addr\":\"Bob\",\"value\":\"1\"}]}],\"transaction2\":[{\"inputs\":[{}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\":\"0\"}]}],}]";
+    let ss="{\"transactions\":[{\"transaction1\":[\"inputs\":[{\"to_addr\":\"Alice\",\"value\":\"47\"},{\"to_addr\":\"Bob\",\"value\":\"3\"}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\": \"46\"},{\"to_addr\":\"Bob\",\"value\":\"1\"}]}],\"transaction2\":[{\"inputs\":[{}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\":\"0\"}]}]}]}";
+    let value= serde_json::from_str(ss).unwrap();
+    return Ok(value)
 }
 
 
