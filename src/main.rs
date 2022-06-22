@@ -23,19 +23,22 @@ fn main() -> Result<(), CustomError> {
     let mut mode=String::default();
     let mut trx_name=String::default();
     let mut file_name=String::default();
+    
 
     if  (&args).len()<=1 {
         println!("Please select a runner mode\n Help(file path transaction_list, object transaction_list, or module transaction_list)\n Default is cargo run object transation1,transaction2");        
         args.push("object".to_owned());
         args.push("transation1,transaction2".to_owned());        
-        transactions_block2= sample_trx_object_default()?;  
+        
     }
     else {
         mode=(&args[1]).trim().to_lowercase();
         trx_name=(&args[2]).trim().to_lowercase();
-        file_name=(&args[3]).trim().to_lowercase(); 
+       
     }
-    if  &mode =="file" {                
+    if  &mode =="file" {          
+            file_name=(&args[3]).trim().to_lowercase();        
+            
             let file_contents = fs::read_to_string(&file_name)
             .expect("Something went wrong reading the file");
             //println!("******************************\n");
@@ -44,18 +47,18 @@ fn main() -> Result<(), CustomError> {
             transactions_block2=sample_trx_json_default(&trx_name,|| sample_trx_json_data_block2_from_file(&file_contents)).unwrap();       
         }
         else if &mode=="object" {                              
-             transactions_block2= sample_trx_object_default()?;            
+             transactions_block2= sample_trx_object_default().unwrap();            
         }
         else if &mode=="module" {                    
-             transactions_block2=sample_trx_json_default(&trx_name,|| sample::sample_trx_json_data_block2())?;   
+             transactions_block2=sample_trx_json_default(&trx_name,|| sample::sample_trx_json_data_block2()).unwrap();   
         }
         else{
          println!("The mode is not selected!");
     }
     
-    let transactions_genesis_block= vec![Transaction::default()];   
-   //let transactions_genesis_block=sample_trx_json_default(transaction_name_list,|| sample_trx_json_data_genesis_block()).unwrap();    
 
+   //let transactions_genesis_block=sample_trx_json_default(transaction_name_list,|| sample_trx_json_data_genesis_block()).unwrap();    
+   let transactions_genesis_block:Vec<OptionTransaction>= vec![Transaction::default()];   
     let mut genesis_block = Block::new(0, now(), vec![0; 32], transactions_genesis_block, difficulty);
     genesis_block.mine();
 
@@ -173,11 +176,7 @@ fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,CustomError>{
     
     let sample_trx2= Transaction::new( 
         vec![            
-        ],vec![
-            transaction::Value {
-                to_addr: "Alex".to_owned(),
-                value: 0,
-            },
+        ],vec![       
             transaction::Value {
                 to_addr: "Alice".to_owned(),
                 value: 47,

@@ -2,20 +2,20 @@
 "transactions":[{
     "transaction1":[
         {
-            "inputs":[{                  
-            }],
-            "outputs":[{
-                "to_addr": "Alex",
-                "value": "100"                           
-            },{
+            "inputs":[{
                 "to_addr": "Alice",
-                "value": "200"                            
+                "value": "47"                            
             },{
                 "to_addr": "Bob",
-                "value": "0"                            
+                "value": "3"                            
+            }],    
+            "outputs":[{
+                "to_addr": "Alice",
+                "value": "46"                            
+            },{
+                "to_addr": "Bob",
+                "value": "1"                            
             }]    
-
-           
         }
     ],              
     "transaction2":[
@@ -24,29 +24,8 @@
             }],
             "outputs":[{
                 "to_addr": "Alice",
-                "value": "100"
-            },{
-                "to_addr": "Nashu",
                 "value": "0"
             }]
         }
     ],              
-    "transaction3":[
-        {
-           "inputs":[{       
-            "to_addr": "Alice",
-            "value": "0"
-            },{
-            "to_addr": "Nashu",
-            "value": "0"                                                        
-            }],
-            "outputs":[{
-                "to_addr": "Babak",
-                "value": "100"
-            },{
-                "to_addr": "Alice",
-                "value": "5"
-            }]
-        }
-    ]
 }]        

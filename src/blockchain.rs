@@ -60,11 +60,8 @@ impl Blockchain {
                 return Err(BlockValidationErr::InvalidGenesisBlockFormat);
             }
         }
-        
-        //println!("outter{:?}", &block.index);
-
-        
-        println!("block {:?}", block);
+        println!("\nOuter{:?}\n",block.option_transactions.split_first());
+   
         if let Some((coinbase, option_transactions)) =  block.option_transactions.split_first(){
             if ! coinbase.puts.as_ref().unwrap().is_coinbase() {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
