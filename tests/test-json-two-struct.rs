@@ -67,6 +67,7 @@
          #[test]
          fn  untyped_example2() {
             // The type of `john` is `serde_json::Value`
+            
             let data = json!({
                 "inputs":[{
                   "to_addr": "Alice",

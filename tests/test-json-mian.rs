@@ -11,17 +11,18 @@
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
+    use std::{fs::{self, File}, io::BufReader};
     use library_utils::slicer;
     use serde_json::{json, Value,Result};
     use serde::*;
     use super::*;
     use library_blockchain::{*, transaction::OptionTransaction};    
+    use library_blockchain::transaction::{Value as ModelValue};
 
 #[test]
 fn sample_trx_json_default()-> Result<()> 
 {    
-    let f=r#"
+    let js=r#"
     "transactions":[{
         "transaction1":[
             {
@@ -50,20 +51,27 @@ fn sample_trx_json_default()-> Result<()>
                     "value": "0"
                 }]
             }
-        ],              
-    }]            
-    "#;
-    let trx_name_from_file="transaction1,transaction2";
-    let serde_values_transactions:serde_json::Value= serde_json::from_value(f).unwrap();
+        ]             
+    }]"#;
+    
+        // let dt=serde_json::to_string(js).unwrap();
+    // let data:Value=serde_json::from_str(&dt).unwrap();    
+    // let trx_name_from_file="transaction1,transaction2".to_string();
+    // let serde_values_transactions:serde_json::Value= serde_json::from_reader(&data).unwrap();
+    let file = File::open("sample.json").unwrap();
+    let reader = BufReader::new(file);
+    // Read the JSON contents of the file as an
+    let serde_values_transactions:serde_json::Value= serde_json::from_reader(reader).unwrap();  
+    println!("{:?}",serde_values_transactions);
+    
+    let trx_name_from_file="transaction1,transaction2".to_string();
 
     println!("{}",&serde_values_transactions);
 
-    let values_transactions=serde_values_transactions["transactions"].clone(); 
-    dbg!("\nValueeeeeeeeeeeeeeee\n");
-    dbg!(&values_transactions);
-
     let mut transactions:Vec<OptionTransaction> = vec![];     
-    let list=slicer::split_comma_wordlist(trx_name_from_file);
+    let list=slicer::split_comma_wordlist(&trx_name_from_file);
+    
+    let values_transactions=serde_values_transactions["transactions"].clone(); 
 
     println!("{:?}",&list);
     if ! &values_transactions[0].is_null(){

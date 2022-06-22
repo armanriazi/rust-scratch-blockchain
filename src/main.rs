@@ -1,3 +1,5 @@
+use std::fs::File;
+use std::io::BufReader;
 use std::{env, fs};
 use library_blockchain::{*};
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
@@ -26,7 +28,7 @@ fn main() -> Result<(), CustomError> {
     
 
     if  (&args).len()<=1 {
-        println!("Please select a runner mode\n Help(file path transaction_list, object transaction_list, or module transaction_list)\n Default is cargo run object transation1,transaction2");        
+        println!("** Please select a runner mode\n Help(file path transaction_list, object transaction_list, or module transaction_list)\n Default is cargo run object transation1,transaction2 **\n");        
         args.push("object".to_owned());
         args.push("transation1,transaction2".to_owned());        
         
@@ -37,23 +39,21 @@ fn main() -> Result<(), CustomError> {
        
     }
     if  &mode =="file" {          
-            file_name=(&args[3]).trim().to_lowercase();        
-            
-            let file_contents = fs::read_to_string(&file_name)
-            .expect("Something went wrong reading the file");
+            file_name=(&args[3]).trim().to_lowercase();                    
+            let file = File::open(&file_name).unwrap();
             //println!("******************************\n");
             //println!("With text:\n{} {}", &file_contents, &trx_name);    
             println!("**************************************************************");
-            transactions_block2=sample_trx_json_default(&trx_name,|| sample_trx_json_data_block2_from_file(&file_contents)).unwrap();       
+            transactions_block2=sample_trx_json_default(&trx_name,|| sample_trx_json_data_block2_from_file(&file)).unwrap();       
         }
         else if &mode=="object" {                              
-             transactions_block2= sample_trx_object_default().unwrap();            
+             transactions_block2= sample_trx_object_default("Selected mode is object!").unwrap();            
         }
         else if &mode=="module" {                    
              transactions_block2=sample_trx_json_default(&trx_name,|| sample::sample_trx_json_data_block2()).unwrap();   
         }
-        else{
-         println!("The mode is not selected!");
+        else{         
+         transactions_block2= sample_trx_object_default("The mode is not selected! Default is Object").unwrap();  
     }
     
 
@@ -91,17 +91,13 @@ fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<O
         F: FnOnce()->  Result<serde_json::Value,CustomError>     
     {    
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
-   
-    println!("{}",&serde_values_transactions);
+ 
 
     let values_transactions=serde_values_transactions["transactions"].clone(); 
-    dbg!("\nValueeeeeeeeeeeeeeee\n");
-    dbg!(&values_transactions);
-    
+
     let mut transactions:Vec<OptionTransaction> = vec![];     
     let list=slicer::split_comma_wordlist(trx_name_from_file);
-    
-    println!("{:?}",&list);
+  
     if ! &values_transactions[0].is_null(){
 
         for item in list {        
@@ -169,13 +165,11 @@ fn sample_trx_json_default<F>(trx_name_from_file:&String, f : F) -> Result<Vec<O
             }
         }     
     }       
-
  
     Ok(transactions)
 }
 
-fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,CustomError>{
-    println!("Selected mode is object!");
+fn sample_trx_object_default(msg:&str) ->  Result<Vec<OptionTransaction>,CustomError>{    
     let mut transactions:Vec<OptionTransaction> = vec![];     
     
     let sample_trx2= Transaction::new( 
@@ -196,14 +190,14 @@ fn sample_trx_object_default() ->  Result<Vec<OptionTransaction>,CustomError>{
     Ok(transactions) 
 }
 
-pub fn sample_trx_json_data_block2_from_file(file_contents:&str) -> Result<serde_json::Value, CustomError>{
-    println!("Selected mode is file!");
-    //dbg!(json!(&file_contents));
-    let  js=json!(file_contents);
-    let s="\"transactions\":[{\"transaction1\":[\"inputs\":[{\"to_addr\":\"Alice\",\"value\":\"47\"},{\"to_addr\":\"Bob\",\"value\":\"3\"}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\": \"46\"},{\"to_addr\":\"Bob\",\"value\":\"1\"}]}],\"transaction2\":[{\"inputs\":[{}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\":\"0\"}]}],}]";
-    let ss="{\"transactions\":[{\"transaction1\":[\"inputs\":[{\"to_addr\":\"Alice\",\"value\":\"47\"},{\"to_addr\":\"Bob\",\"value\":\"3\"}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\": \"46\"},{\"to_addr\":\"Bob\",\"value\":\"1\"}]}],\"transaction2\":[{\"inputs\":[{}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\":\"0\"}]}]}]}";
-    let value= serde_json::from_str(ss).unwrap();
-    return Ok(value)
+pub fn sample_trx_json_data_block2_from_file(file:&File) -> Result<serde_json::Value, CustomError>{
+
+    println!("Selected mode is file!");    
+
+    let reader = BufReader::new(file);  
+    let serde_values_transactions=serde_json::from_reader(reader).unwrap();            
+    
+    return Ok(serde_values_transactions)
 }
 
 
@@ -211,7 +205,7 @@ pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
     match env::var("DIFFICULTY") {
         Ok(val) => val,
         Err(e) => {
-            eprintln!("🦀{e}! We used default difficulty🦀");
+            eprintln!("\n🦀{e}! We used default difficulty🦀\n");
             env::var("DIFFICULTY").unwrap_or(difficulty_arg.to_owned())
       }
     }  

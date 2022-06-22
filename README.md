@@ -1,4 +1,6 @@
 
+![TOC]
+
 ## Welcome To The Home Blockchain Of 🦀Rustaceans
 
 > The repo is a **prerequisite of the Substrate-Framework** and it would be nicer to practice too.
@@ -346,6 +348,13 @@ To isolate unsafe code as much as possible, it’s best to enclose unsafe code w
 > Parts of the standard library are implemented as safe abstractions over unsafe code that has been audited.
 Wrapping unsafe code in a safe abstraction prevents uses of unsafe from leaking out into all the places that you or your users might want to use the functionality implemented with unsafe code, because using a safe abstraction is safe.
 
+# Contributors
+
+nom is the fruit of the work of many contributors over the years, many thanks for your help!
+
+<a href="https://github.com/geal/nom/graphs/contributors">
+  Contributors
+</a>
   
 #### - [✗] OOP•State•DesignPattern(future work)
 	-> We can used it for smart contracts so we will need to implemented smart contracts

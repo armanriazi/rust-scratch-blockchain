@@ -60,8 +60,7 @@ impl Blockchain {
                 return Err(BlockValidationErr::InvalidGenesisBlockFormat);
             }
         }
-        println!("\nOuter{:?}\n",block.option_transactions.split_first());
-   
+
         if let Some((coinbase, option_transactions)) =  block.option_transactions.split_first(){
             if ! coinbase.puts.as_ref().unwrap().is_coinbase() {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
@@ -73,8 +72,7 @@ impl Blockchain {
             
             
             for transaction in option_transactions {
-                println!("Inner{:?}", transaction);
- 
+  
                 let input_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Input);
                 let output_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Output);
                 
@@ -88,12 +86,7 @@ impl Blockchain {
                 let input_value= transaction.puts.as_ref().unwrap().returns_closure_io(&IO::Input);
                 let output_value = transaction.puts.as_ref().unwrap().returns_closure_io(&IO::Output);
 
-                //let aa=uadd(input_value(),output_value());
-                //println!("Printed:{:?}",aa);
-                let a=&output_value();
-                let b=&input_value();
-                println!("a{:?}", &a);
-                println!("b{:?}", &b);
+
                 if &output_value()>&input_value() {
                     return Err(BlockValidationErr::InsufficientInputValue);
                 }

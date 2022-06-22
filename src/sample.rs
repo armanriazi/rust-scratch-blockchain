@@ -3,7 +3,7 @@ use serde_json::{json};
 use crate::CustomError;
 
 pub fn sample_trx_json_data_block2() -> Result<serde_json::Value,CustomError>{
-    println!("Selected mode is module!");
+    
      Ok(json!({
         "transactions":[{
                 "transaction1":[
@@ -34,6 +34,15 @@ pub fn sample_trx_json_data_block2() -> Result<serde_json::Value,CustomError>{
                         },{
                             "to_addr": "Nashu",
                             "value": "0",
+                        }]
+                    }
+                ],              
+                "transaction3":[
+                    {
+                       "inputs":[{                                                               
+                        }],
+                        "outputs":[{
+                            
                         }]
                     }
                 ]

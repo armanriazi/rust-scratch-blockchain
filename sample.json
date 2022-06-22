@@ -1,16 +1,13 @@
+{
 "transactions":[{
     "transaction1":[
         {
             "inputs":[{
-                "to_addr": "Alice",
-                "value": "47"                            
-            },{
-                "to_addr": "Bob",
-                "value": "3"                            
+                            
             }],    
             "outputs":[{
                 "to_addr": "Alice",
-                "value": "46"                            
+                "value": "0"                            
             },{
                 "to_addr": "Bob",
                 "value": "1"                            
@@ -26,5 +23,6 @@
                 "value": "0"
             }]
         }
-    ],              
+    ]             
 }]        
+}

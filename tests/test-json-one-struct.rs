@@ -100,7 +100,11 @@ mod tests {
             Ok(())
      }
 }      
-
+/*
+let s="\"transactions\":[{\"transaction1\":[\"inputs\":[{\"to_addr\":\"Alice\",\"value\":\"47\"},{\"to_addr\":\"Bob\",\"value\":\"3\"}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\": \"46\"},{\"to_addr\":\"Bob\",\"value\":\"1\"}]}],\"transaction2\":[{\"inputs\":[{}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\":\"0\"}]}],}]";
+    let ss="{\"transactions\":[{\"transaction1\":[\"inputs\":[{\"to_addr\":\"Alice\",\"value\":\"47\"},{\"to_addr\":\"Bob\",\"value\":\"3\"}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\": \"46\"},{\"to_addr\":\"Bob\",\"value\":\"1\"}]}],\"transaction2\":[{\"inputs\":[{}],\"outputs\":[{\"to_addr\":\"Alice\",\"value\":\"0\"}]}]}]}";
+    
+*/
 //let u:serde_json::Value  = serde_json::from_str(&j).unwrap();
         //let u:User  = serde_json::from_str(&j).unwrap();
         //println!("{:#?}", i);  
