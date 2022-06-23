@@ -1,0 +1,88 @@
+{
+"blocks":[{    
+    "block1":[{
+        "transactions":[{
+            "transaction1":[
+                {
+                    "inputs":[{
+                                    
+                    }],    
+                    "outputs":[{
+                        "to_addr": "B1Alice1",
+                        "value": "0"                            
+                    },{
+                        "to_addr": "Bob",
+                        "value": "1"                            
+                    }]    
+                }
+            ],              
+            "transaction2":[
+                {
+                "inputs":[{                                                               
+                    }],
+                    "outputs":[{
+                        "to_addr": "B1Alice2",
+                        "value": "0"
+                    }]
+                }
+            ]             
+        }]        
+    }],     
+    "block2":[{
+        "transactions":[{
+            "transaction1":[
+                {
+                    "inputs":[{
+                                    
+                    }],    
+                    "outputs":[{
+                        "to_addr": "B2Alice1",
+                        "value": "0"                            
+                    },{
+                        "to_addr": "Bob",
+                        "value": "1"                            
+                    }]    
+                }
+            ],              
+            "transaction2":[
+                {
+                "inputs":[{                                                               
+                    }],
+                    "outputs":[{
+                        "to_addr": "B2Alice2",
+                        "value": "0"
+                    }]
+                }
+            ]             
+        }]        
+    }],
+    "block3":[{
+        "transactions":[{
+            "transaction1":[
+                {
+                    "inputs":[{
+                                    
+                    }],    
+                    "outputs":[{
+                        "to_addr": "B3Alice1",
+                        "value": "0"                            
+                    },{
+                        "to_addr": "Bob",
+                        "value": "1"                            
+                    }]    
+                }
+            ],              
+            "transaction2":[
+                {
+                "inputs":[{                                                               
+                    }],
+                    "outputs":[{
+                        "to_addr": "B3Alice2",
+                        "value": "0"
+                    }]
+                }
+            ]             
+        }]        
+    }] 
+ }]        
+}

@@ -36,6 +36,7 @@ members = [
 
 [dependencies]
 utils = { path = "./utils" }
+concat-string = "1.0.1"
 # json output
 json = "0.12.4"
 # doc-cfg = { version = "0.1" }
