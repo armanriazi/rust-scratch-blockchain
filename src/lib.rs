@@ -95,6 +95,7 @@ pub enum CustomError {
     StringParse(std::string::ParseError),
     SerdeJson(serde_json::Error),
     IO(std::io::Error),
+    BlockchainFactory,
     Other,
 }
 
@@ -106,6 +107,7 @@ impl fmt::Display for CustomError {
             CustomError::StringParse(ref cause) => write!(f, "StringParse Error: {}", cause),
             CustomError::SerdeJson(ref cause) => write!(f, "SerdeJson Error: {}", cause),
             CustomError::IO(ref cause) => write!(f, "IO Error: {}", cause),
+            CustomError::BlockchainFactory => write!(f, "BlockchainFactory error!"),
             CustomError::Other => write!(f, "Unknown error!"),
         }
     }
@@ -116,6 +118,7 @@ impl std::error::Error for CustomError{
             CustomError::StringParse(ref cause) => Some(cause),
             CustomError::SerdeJson(ref cause) => Some(cause),
             CustomError::IO(ref cause) => Some(cause),
+            CustomError::BlockchainFactory => None,
             CustomError::Other => None,
         }
     }

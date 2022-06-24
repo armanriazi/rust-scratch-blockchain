@@ -1,0 +1,45 @@
+{
+    "blocks":[{    
+        "block1":[{
+            "transactions":[{
+                "transaction1":[
+                    {
+                            "inputs":[{
+                                            
+                            }],    
+                            "outputs":[{
+                                "to_addr": "Alice",
+                                "value": "45"                           
+                            },{
+                                "to_addr": "Bob",
+                                "value": "1"                                         
+                            }]    
+                        }
+                ]                          
+            }]                 
+        }],
+        "block2":[{
+            "transactions":[{
+                "transaction1":[
+                    {
+                            "inputs":[{
+                                "to_addr": "Alice",
+                                "value": "45"                           
+                            },{
+                                "to_addr": "Bob",
+                                "value": "1"                           
+                            }],    
+                            "outputs":[{   
+                                "to_addr": "Alice",
+                                "value": "45"                           
+                            },{
+                                "to_addr": "Bob",
+                                "value": "1"                                                              
+                            }]    
+                        }
+                ]                          
+            }]                 
+        }]       
+     }] 
+    }
+    
