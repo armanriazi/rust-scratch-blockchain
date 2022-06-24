@@ -71,17 +71,7 @@
                         "value": "1"                            
                     }]    
                 }
-            ],              
-            "transaction2":[
-                {
-                "inputs":[{                                                               
-                    }],
-                    "outputs":[{
-                        "to_addr": "B3Alice2",
-                        "value": "0"
-                    }]
-                }
-            ]             
+            ]
         }]        
     }] 
  }]        

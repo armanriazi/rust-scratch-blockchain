@@ -41,16 +41,12 @@ for i in 0..values_blocks_found_len{
     for block in block_map{
         let mut maked_transaction:Vec<OptionTransaction> = vec![];  
         println!("**block:**\n{:?}\n",&block);
-        let transctions_map=block.1.as_array().unwrap();   
-        let values_transactions_found_len=block.1.to_string().find("transaction").unwrap()-1;
-        for j in 1..values_blocks_found_len{
-            println!("**j:**{:?}\n",&j);
-            let transaction_str=concat_string!("transaction",&j.to_string());
-            let transaction_map0=&transctions_map[0]["transactions"].clone();
-            let transaction_map1=&(transaction_map0[0].as_object().unwrap()).get_key_value(&transaction_str).unwrap();               
-            println!("**maked transactions:**\n{:?}\n\n",transaction_split(&transaction_map1.1).unwrap());      
-            &maked_transaction.push(transaction_split(&transaction_map1.1).unwrap());            
-        }        
+        let y=block.1;
+        let transactions_map:Vec<serde_json::Value>=block.1.as_array().unwrap().to_vec();    
+        let temp_map_for_getting_len=&transactions_map[0]["transactions"].clone();
+        let values_transactions_found_len=(temp_map_for_getting_len[0].as_object().unwrap()).len();                      
+        
+        let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(transactions_map,values_transactions_found_len).unwrap();
         let new_block:Block=making_blocks(i as u32,maked_transaction,difficulty).unwrap();
         println!("**new_block:**\n{:?}\n\n",&new_block);
         
@@ -144,10 +140,24 @@ fn transaction_split( trx:&serde_json::Value) -> Result<OptionTransaction,Custom
                     }
                 }                                 
         new_transaction= Transaction::new(trx_inputs_model_vec,trx_outputs_model_vec);
-        return Ok(new_transaction);
-        println!("\n\n**Complete transactions:**\n{:?}\n\n",&new_transaction);                 
+        
+        return Ok(new_transaction);                   
       }                       
       return Err(CustomError::Other) ;      
 }
+
+fn fetch_raw_block_transactions(transctions_map:Vec<serde_json::Value>,values_transactions_found_len:usize) -> Result<Vec<OptionTransaction>,CustomError>{
+    
+    let mut maked_transaction:Vec<OptionTransaction> = vec![];  
+    println!("**j:**{:?}\n",&values_transactions_found_len);
+    for j in 1..values_transactions_found_len+1{       
+        let transaction_str=concat_string!("transaction",j.to_string());
+        let transaction_map0=&transctions_map[0]["transactions"].clone();
+        let transaction_map1=&(transaction_map0[0].as_object().unwrap()).get_key_value(&transaction_str).unwrap();               
+        println!("**maked transactions:**\n{:?}\n\n",transaction_split(&transaction_map1.1).unwrap());      
+        let _=&maked_transaction.push(transaction_split(&transaction_map1.1).unwrap());            
+    } 
+    Ok(maked_transaction)
+ }
 }
 
