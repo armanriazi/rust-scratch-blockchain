@@ -210,3 +210,83 @@ pub fn var_ret_difficulty(difficulty_arg:&str)-> String{
       }
     }  
 }
+
+
+fn making_blocks(trx:&Vec<OptionTransaction>, difficulty:u128) -> Block {
+
+    let mut blockchain = Blockchain::new();
+    let making_transactions_block:Vec<OptionTransaction>= vec![Transaction::default()];   
+    let mut maked_block = Block::new(0, now(), vec![0; 32], making_transactions_block, difficulty);
+    maked_block.mine();
+    println!("**Mined block :**\n{:?}\n\n",&maked_block); 
+
+    maked_block
+}
+
+pub fn transaction_split( trx:&serde_json::Value) -> Result<OptionTransaction,CustomError>{
+
+    let mut trx_inputs_model_vec :Vec<ModelValue> = vec![];  
+    let mut new_transaction:OptionTransaction;
+
+    if trx.is_null(){        
+        return Err(CustomError::Other)
+    }
+        let trx_inputs=(trx[0].as_object().unwrap()).get("inputs").unwrap();                
+                        
+        if !(trx_inputs.is_null()) && !(trx_inputs.as_array().is_none()){                    
+            let trx_inputs_vec=trx_inputs.as_array().unwrap();                    
+            
+
+            for item_internal_inputs in trx_inputs_vec {                                                              
+                let mut trx_inputs_model:ModelValue=ModelValue{
+                    to_addr: String::from(""),
+                    value: 0,
+                };
+                
+                if !item_internal_inputs.is_null(){
+                
+                    if !(item_internal_inputs["value"].is_null() && item_internal_inputs["to_addr"].is_null()){                      
+                            trx_inputs_model= ModelValue{
+                                to_addr:item_internal_inputs["to_addr"].as_str().unwrap().to_owned(),
+                                value:item_internal_inputs["value"].as_str().unwrap().parse::<u64>().unwrap()
+                            };
+                            trx_inputs_model_vec.push(trx_inputs_model);                                       
+                    }
+                    
+              }
+            }                    
+        }
+                       
+        let mut trx_outputs_model_vec :Vec<ModelValue> = vec![];  
+        let trx_outputs=(trx[0].as_object().unwrap()).get("outputs").unwrap();                
+                        
+        if !(trx_outputs.is_null()) && !(trx_outputs.as_array().is_none()){                    
+            let trx_outputs_vec=trx_outputs.as_array().unwrap();                    
+            
+
+            for item_internal_outputs in trx_outputs_vec {                                                              
+                let mut trx_outputs_model:ModelValue=ModelValue{
+                    to_addr: String::from(""),
+                    value: 0,
+                };
+                
+                if !item_internal_outputs.is_null(){
+                
+                    if !(item_internal_outputs["value"].is_null() && item_internal_outputs["to_addr"].is_null()){                      
+                            trx_outputs_model= ModelValue{
+                                to_addr:item_internal_outputs["to_addr"].as_str().unwrap().to_owned(),
+                                value:item_internal_outputs["value"].as_str().unwrap().parse::<u64>().unwrap()
+                            };
+                            trx_outputs_model_vec.push(trx_outputs_model);                                        
+                    }
+                    
+            }
+        }
+                                                
+        new_transaction= Transaction::new(trx_inputs_model_vec,trx_outputs_model_vec);
+        return Ok(new_transaction);
+        println!("\n\n**Complete transactions:**\n{:?}\n\n",&new_transaction);                 
+      }                       
+      Err(CustomError::Other)        
+}
+
