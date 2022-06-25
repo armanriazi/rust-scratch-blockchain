@@ -1,3 +1,4 @@
+use crate::transaction::OptionTransaction;
 use crate::transaction::Put;
 use crate::transaction::IO as IO;
 use crate::transaction::IOH as IOH;
@@ -24,6 +25,7 @@ pub struct Blockchain {
 }
 
 impl Default for Blockchain{
+    
     fn default () -> Self {
         Blockchain {
             blocks: vec![],

@@ -15,17 +15,33 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value,CustomErro
                                                     
                                     }],    
                                     "outputs":[{
-                                        "to_addr": "Alex",
-                                        "value": "0"                           
-                                    },{
                                         "to_addr": "Alice",
-                                        "value": "47"                           
+                                        "value": "50"                           
                                     },{
                                         "to_addr": "Bob",
-                                        "value": "3"                                         
+                                        "value": "10"                                         
                                     }]    
                                 }
-                        ]                          
+                        ] ,
+                        "transaction2":[
+                            {
+                                    "inputs":[{                                                              
+                                    },{
+                                        "to_addr": "Alice",
+                                        "value": "50"                           
+                                    },{
+                                        "to_addr": "Bob",
+                                        "value": "10"                            
+                                    }],    
+                                    "outputs":[{       
+                                        "to_addr": "Alice",
+                                        "value": "48"                           
+                                    },{
+                                        "to_addr": "Bob",
+                                        "value": "3"                                                          
+                                    }]    
+                                }
+                        ]                             
                     }]                 
                 }]     
              }] 

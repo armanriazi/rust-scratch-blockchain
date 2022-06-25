@@ -20,7 +20,28 @@
                         }
                 ]                          
             }]                 
-        }]     
+        }]  ,  
+        "block2":[{
+            "transactions":[{
+                "transaction1":[
+                    {
+                            "inputs":[{
+                                "to_addr": "Alex",
+                                "value": "0"                           
+                            },{
+                                "to_addr": "Alice",
+                                "value": "47"                           
+                            },{
+                                "to_addr": "Bob",
+                                "value": "3"          
+                            }],    
+                            "outputs":[{
+                                                      
+                            }]    
+                        }
+                ]                          
+            }]                 
+        }]    
      }] 
     }
     

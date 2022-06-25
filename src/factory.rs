@@ -1,4 +1,8 @@
 
+use std::io::Read;
+use std::rc::Rc;
+use std::cell::RefCell;
+
 use super::*;
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use library_blockchain::{*};
@@ -8,24 +12,12 @@ use library_blockchain::{*};
 #[allow(dead_code)]
 #[allow(unused_mut)]
 pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<Blockchain,CustomError>
-                      where   
-                      F: FnOnce()->  Result<serde_json::Value,CustomError>     
-{    
+    where   
+    F: FnOnce()->  Result<serde_json::Value,CustomError>    
+{
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
-    let mut blockchain = Blockchain::new();
-    let mined_block_vec=sample_trx_json_default_fetch(difficulty,serde_values_transactions).unwrap();
-    if mined_block_vec.len()<1{
-        return Err(CustomError::BlockchainFactory)
-    }
-    for block in mined_block_vec{
-        blockchain.update_with_block(block).expect("\n\nFailed to add block");
-    }
-    Ok(blockchain)
-}
-fn sample_trx_json_default_fetch(difficulty:u128,serde_values_transactions:serde_json::Value) -> Result<Vec<Block>,CustomError>
-{       
     let blocks_val:serde_json::Value=serde_values_transactions["blocks"].clone();   
-
+    let mut blockchain=Blockchain::new();
     let len_blocks_map=blocks_val[0].as_object().unwrap();       
     let values_blocks_found_len=len_blocks_map.len();   
     if blocks_val.to_string().find("block")==None || values_blocks_found_len< 1usize{
@@ -34,8 +26,17 @@ fn sample_trx_json_default_fetch(difficulty:u128,serde_values_transactions:serde
     //let values_blocks_found_len=blocks_val.to_string().find("block").unwrap();
     let mut transactions:Vec<OptionTransaction> = vec![];  
     let mut values_transactions_found:Vec<String>=vec![];
-    let mut blocks:Vec<Block>=vec![];
-    
+    //let mut blocks:Vec<Block>=vec![];
+    //---Genesis Block
+    let trx_genesis= Transaction::default();        
+    let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![trx_genesis], difficulty);    
+    genesis_block.mine();
+
+    let mut last_hash_u8 = genesis_block.hash.clone();
+    //let mut last_hash:&Box<[u8]>=&last_hash_u8.into_boxed_slice();
+    let  mut last_hash = last_hash_u8.into_boxed_slice();
+   // println!("**last hash genesis:**\n{:?}\n",&last_hash);
+    //---
     println!("**Len block:**\n{:?}\n",values_blocks_found_len);
 
     for i in 0..values_blocks_found_len{
@@ -55,28 +56,41 @@ fn sample_trx_json_default_fetch(difficulty:u128,serde_values_transactions:serde
             let values_transactions_found_len=(temp_map_for_getting_len[0].as_object().unwrap()).len();                      
             
             let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(transactions_map,values_transactions_found_len).unwrap();
-            let new_block:Block=making_blocks(i as u32,maked_transaction,difficulty).unwrap();
-            println!("**new_block:**\n{:?}\n\n",&new_block);
-            let _= &blocks.push(new_block);
+            //println!("**last hash:**\n{:?}\n",&last_hash);
+            if maked_transaction.len()==0 {
+                return Err(CustomError::BlockchainFactory)
+            }       
+            //-------------Making Block
+            //let mut maked_block = Block::new(i as u32, now(), last_hash.to_vec(), maked_transaction, difficulty);                     
+            let mut base_maked_block: Rc<RefCell<Block>> = Rc::new(RefCell::new(
+                Block::new(i as u32, now(), last_hash.to_vec(), maked_transaction, difficulty)
+            ));
+            
+            let mut refered1_base_maked_block=base_maked_block.borrow_mut();
+            
+            refered1_base_maked_block.mine();
+
+            let refered1_block=Block::new(
+                refered1_base_maked_block.index,
+                refered1_base_maked_block.timestamp,                
+                refered1_base_maked_block.prev_block_hash,                
+                refered1_base_maked_block.option_transactions,
+                refered1_base_maked_block.difficulty
+            );
+            let b=*refered1_base_maked_block;
+            blockchain.update_with_block(b).expect("\n\nFailed to add genesis block");    
+            
+            let refered2_base_maked_block=base_maked_block.borrow();
+            
+            last_hash =refered2_base_maked_block.prev_block_hash.to_vec().into_boxed_slice();
+            
+            println!("**last hash new:**\n{:?}\n",&last_hash);
         }
-        //println!("***block_map:***\n{:?}\n\n",block_map);          
-        //let values_transactions_found_len=transactions_val.to_string().find("transaction").unwrap();
-        //println!("values_transactions_found_len:{:?}",values_transactions_found_len);        
+           
     }   
-    Ok(blocks) 
+    Ok(blockchain) 
 }          
  
-fn making_blocks(index:u32,maked_trx_vec:Vec<OptionTransaction>, difficulty:u128) -> Result<Block,CustomError>{
-    
-    if maked_trx_vec.len()==0 {
-        return Err(CustomError::BlockchainFactory)
-    }
-
-    let mut maked_block = Block::new(index, now(), vec![0; 32], maked_trx_vec, difficulty);
-    maked_block.mine();    
-
-    Ok(maked_block)
-}
 
 fn transaction_split( trx:&serde_json::Value) -> Result<OptionTransaction,CustomError>{
 

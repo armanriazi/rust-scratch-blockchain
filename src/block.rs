@@ -58,6 +58,7 @@ impl Block {
             difficulty,
         }
     }
+
 /// 0xfff... lowest difficulty 
 /// </br>
 /// 0x000... => highest difficulty => taking more time=> more highest nonce=> the end of blockhash view see more zero so nonce 0 means end of of blockchash there isn'nt any zero

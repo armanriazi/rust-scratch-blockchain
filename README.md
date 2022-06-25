@@ -318,6 +318,23 @@ Atomic types may be stored in static variables, initialized using the constant i
 #### - [✗] Unsafe•Extern•Mangling(future work)
 	> Mangling is when a compiler changes the name we’ve given a function to a different name that contains more information for other parts of the compilation process to consume but is less human readable. Every programming language compiler mangles names slightly differently, so for a Rust function to be nameable by other languages, we must disable the Rust compiler’s name mangling.
 
+
+#### - [✓] Interior•Mutability•Pattern
+RefCell<T>: Lets us have many immutable borrows or one mutable borrow at any point in time.
+Mutating the value inside an immutable value is the interior mutability pattern.
+Interior mutability is a design pattern in Rust that allows you to mutate data even when there are immutable references to that data; normally, this action is disallowed by the borrowing rules. To mutate data, the pattern uses unsafe code inside a data structure to bend Rust’s usual rules that govern mutation and borrowing. 
+RefCell<T> type that follows the interior mutability pattern.
+Unlike Rc<T>, the RefCell<T> type represents single ownership over the data it holds. So, what makes RefCell<T> different from a type like Box<T>? Recall the borrowing rules,
+Similar to Rc<T>, RefCell<T> is only for use in single-threaded scenarios and will give you a compile-time error if you try using it in a multithreaded context.
+At any given time, you can have either (but not both of) one mutable reference or any number of immutable references.References must always be valid.
+
+#### - [✗] OOP•State•DesignPattern(future work)
+	-> We can used it for smart contracts so we will need to implemented smart contracts
+   > Using the state pattern means when the business requirements of the program change, we won’t need to change the code of the value holding the state or the code that uses the value. We’ll only need to update the code inside one of the state objects to change its rules or perhaps add more state objects.
+
+> e.g Post type. This type will use the state pattern and will hold a value that will be one of three state objects representing the various states a post can be in—draft, waiting for review, or published. Changing from one state to another will be managed internally within the Post type. The states change in response to the methods called by our library’s users on the Post instance, but they don’t have to manage the state changes directly. Also, users can’t make a mistake with the states, like publishing a post before it’s reviewed.
+
+
 #### - [✗] Superpower(future work)
    >if the Rust compiler doesn’t have enough information to be confident, it will reject the code. In these cases,
 you can use unsafe code to tell the compiler, “Trust me, I know what I’m doing.” The downside is that you use it at your own risk: 
@@ -355,11 +372,3 @@ nom is the fruit of the work of many contributors over the years, many thanks fo
 <a href="https://github.com/geal/nom/graphs/contributors">
   Contributors
 </a>
-  
-#### - [✗] OOP•State•DesignPattern(future work)
-	-> We can used it for smart contracts so we will need to implemented smart contracts
-   > Using the state pattern means when the business requirements of the program change, we won’t need to change the code of the value holding the state or the code that uses the value. We’ll only need to update the code inside one of the state objects to change its rules or perhaps add more state objects.
-
-> e.g Post type. This type will use the state pattern and will hold a value that will be one of three state objects representing the various states a post can be in—draft, waiting for review, or published. Changing from one state to another will be managed internally within the Post type. The states change in response to the methods called by our library’s users on the Post instance, but they don’t have to manage the state changes directly. Also, users can’t make a mistake with the states, like publishing a post before it’s reviewed.
-
-
