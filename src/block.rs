@@ -6,7 +6,7 @@ use std::fmt::{ self, Debug, Formatter };
 
 
 use crate::transaction::OptionTransaction;
-
+use std::cell::RefMut;
 use super::*;
 
 
@@ -23,6 +23,7 @@ use super::*;
 /// Inputs: unused outputs from prev TRXs, Outputs: new outouts That can be used in future TRXs.
 /// </br></br>
 /// OverSpending: Sum(inputs)>=Sum(Outputs). I can't input 5 coins and be able to output 7. (on other hand inputs have to be greater since must be enough fee in input section for paying to miner.)
+
 pub struct Block {
     pub index: u32,
     pub timestamp: u128,
@@ -32,6 +33,8 @@ pub struct Block {
     pub option_transactions: Vec<OptionTransaction>,
     pub difficulty: u128, 
 }
+
+
 
 impl Debug for Block {
     fn fmt (&self, f: &mut Formatter) -> fmt::Result {
@@ -47,17 +50,18 @@ impl Debug for Block {
 
 
 impl Block {
-    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: Vec<OptionTransaction>, difficulty: u128) -> Self {
+    pub fn new (index: u32, timestamp: u128,  current_block_hash: Hash, prev_block_hash: Hash, option_transactions: Vec<OptionTransaction>, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
-            hash: vec![0; 32], 
+            hash: current_block_hash, 
             prev_block_hash,
             nonce: 0,
             option_transactions,
             difficulty,
         }
-    }
+}
+
 
 /// 0xfff... lowest difficulty 
 /// </br>
@@ -68,7 +72,7 @@ impl Block {
 /// mining sterategy: 
 /// </br>
 /// 1.Generate nonce 2.Hash bytes 3.Check hash against difficulty(Insufficant? Go Step1 and Sufficient Go Step 4) 4. Add block to chain 5. Submit to peers
-    pub fn mine (&mut self) {
+    pub fn mine (&mut self) -> Result<Hash,CustomError>{
       
         for nonce_attempt in 0..(u64::max_value()) {
             self.nonce = nonce_attempt;
@@ -77,9 +81,11 @@ impl Block {
             if check_difficulty(&hash, self.difficulty) {
                 self.hash = hash;
                 
-                return;
+               break;
             }
+            
         }
+        Ok(self.hash.clone())
     }
 }
 

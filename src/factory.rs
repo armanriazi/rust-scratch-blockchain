@@ -29,7 +29,7 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<Blockchain,Custom
     //let mut blocks:Vec<Block>=vec![];
     //---Genesis Block
     let trx_genesis= Transaction::default();        
-    let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![trx_genesis], difficulty);    
+    let mut genesis_block = Block::new(0, now(),vec![0; 32],vec![0; 32], vec![trx_genesis], difficulty);    
     genesis_block.mine();
 
     let mut last_hash_u8 = genesis_block.hash.clone();
@@ -49,8 +49,7 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<Blockchain,Custom
     
         for block in block_map{
             let mut maked_transaction:Vec<OptionTransaction> = vec![];  
-            println!("**block:**\n{:?}\n",&block);
-            let y=block.1;
+            println!("**block:**\n{:?}\n",&block);            
             let transactions_map:Vec<serde_json::Value>=block.1.as_array().unwrap().to_vec();    
             let temp_map_for_getting_len=&transactions_map[0]["transactions"].clone();
             let values_transactions_found_len=(temp_map_for_getting_len[0].as_object().unwrap()).len();                      
@@ -61,29 +60,40 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<Blockchain,Custom
                 return Err(CustomError::BlockchainFactory)
             }       
             //-------------Making Block
-            //let mut maked_block = Block::new(i as u32, now(), last_hash.to_vec(), maked_transaction, difficulty);                     
-            let mut base_maked_block: Rc<RefCell<Block>> = Rc::new(RefCell::new(
-                Block::new(i as u32, now(), last_hash.to_vec(), maked_transaction, difficulty)
-            ));
+            let mut maked_block = Block::new(i as u32, now(), last_hash.to_vec(),last_hash.to_vec(), maked_transaction, difficulty);                     
             
-            let mut refered1_base_maked_block=base_maked_block.borrow_mut();
+            blockchain.update_with_block(maked_block).expect("\n\nFailed to add genesis block");                            
+            let mut v:Vec<Block>=vec![];      
+            let t=now();      
+            v.push(Block::new(i as u32, t, last_hash.to_vec(),last_hash.to_vec(), maked_transaction, difficulty));
+            v.push(Block::new(i as u32,t, last_hash.to_vec(),last_hash.to_vec(), maked_transaction, difficulty));
             
-            refered1_base_maked_block.mine();
+            let mut r1:RefCell<Block>=RefCell::new(v[0]);      
+            let mut r2:RefCell<Block>=RefCell::new(v[1]);      
+            
+            let mut vec:Vec<RefCell<Block>>=vec![];      
+            vec.push(r1);
+            vec.push(r2);
 
-            let refered1_block=Block::new(
-                refered1_base_maked_block.index,
-                refered1_base_maked_block.timestamp,                
-                refered1_base_maked_block.prev_block_hash,                
-                refered1_base_maked_block.option_transactions,
-                refered1_base_maked_block.difficulty
-            );
-            let b=*refered1_base_maked_block;
-            blockchain.update_with_block(b).expect("\n\nFailed to add genesis block");    
+            let mut base_maked_block: Rc<Vec<RefCell<Block>>> = Rc::new(vec);
             
-            let refered2_base_maked_block=base_maked_block.borrow();
+            let mut refered1_base_maked_block=base_maked_block[0].borrow_mut();
+            let mut refered2_base_maked_block=base_maked_block[1].borrow_mut();
+            let refered1_base__hash=refered1_base_maked_block.mine().unwrap();
+
+
+            let refered1_base_maked_mined:Block=refered1_base_maked_block;
+            blockchain.update_with_block(refered1_base_maked_mined).expect("\n\nFailed to add genesis block");    
+            
+            let refered2_base_maked_block_0=base_maked_block[0].borrow();
+            let refered2_base_maked_block_1=base_maked_block[1].borrow();
             
             last_hash =refered2_base_maked_block.prev_block_hash.to_vec().into_boxed_slice();
             
+            println!("**last hash new:**\n{:?}\n",&last_hash);
+            //
+            let mined_last_hash=Vec::from_iter(maked_block.mine().unwrap().into_iter()).into_boxed_slice();            
+        
             println!("**last hash new:**\n{:?}\n",&last_hash);
         }
            

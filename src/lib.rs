@@ -1,3 +1,5 @@
+#![recursion_limit="5000000"]
+
 mod block;
 pub use crate::block::Block;
 mod hashable;
