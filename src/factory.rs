@@ -6,67 +6,81 @@ use std::cell::RefCell;
 use super::*;
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use library_blockchain::{*};
+use serde_json::Value;
 
 #[allow(dead_code)]
 #[allow(unused_mut)]
 #[allow(dead_code)]
 #[allow(unused_mut)]
-pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<Blockchain,CustomError>
+pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
     where   
     F: FnOnce()->  Result<serde_json::Value,CustomError>    
 {
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
     let blocks_val:serde_json::Value=serde_values_transactions["blocks"].clone();   
     let mut blockchain=Blockchain::new();
-    let len_blocks_map=blocks_val[0].as_object().unwrap();       
-    let values_blocks_found_len=len_blocks_map.len()+1;   
-    if blocks_val.to_string().find("block")==None || values_blocks_found_len< 1usize{
-        return Err(CustomError::BlockchainFactory)
-    }
-    //let values_blocks_found_len=blocks_val.to_string().find("block").unwrap();
-    let mut transactions:Vec<OptionTransaction> = vec![];  
-    let mut values_transactions_found:Vec<String>=vec![];
-    let mut prev_hash:Box<[u8]> =Box::default();
-    //---
-    println!("**Len block:**\n{:?}\n",values_blocks_found_len);
+    //let blocks_val_0=blocks_val[0].as_object().unwrap(); 
+   // let len_blocks_map=blocks_val_0.len();       // Or :blocks_val_0.into_iter().count();
+    //let values_blocks_found_len=len_blocks_map+1;   
+    // if blocks_val.to_string().find("block")==None || values_blocks_found_len< 1usize{
+    //     return Err(CustomError::BlockchainFactory)
+    // }
+    // //let values_blocks_found_len=blocks_val.to_string().find("block").unwrap();
+    // let mut transactions:Vec<OptionTransaction> = vec![];  
+    // let mut values_transactions_found:Vec<String>=vec![];
+    // let mut prev_hash:Box<[u8]> =Box::default();
+    // //---
+    // println!("**Len block:**\n{:?}\n",values_blocks_found_len-1);    
+        
+        //println!("**blocks_map:**\n{:?}\n",i);
+        //let block=blocks_map.get_key_value(&block_str).unwrap();                
+        //if(blocks_map.get(&block_str).contains(&block_str).to_string()==Some(&block_str){
 
-    for i in 1..values_blocks_found_len{
-        println!("\n**iiiiiiiii:**{:?}\n",&i);
-        let iblock:String=concat_string!("block",String::from((&i).to_string()).as_str());
-        let blocks_map=blocks_val[0].as_object().unwrap();   
-        let block_str=concat_string!("block",(&i).to_string());
-        let block_map=blocks_map.get_key_value(&block_str);                
-
-        for block in block_map{
-            let mut maked_transaction:Vec<OptionTransaction> = vec![];  
-            println!("**block:**\n{:?}\n",&block);            
-            let transactions_map:Vec<serde_json::Value>=block.1.as_array().unwrap().to_vec();    
-            let temp_map_for_getting_len=&transactions_map[0]["transactions"].clone();
-            let values_transactions_found_len=(temp_map_for_getting_len[0].as_object().unwrap()).len();                      
+            blocks_val[0].as_object().unwrap().into_iter().enumerate().for_each(|(i, block)| {
+ 
+            //let transactions_map:Vec<serde_json::Value>=block[i];    
+            //let transactions_map=block[i].as_array().unwrap().get(0).clone().unwrap();
+            //println!("{:?}\n",block);
             
-            let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(transactions_map,values_transactions_found_len).unwrap();            
-            if maked_transaction.len()==0 {
-                return Err(CustomError::BlockchainFactory)
-            }       
-            //-------------Making Block      
-            
-            if i==1{
-                let trx_genesis= Transaction::default(); 
-                let mut genesis_block = Block::new(0, now(),vec![0; 32], vec![trx_genesis], difficulty);    
-                prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
-                let _=&blockchain.update_with_block(genesis_block);                
-            }
-            else if i as i32>1_i32{
-                let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), maked_transaction, difficulty);                                     
-                prev_hash=maked_block.mine().unwrap().into_boxed_slice();
-                let _=&blockchain.update_with_block(maked_block);
-                //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                
-            }                                                
+            block.1.as_array().unwrap().into_iter().enumerate().for_each(|(j, trxs)| {
+             
+             let transactions=trxs.get("transactions").unwrap();
+             let obg_trx=transactions.as_array().unwrap();             
+             let yy=(obg_trx[0].as_object().unwrap()).get("transaction1").unwrap();    
+             //obg_trx.into_iter().enumerate().for_each(|(j, trx)| {
+             println!("\n-------------{:?}\n",yy);
+             //});
+             //  qq.to_owned().get("transaction1").unwrap().as_array().unwrap().into_iter().enumerate().for_each(|(j, trx)| {
+            //     println!("\n-------------{:?}\n",trx);
+            //  });
 
-        }        
-      
-    }     
-    Ok(blockchain) 
+            
+                     
+                //trxs.as_object().unwrap().into_iter().enumerate().for_each(|(k, trx)| {
+                    //println!("{:?}\n",transactions);
+                
+            });
+            // let values_transactions_found_len=(temp_map_for_getting_len[0].as_object().unwrap()).len();                      
+            
+            // let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(transactions_map,values_transactions_found_len).unwrap();            
+            // if maked_transaction.len()==0 {
+            //     return Err(CustomError::BlockchainFactory)
+            // }       
+    
+            // if i==1{
+            //     let mut genesis_block = Block::new(0, now(),vec![0; 32], maked_transaction, difficulty);    
+            //     prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
+            //     let _=&blockchain.update_with_block(genesis_block);                
+            // }
+            // else if i >1{
+            //     let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), maked_transaction, difficulty);                                     
+            //     prev_hash=maked_block.mine().unwrap().into_boxed_slice();
+            //     let _=&blockchain.update_with_block(maked_block);
+            //     //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                
+            // }     
+        });
+                                         
+    Ok(()) 
 }          
  
 

@@ -114,9 +114,9 @@ impl Blockchain {
             self.unspent_outputs.retain(|output| !block_spent.contains(output));
             self.unspent_outputs.extend(block_created);
         }
-
+        println!("**Maked Blockchain:**\n{:?}\n",&block);
         self.blocks.push(block);
-
+        
         Ok(())
     }
 }

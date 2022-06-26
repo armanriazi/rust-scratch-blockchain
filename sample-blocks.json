@@ -5,7 +5,8 @@
                 "transaction1":[
                     {
                             "inputs":[{
-                                            
+                                "to_addr": "5",
+                                "value": "6"         
                             }],    
                             "outputs":[{
                                 "to_addr": "Alex",
@@ -18,7 +19,25 @@
                                 "value": "3"                                         
                             }]    
                         }
-                ]                          
+                ]   ,
+                "transaction2":[
+                    {
+                            "inputs":[{
+                                "to_addr": "",
+                                "value": ""         
+                            }],    
+                            "outputs":[{
+                                "to_addr": "Alex",
+                                "value": "0"                           
+                            },{
+                                "to_addr": "Alice",
+                                "value": "0"                           
+                            },{
+                                "to_addr": "Bob",
+                                "value": "0"                                         
+                            }]    
+                        }
+                ]                              
             }]                 
         }]  ,  
         "block2":[{
