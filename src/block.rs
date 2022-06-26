@@ -3,10 +3,7 @@
 //#![feature(doc_cfg)]
 
 use std::fmt::{ self, Debug, Formatter };
-
-
 use crate::transaction::OptionTransaction;
-use std::cell::RefMut;
 use super::*;
 
 
@@ -38,7 +35,8 @@ pub struct Block {
 
 impl Debug for Block {
     fn fmt (&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "Block[{}]: {} at: {} trx.len: {} nonce: {}",
+        write!(f, "Prev hash of {} the Block[{}]: {} at: {} trx.len: {} nonce: {}",
+            &hex::encode(&self.prev_block_hash),
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
@@ -50,11 +48,11 @@ impl Debug for Block {
 
 
 impl Block {
-    pub fn new (index: u32, timestamp: u128,  current_block_hash: Hash, prev_block_hash: Hash, option_transactions: Vec<OptionTransaction>, difficulty: u128) -> Self {
+    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: Vec<OptionTransaction>, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
-            hash: current_block_hash, 
+            hash: vec![0; 32], 
             prev_block_hash,
             nonce: 0,
             option_transactions,

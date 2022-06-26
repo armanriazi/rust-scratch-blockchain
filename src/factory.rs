@@ -19,34 +19,24 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<Blockchain,Custom
     let blocks_val:serde_json::Value=serde_values_transactions["blocks"].clone();   
     let mut blockchain=Blockchain::new();
     let len_blocks_map=blocks_val[0].as_object().unwrap();       
-    let values_blocks_found_len=len_blocks_map.len();   
+    let values_blocks_found_len=len_blocks_map.len()+1;   
     if blocks_val.to_string().find("block")==None || values_blocks_found_len< 1usize{
         return Err(CustomError::BlockchainFactory)
     }
     //let values_blocks_found_len=blocks_val.to_string().find("block").unwrap();
     let mut transactions:Vec<OptionTransaction> = vec![];  
     let mut values_transactions_found:Vec<String>=vec![];
-    //let mut blocks:Vec<Block>=vec![];
-    //---Genesis Block
-    let trx_genesis= Transaction::default();        
-    let mut genesis_block = Block::new(0, now(),vec![0; 32],vec![0; 32], vec![trx_genesis], difficulty);    
-    genesis_block.mine();
-
-    let mut last_hash_u8 = genesis_block.hash.clone();
-    //let mut last_hash:&Box<[u8]>=&last_hash_u8.into_boxed_slice();
-    let  mut last_hash = last_hash_u8.into_boxed_slice();
-   // println!("**last hash genesis:**\n{:?}\n",&last_hash);
+    let mut prev_hash:Box<[u8]> =Box::default();
     //---
     println!("**Len block:**\n{:?}\n",values_blocks_found_len);
 
-    for i in 0..values_blocks_found_len{
-        println!("**i:**{:?}\n",&i);
-        let iblock:String=concat_string!("block",String::from((&i+1).to_string()).as_str());
+    for i in 1..values_blocks_found_len{
+        println!("\n**iiiiiiiii:**{:?}\n",&i);
+        let iblock:String=concat_string!("block",String::from((&i).to_string()).as_str());
         let blocks_map=blocks_val[0].as_object().unwrap();   
-        let block_str=concat_string!("block",(&i+1).to_string());
-        let block_map=blocks_map.get_key_value(&block_str);
-         
-    
+        let block_str=concat_string!("block",(&i).to_string());
+        let block_map=blocks_map.get_key_value(&block_str);                
+
         for block in block_map{
             let mut maked_transaction:Vec<OptionTransaction> = vec![];  
             println!("**block:**\n{:?}\n",&block);            
@@ -54,50 +44,28 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<Blockchain,Custom
             let temp_map_for_getting_len=&transactions_map[0]["transactions"].clone();
             let values_transactions_found_len=(temp_map_for_getting_len[0].as_object().unwrap()).len();                      
             
-            let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(transactions_map,values_transactions_found_len).unwrap();
-            //println!("**last hash:**\n{:?}\n",&last_hash);
+            let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(transactions_map,values_transactions_found_len).unwrap();            
             if maked_transaction.len()==0 {
                 return Err(CustomError::BlockchainFactory)
             }       
-            //-------------Making Block
-            let mut maked_block = Block::new(i as u32, now(), last_hash.to_vec(),last_hash.to_vec(), maked_transaction, difficulty);                     
+            //-------------Making Block      
             
-            blockchain.update_with_block(maked_block).expect("\n\nFailed to add genesis block");                            
-            let mut v:Vec<Block>=vec![];      
-            let t=now();      
-            v.push(Block::new(i as u32, t, last_hash.to_vec(),last_hash.to_vec(), maked_transaction, difficulty));
-            v.push(Block::new(i as u32,t, last_hash.to_vec(),last_hash.to_vec(), maked_transaction, difficulty));
-            
-            let mut r1:RefCell<Block>=RefCell::new(v[0]);      
-            let mut r2:RefCell<Block>=RefCell::new(v[1]);      
-            
-            let mut vec:Vec<RefCell<Block>>=vec![];      
-            vec.push(r1);
-            vec.push(r2);
+            if i==1{
+                let trx_genesis= Transaction::default(); 
+                let mut genesis_block = Block::new(0, now(),vec![0; 32], vec![trx_genesis], difficulty);    
+                prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
+                let _=&blockchain.update_with_block(genesis_block);                
+            }
+            else if i as i32>1_i32{
+                let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), maked_transaction, difficulty);                                     
+                prev_hash=maked_block.mine().unwrap().into_boxed_slice();
+                let _=&blockchain.update_with_block(maked_block);
+                //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                
+            }                                                
 
-            let mut base_maked_block: Rc<Vec<RefCell<Block>>> = Rc::new(vec);
-            
-            let mut refered1_base_maked_block=base_maked_block[0].borrow_mut();
-            let mut refered2_base_maked_block=base_maked_block[1].borrow_mut();
-            let refered1_base__hash=refered1_base_maked_block.mine().unwrap();
-
-
-            let refered1_base_maked_mined:Block=refered1_base_maked_block;
-            blockchain.update_with_block(refered1_base_maked_mined).expect("\n\nFailed to add genesis block");    
-            
-            let refered2_base_maked_block_0=base_maked_block[0].borrow();
-            let refered2_base_maked_block_1=base_maked_block[1].borrow();
-            
-            last_hash =refered2_base_maked_block.prev_block_hash.to_vec().into_boxed_slice();
-            
-            println!("**last hash new:**\n{:?}\n",&last_hash);
-            //
-            let mined_last_hash=Vec::from_iter(maked_block.mine().unwrap().into_iter()).into_boxed_slice();            
-        
-            println!("**last hash new:**\n{:?}\n",&last_hash);
-        }
-           
-    }   
+        }        
+      
+    }     
     Ok(blockchain) 
 }          
  

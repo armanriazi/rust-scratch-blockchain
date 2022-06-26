@@ -27,7 +27,7 @@
                     {
                             "inputs":[{
                                 "to_addr": "Alex",
-                                "value": "0"                           
+                                "value": "1000"                           
                             },{
                                 "to_addr": "Alice",
                                 "value": "47"                           
