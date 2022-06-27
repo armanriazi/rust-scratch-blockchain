@@ -19,53 +19,22 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
     let blocks_val:serde_json::Value=serde_values_transactions["blocks"].clone();   
     let mut blockchain=Blockchain::new();
-    //let blocks_val_0=blocks_val[0].as_object().unwrap(); 
-   // let len_blocks_map=blocks_val_0.len();       // Or :blocks_val_0.into_iter().count();
-    //let values_blocks_found_len=len_blocks_map+1;   
-    // if blocks_val.to_string().find("block")==None || values_blocks_found_len< 1usize{
-    //     return Err(CustomError::BlockchainFactory)
-    // }
-    // //let values_blocks_found_len=blocks_val.to_string().find("block").unwrap();
-    // let mut transactions:Vec<OptionTransaction> = vec![];  
-    // let mut values_transactions_found:Vec<String>=vec![];
-    // let mut prev_hash:Box<[u8]> =Box::default();
-    // //---
-    // println!("**Len block:**\n{:?}\n",values_blocks_found_len-1);    
+
+
+    blocks_val[0].as_object().unwrap().into_iter().enumerate().for_each(|(i, block)| {
+
+        //println!("\nBlock {:?}\n",block);
+        block.1.as_array().unwrap().into_iter().enumerate().for_each(|(j, trxs)| {
         
-        //println!("**blocks_map:**\n{:?}\n",i);
-        //let block=blocks_map.get_key_value(&block_str).unwrap();                
-        //if(blocks_map.get(&block_str).contains(&block_str).to_string()==Some(&block_str){
-
-            blocks_val[0].as_object().unwrap().into_iter().enumerate().for_each(|(i, block)| {
- 
-            //let transactions_map:Vec<serde_json::Value>=block[i];    
-            //let transactions_map=block[i].as_array().unwrap().get(0).clone().unwrap();
-            //println!("{:?}\n",block);
-            
-            block.1.as_array().unwrap().into_iter().enumerate().for_each(|(j, trxs)| {
-             
-             let transactions=trxs.get("transactions").unwrap();
-             let obg_trx=transactions.as_array().unwrap();             
-             let yy=(obg_trx[0].as_object().unwrap()).get("transaction1").unwrap();    
-             //obg_trx.into_iter().enumerate().for_each(|(j, trx)| {
-             println!("\n-------------{:?}\n",yy);
-             //});
-             //  qq.to_owned().get("transaction1").unwrap().as_array().unwrap().into_iter().enumerate().for_each(|(j, trx)| {
-            //     println!("\n-------------{:?}\n",trx);
-            //  });
-
-            
-                     
-                //trxs.as_object().unwrap().into_iter().enumerate().for_each(|(k, trx)| {
-                    //println!("{:?}\n",transactions);
-                
-            });
-            // let values_transactions_found_len=(temp_map_for_getting_len[0].as_object().unwrap()).len();                      
-            
-            // let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(transactions_map,values_transactions_found_len).unwrap();            
-            // if maked_transaction.len()==0 {
-            //     return Err(CustomError::BlockchainFactory)
-            // }       
+        let transactions=trxs.get("transactions").unwrap();        
+        let obg_trx=transactions.as_array().unwrap();                             
+        let trx=obg_trx[0].as_object().unwrap();        
+        let length=trx.keys().len()+1;   
+        
+        let maked_transaction:Vec<OptionTransaction>= fetch_raw_block_transactions(trx,length).unwrap();            
+        if maked_transaction.len()==0 {
+            return Err(CustomError::BlockchainFactory)
+        }       
     
             // if i==1{
             //     let mut genesis_block = Block::new(0, now(),vec![0; 32], maked_transaction, difficulty);    
@@ -78,7 +47,8 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
             //     let _=&blockchain.update_with_block(maked_block);
             //     //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                
             // }     
-        });
+      });   
+   });
                                          
     Ok(()) 
 }          
@@ -154,16 +124,24 @@ fn transaction_split( trx:&serde_json::Value) -> Result<OptionTransaction,Custom
 }
 
 fn fetch_raw_block_transactions(transctions_map:Vec<serde_json::Value>,values_transactions_found_len:usize) -> Result<Vec<OptionTransaction>,CustomError>{
-    
-    let mut maked_transaction:Vec<OptionTransaction> = vec![];  
-    println!("**j:**{:?}\n",&values_transactions_found_len);
-    for j in 1..values_transactions_found_len+1{       
-        let transaction_str=concat_string!("transaction",j.to_string());
-        let transaction_map0=&transctions_map[0]["transactions"].clone();
-        let transaction_map1=&(transaction_map0[0].as_object().unwrap()).get_key_value(&transaction_str).unwrap();               
-        println!("**maked transactions:**\n{:?}\n\n",transaction_split(&transaction_map1.1).unwrap());      
-        let _=&maked_transaction.push(transaction_split(&transaction_map1.1).unwrap());            
-    } 
+   
+    for c in 1..length{
+        let trx_name=concat_string!("transaction",c.to_string());
+        let trx=(obg_trx[0].as_object().unwrap()).get(&trx_name).unwrap();
+        println!("\n{:?}\n",trx_name);
+        println!("\n{:?}\n",trx);
+
+        println!("\n--------------------------------------\n");
+    }
+    // let mut maked_transaction:Vec<OptionTransaction> = vec![];  
+    // println!("**j:**{:?}\n",&values_transactions_found_len);
+    // for j in 1..values_transactions_found_len+1{       
+    //     let transaction_str=concat_string!("transaction",j.to_string());
+    //     let transaction_map0=&transctions_map[0]["transactions"].clone();
+    //     let transaction_map1=&(transaction_map0[0].as_object().unwrap()).get_key_value(&transaction_str).unwrap();               
+    //     println!("**maked transactions:**\n{:?}\n\n",transaction_split(&transaction_map1.1).unwrap());      
+    //     let _=&maked_transaction.push(transaction_split(&transaction_map1.1).unwrap());            
+    // } 
     Ok(maked_transaction)
 }
 

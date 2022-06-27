@@ -12,7 +12,6 @@ pub  mod sample;
 #[allow(unused_mut)]
 #[macro_use(concat_string)]
 extern crate concat_string;
-
 fn main() -> Result<(), CustomError> {
     let  difficulty_str=var_ret_difficulty("0x00ffffffffffffffffffffffffffffff"); 
     if difficulty_str.is_empty(){
