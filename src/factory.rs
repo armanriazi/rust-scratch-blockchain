@@ -1,8 +1,6 @@
-
-use std::io::Read;
 use std::rc::Rc;
-use std::cell::RefCell;
-
+use std::cell::{RefCell, Ref, Cell};
+use std::borrow::{BorrowMut, Borrow};
 use super::*;
 use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use library_blockchain::{*};
@@ -19,39 +17,46 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
     let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
     let blocks_val:serde_json::Value=serde_values_transactions["blocks"].clone();   
     let mut blockchain=Blockchain::new();
+    let mut prev_hash:Box<[u8]>=Box::default();
+    let mut maked_transactions_of_a_block:Vec<OptionTransaction>=Vec::new();
 
     blocks_val[0].as_object().unwrap().into_iter().enumerate().for_each(|(i, block)| {
 
-        println!("\nBlock {:?}\n",block);
+        //println!("\nBlock {:?}\n",block);
         block.1.as_array().unwrap().into_iter().enumerate().for_each(|(j, trxs)| {
         
         let transactions=trxs.get("transactions").unwrap();        
         let obg_trx=transactions.as_array().unwrap();                             
         let trx=obg_trx[0].as_object().unwrap();                
         let length=&trx.keys().len()+1;   
-        println!("\n{:?}\n",trx);  
+        //println!("\n{:?}\n",trx);  
 
         for c in 1..length{
             let trx_name=concat_string!("transaction",c.to_string());
             let trx=(transactions[0].as_object().unwrap()).get(&trx_name).unwrap();                
             let puts=transaction_split(trx).unwrap();
-            println!("\n{:?}\n",puts);            
+            maked_transactions_of_a_block.push(puts);
+           //println!("\n{:?}\n",puts);            
         }        
-    
-     
+        
       });   
-           
-    //   if i==1{
-    //         let mut genesis_block = Block::new(0, now(),vec![0; 32], maked_transaction, difficulty);    
-    //         prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
-    //         let _=&blockchain.update_with_block(genesis_block);                
-    //     }
-    //     else if i >1{
-    //         let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), maked_transaction, difficulty);                                     
-    //         prev_hash=maked_block.mine().unwrap().into_boxed_slice();
-    //         let _=&blockchain.update_with_block(maked_block);
-    //         //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                
-    //     }    
+      
+         let rc_maked_transactions_of_a_block= move |maked_transactions_of_a_block|  {Rc::new(Cell::new(
+            maked_transactions_of_a_block
+        ))};
+        //let refcell_trx=rc_maked_transactions_of_a_block;        
+    
+      if i==1{
+            let mut genesis_block = Block::new(0, now(),vec![0; 32], rc_maked_transactions_of_a_block(&maked_transactions_of_a_block).clone(), difficulty);    
+            prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
+            let _=&blockchain.update_with_block(genesis_block);                
+        }
+        else if i >1{
+            let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), rc_maked_transactions_of_a_block(&maked_transactions_of_a_block).clone(), difficulty);                                     
+            prev_hash=maked_block.mine().unwrap().into_boxed_slice();
+            let _=&blockchain.update_with_block(maked_block);
+            //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                
+        }    
    });
                                          
     Ok(()) 

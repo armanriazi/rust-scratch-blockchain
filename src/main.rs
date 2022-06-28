@@ -38,12 +38,12 @@ fn main() -> Result<(), CustomError> {
             blockchain_factory(difficulty,|| sample_trx_json_data_block_from_file(&file)).unwrap(); 
             //println!("\nBlockchain:\n{:?}", &blockchain);   
         }        
-    else if &mode=="module" {           
-            println!("Selected mode is module\n");   
+    else if &mode=="macrojson" {           
+            println!("Selected mode is macrojson\n");   
             blockchain_factory(difficulty,|| sample::sample_trx_json_data_from_module()).unwrap();              
         }
     else{         
-            println!("The mode is not selected! Default is module\n");   
+            println!("The mode is not selected! Default is macrojson\n");   
             blockchain_factory(difficulty,|| sample::sample_trx_json_data_from_module()).unwrap();
     }
     //println!("**Maked Blockchain:**\n{:?}\n",&blockchain.blocks);
