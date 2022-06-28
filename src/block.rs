@@ -27,7 +27,7 @@ pub struct Block {
     pub hash: Hash,
     pub prev_block_hash: Hash,
     pub nonce: u64,
-    pub option_transactions: Rc<Cell<transaction::VecOptionTransaction>>,
+    pub option_transactions: Rc<Cell<Vec<OptionTransaction>>>,
     pub difficulty: u128, 
 }
 
@@ -40,7 +40,7 @@ impl Debug for Block {
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
-            &self.option_transactions.take().vecoptrx.len(),
+            &self.option_transactions.take().len(),
             &self.nonce,
         )
     }
@@ -48,7 +48,7 @@ impl Debug for Block {
 
 
 impl Block {
-    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: Rc<Cell<transaction::VecOptionTransaction>>, difficulty: u128) -> Self {
+    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: Rc<Cell<Vec<OptionTransaction>>>, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
@@ -99,7 +99,7 @@ impl Hashable for Block {
         bytes.extend(&self.prev_block_hash);
         bytes.extend(&u64_bytes(&self.nonce));
         bytes.extend(
-            self.option_transactions.take().vecoptrx
+            self.option_transactions.take()
                 .iter()
                 .flat_map(|transaction| transaction.puts.as_ref().unwrap().bytes())
                 .collect::<Vec<u8>>()

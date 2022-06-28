@@ -63,7 +63,7 @@ impl Blockchain {
             }
         }
 
-        if let Some((coinbase, option_transactions)) =  block.option_transactions.take().vecoptrx.split_first(){
+        if let Some((coinbase, option_transactions)) =  block.option_transactions.take().split_first(){
             if ! coinbase.puts.as_ref().unwrap().is_coinbase() {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
             }
