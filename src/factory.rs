@@ -6,8 +6,7 @@ use library_blockchain::transaction::{Value as ModelValue, OptionTransaction};
 use library_blockchain::{*};
 use serde_json::Value;
 
-#[allow(dead_code)]
-#[allow(unused_mut)]
+
 #[allow(dead_code)]
 #[allow(unused_mut)]
 pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
@@ -19,7 +18,7 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
     let mut blockchain=Blockchain::new();
     let mut prev_hash:Box<[u8]>=Box::default();
     let mut maked_transactions_of_a_block:Vec<OptionTransaction>=Vec::new();
-    let mut vecopt=transaction::VecOptionTransaction::default();
+        
     blocks_val[0].as_object().unwrap().into_iter().enumerate().for_each(|(i, block)| {
 
         //println!("\nBlock {:?}\n",block);
@@ -35,9 +34,7 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
             let trx_name=concat_string!("transaction",c.to_string());
             let trx=(transactions[0].as_object().unwrap()).get(&trx_name).unwrap();                
             let puts=transaction_split(trx).unwrap();
-            //maked_transactions_of_a_block.push(puts);
-            vecopt.vecoptrx.push(puts);
-           //println!("\n{:?}\n",puts);            
+            maked_transactions_of_a_block.push(puts);            
         }        
         
       });   
@@ -46,18 +43,19 @@ pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
       //let dd=pp(maked_transactions_of_a_block);   
       //let  rc_maked_transactions_of_a_block=  call_maked_trx(|| dd);
         //let refcell_trx=rc_maked_transactions_of_a_block;        
-        let mut t=Rc::new(Cell::new(vecopt.vecoptrx.to_vec()));
-
+        let mut c=Cell::new(maked_transactions_of_a_block.as_slice());
+        let mut r=Rc::new(c);
+        let mut rc=&mut r;        
       if i==1{
           //let u=rc_maked_transactions_of_a_block(vecopt);
         //  let y=(||rc_maked_transactions_of_a_block(vecopt);
 
-            let mut genesis_block = Block::new(0, now(),vec![0; 32], t, difficulty);    
+            let mut genesis_block = Block::new(0, now(),vec![0; 32], rc, difficulty);    
             prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
             let _=&blockchain.update_with_block(genesis_block);                
         }
         else if i >1{
-            let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), t, difficulty);                                     
+            let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), rc, difficulty);                                     
             prev_hash=maked_block.mine().unwrap().into_boxed_slice();
             let _=&blockchain.update_with_block(maked_block);
             //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                

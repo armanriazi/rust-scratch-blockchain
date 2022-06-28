@@ -21,20 +21,21 @@ use super::*;
 /// </br></br>
 /// OverSpending: Sum(inputs)>=Sum(Outputs). I can't input 5 coins and be able to output 7. (on other hand inputs have to be greater since must be enough fee in input section for paying to miner.)
 
-pub struct Block {
+pub struct Block<'a> {
     pub index: u32,
     pub timestamp: u128,
     pub hash: Hash,
     pub prev_block_hash: Hash,
     pub nonce: u64,
-    pub option_transactions: Rc<Cell<Vec<OptionTransaction>>>,
+    pub option_transactions: &'a mut Rc<Cell<&'a [OptionTransaction]>>,
     pub difficulty: u128, 
 }
 
 
 
-impl Debug for Block {
+impl<'a> Debug for Block<'a> {
     fn fmt (&self, f: &mut Formatter) -> fmt::Result {
+        let optrx=self.option_transactions.take();
         write!(f, "Prev hash of {} the Block[{}]: {} at: {} trx.len: {} nonce: {}",
             &hex::encode(&self.prev_block_hash),
             &self.index,
@@ -42,13 +43,15 @@ impl Debug for Block {
             &self.timestamp,
             &self.option_transactions.take().len(),
             &self.nonce,
-        )
+            )?;
+            self.option_transactions.set(optrx);
+            Ok(())
     }
 }
 
 
-impl Block {
-    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: Rc<Cell<Vec<OptionTransaction>>>, difficulty: u128) -> Self {
+impl<'a> Block<'a> {
+    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: &'a mut Rc<Cell<&'a [OptionTransaction]>>, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
@@ -90,7 +93,7 @@ impl Block {
 /// Concatenate together all the bytes
 /// </br></br>
 /// Generate unique data fingerprint: the hash
-impl Hashable for Block {
+impl<'a> Hashable for Block<'a> {
     fn bytes (&self) -> Vec<u8> {
         let mut bytes = vec![];
 

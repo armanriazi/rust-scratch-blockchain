@@ -38,15 +38,6 @@ pub struct Value {
 /// Trx contain 2 pieces of info: Set of I/O that I=O - Value of TRXs=Sum(Inputs) Value of the Fee =Sum(Inputs)-Sum(Outputs)
 /// </br></br>
 /// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
-#[derive(Debug,Deserialize,Serialize)]
-pub struct VecOptionTransaction {
-    pub vecoptrx: Vec<OptionTransaction>
-}
-impl Default for VecOptionTransaction{
-    fn default () ->  Self{   
-        VecOptionTransaction{vecoptrx: vec![OptionTransaction::default()]}
-  }
-}
 
 
 
