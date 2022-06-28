@@ -9,59 +9,60 @@ use serde_json::Value;
 
 #[allow(dead_code)]
 #[allow(unused_mut)]
-pub fn blockchain_factory<F>(difficulty:u128, f : F) -> Result<(),CustomError>
+pub fn blockchain_factory<'a,F>(mut blockchain:Blockchain,difficulty:u128, f : F) -> Result<(),CustomError>
     where   
     F: FnOnce()->  Result<serde_json::Value,CustomError>    
-{
-    let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap();
-    let blocks_val:serde_json::Value=serde_values_transactions["blocks"].clone();   
-    let mut blockchain=Blockchain::new();
-    let mut prev_hash:Box<[u8]>=Box::default();
-    let mut maked_transactions_of_a_block:Vec<OptionTransaction>=Vec::new();
-        
-    blocks_val[0].as_object().unwrap().into_iter().enumerate().for_each(|(i, block)| {
+{    
+    let serde_values_transactions:serde_json::Value= serde_json::from_value(f().unwrap()).unwrap(); 
+    let blocks_val:serde_json::Value=serde_values_transactions["blocks"].clone();  
+     {  
+            //let mut blockchain=Blockchain::new();
+     
+            blocks_val[0].as_object().unwrap().into_iter().enumerate().for_each(|(_i, block)| {
 
-        //println!("\nBlock {:?}\n",block);
-        block.1.as_array().unwrap().into_iter().enumerate().for_each(|(j, trxs)| {
-        
-        let transactions=trxs.get("transactions").unwrap();        
-        let obg_trx=transactions.as_array().unwrap();                             
-        let trx=obg_trx[0].as_object().unwrap();                
-        let length=&trx.keys().len()+1;   
-        //println!("\n{:?}\n",trx);  
+            let mut prev_hash:Box<[u8]>=Box::default();
+            let mut maked_transactions_of_a_block:Vec<OptionTransaction>=vec![];
+                //println!("\nBlock {:?}\n",block);
+                block.1.as_array().unwrap().into_iter().enumerate().for_each(|(_j, trxs)| {
+                
+                let transactions=trxs.get("transactions").unwrap();        
+                let obg_trx=transactions.as_array().unwrap();                             
+                let trx=obg_trx[0].as_object().unwrap();                
+                let length=&trx.keys().len()+1;   
+                //println!("\n{:?}\n",trx);  
 
-        for c in 1..length{
-            let trx_name=concat_string!("transaction",c.to_string());
-            let trx=(transactions[0].as_object().unwrap()).get(&trx_name).unwrap();                
-            let puts=transaction_split(trx).unwrap();
-            maked_transactions_of_a_block.push(puts);            
-        }        
-        
-      });   
-    
-      
-      //let dd=pp(maked_transactions_of_a_block);   
-      //let  rc_maked_transactions_of_a_block=  call_maked_trx(|| dd);
-        //let refcell_trx=rc_maked_transactions_of_a_block;        
-        let mut c=Cell::new(maked_transactions_of_a_block.as_slice());
-        let mut r=Rc::new(c);
-        let mut rc=&mut r;        
-      if i==1{
-          //let u=rc_maked_transactions_of_a_block(vecopt);
-        //  let y=(||rc_maked_transactions_of_a_block(vecopt);
+                for c in 1..length{
+                    let trx_name=concat_string!("transaction",c.to_string());
+                    let trx=(transactions[0].as_object().unwrap()).get(&trx_name).unwrap();                
+                    let puts=transaction_split(trx).unwrap();
+                    &maked_transactions_of_a_block.push(puts);            
+                }        
+                
+            });   
+            
+            
+            //let dd=pp(maked_transactions_of_a_block);   
+            //let  rc_maked_transactions_of_a_block=  call_maked_trx(|| dd);
+                //let refcell_trx=rc_maked_transactions_of_a_block;        
+                let mut c=Cell::new(maked_transactions_of_a_block.as_slice());
+                let mut r=Rc::new(c);
+                let mut rc=&mut r;        
+            if _i==0{
+                //let u=rc_maked_transactions_of_a_block(vecopt);
+                //  let y=(||rc_maked_transactions_of_a_block(vecopt);
 
-            let mut genesis_block = Block::new(0, now(),vec![0; 32], rc, difficulty);    
-            prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
-            let _=&blockchain.update_with_block(genesis_block);                
-        }
-        else if i >1{
-            let mut maked_block:Block = Block::new(i as u32, now(), prev_hash.to_vec(), rc, difficulty);                                     
-            prev_hash=maked_block.mine().unwrap().into_boxed_slice();
-            let _=&blockchain.update_with_block(maked_block);
-            //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());                
-        }    
-   });
-                                         
+                    let mut genesis_block = Block::new(0, now(),vec![0; 32], rc, difficulty);    
+                    prev_hash=genesis_block.mine().unwrap().into_boxed_slice();                
+                    let _=&blockchain.update_with_block(genesis_block);                
+                }
+                else if _i >0{
+                    let mut maked_block:Block = Block::new(_i as u32, now(), prev_hash.to_vec(), rc, difficulty);                                     
+                    prev_hash=maked_block.mine().unwrap().into_boxed_slice();
+                    let _=&blockchain.update_with_block(maked_block);
+                    //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[_i].prev_block_hash.clone());                
+                }    
+        });
+    }                              
     Ok(()) 
 }          
 

@@ -14,7 +14,7 @@
 //     }    
 // }
 use super::*;
-use std::collections::HashSet;
+use std::{collections::HashSet, ops::Deref};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug,Clone,Deserialize,Serialize)]
@@ -39,10 +39,6 @@ pub struct Value {
 /// </br></br>
 /// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
 
-
-
-
-
 #[derive(Debug,Deserialize,Serialize)]
 pub struct OptionTransaction {
     pub puts: Option<Transaction>
@@ -55,12 +51,18 @@ impl Default for OptionTransaction{
         }
     }
 }
-
+impl Deref for OptionTransaction {    
+    type Target = Option<Transaction>;
+    fn deref(&self) -> &Self::Target {        
+        &self.puts
+    }
+}
 #[derive(Debug,Deserialize,Serialize)]
 pub struct Transaction {
     pub inputs: Vec<Value>,
     pub outputs: Vec<Value>,
 }
+
 pub enum IO{
     Input,
     Output
@@ -130,14 +132,14 @@ impl Transaction {
         Self::new(vec![         
                            
         ], vec![
-            transaction::Value {
-                to_addr: "Alice".to_owned(),
-                value: 47,
-            },
-            transaction::Value {
-                to_addr: "Bob".to_owned(),
-                value: 3
-            }, 
+            // transaction::Value {
+            //     to_addr: "Alice".to_owned(),
+            //     value: 47,
+            // },
+            // transaction::Value {
+            //     to_addr: "Bob".to_owned(),
+            //     value: 3
+            // }, 
        ])
     }
 
@@ -150,17 +152,15 @@ impl Transaction {
         })}
     }
 
-   pub fn trx_data<F>(&mut self, mut f: F) // We bring in self, but only f is generic F. f is the closure    
-    where
-        F: FnMut(&mut Vec<Value>, &mut Vec<Value>), // The closure takes mutable vectors of u32
-                                                // which are the year and population data
-    {
-        f(&mut self.inputs, &mut self.outputs) // Finally this is the actual function. It says
-                                                  // "use a closure on self.years and self.populations"
-                                                  // We can do whatever we want with the closure
-    }
-
-
+//    pub fn trx_data<F>(&mut self, mut f: F) // We bring in self, but only f is generic F. f is the closure    
+//     where
+//         F: FnMut(&mut Vec<Value>, &mut Vec<Value>), // The closure takes mutable vectors of u32
+//                                                 // which are the year and population data
+//     {
+//         f(&mut self.inputs, &mut self.outputs) // Finally this is the actual function. It says
+//                                                   // "use a closure on self.years and self.populations"
+//                                                   // We can do whatever we want with the closure
+//     }
 
     pub fn is_coinbase (&self) -> bool {               
      (&self.inputs).len() as u8 == 0

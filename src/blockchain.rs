@@ -41,7 +41,7 @@ impl<'a> Blockchain<'a> {
         }
     }
     
-    pub fn update_with_block (&mut self, block: Block<'a>) -> Result<(), BlockValidationErr> {
+    pub fn update_with_block (&mut self, block: Block<'a>) ->  Result<(), BlockValidationErr> {
         let i = self.blocks.len();
 
         if block.index != i as u32 {

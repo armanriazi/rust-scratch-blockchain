@@ -31,23 +31,21 @@ pub struct Block<'a> {
     pub difficulty: u128, 
 }
 
-
-
 impl<'a> Debug for Block<'a> {
     fn fmt (&self, f: &mut Formatter) -> fmt::Result {
         let optrx=self.option_transactions.take();
-        write!(f, "Prev hash of {} the Block[{}]: {} at: {} trx.len: {} nonce: {}",
+        let result =  write!(f, "Prev hash of {} the Block[{}]: {} at: {} trx.len: {} nonce: {}",
             &hex::encode(&self.prev_block_hash),
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
             &self.option_transactions.take().len(),
             &self.nonce,
-            )?;
+            );
             self.option_transactions.set(optrx);
-            Ok(())
+            result
+        }
     }
-}
 
 
 impl<'a> Block<'a> {

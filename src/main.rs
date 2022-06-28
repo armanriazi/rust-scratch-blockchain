@@ -22,7 +22,7 @@ fn main() -> Result<(), CustomError> {
     let mut args: Vec<String> = env::args().collect();
     let mut mode=String::default();
     let mut file_name=String::default();
-    
+    let mut blockchain=Blockchain::new();
 
     if  (&args).len()<=1 {
         println!("** Please select a runner mode\n Help(file path transaction_list, or module transaction_list)\n Default is cargo run module **\n");        
@@ -35,16 +35,20 @@ fn main() -> Result<(), CustomError> {
             file_name=(&args[2]).trim().to_lowercase();                    
             let file = File::open(&file_name).unwrap();
             println!("**************************************************************");            
-            blockchain_factory(difficulty,|| sample_trx_json_data_block_from_file(&file)).unwrap(); 
+            blockchain_factory(blockchain,difficulty,|| sample_trx_json_data_block_from_file(&file)).unwrap(); 
             //println!("\nBlockchain:\n{:?}", &blockchain);   
         }        
     else if &mode=="macrojson" {           
             println!("Selected mode is macrojson\n");   
-            blockchain_factory(difficulty,|| sample::sample_trx_json_data_from_module()).unwrap();              
+            blockchain_factory(blockchain,difficulty,|| sample::sample_trx_json_data_from_module()).unwrap();              
+        }
+    else if &mode=="stringjson" {           
+            println!("Selected mode is stringjson\n");   
+            blockchain_factory(blockchain,difficulty,|| sample::sample_trx_json_data_from_string()).unwrap();              
         }
     else{         
             println!("The mode is not selected! Default is macrojson\n");   
-            blockchain_factory(difficulty,|| sample::sample_trx_json_data_from_module()).unwrap();
+            blockchain_factory(blockchain,difficulty,|| sample::sample_trx_json_data_from_module()).unwrap();
     }
     //println!("**Maked Blockchain:**\n{:?}\n",&blockchain.blocks);
     Ok(())
