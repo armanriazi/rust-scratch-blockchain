@@ -1,12 +1,13 @@
-#![recursion_limit="5000000"]
-
+// #![recursion_limit="5000000"]
+// pub mod de;
+// pub mod error;
 mod block;
 pub use crate::block::Block;
 mod hashable;
 pub use crate::{hashable::Hashable, blockchain::Blockchain};
 mod blockchain;
 pub mod transaction;
-pub use crate::transaction::Transaction;
+
 
 type Hash = Vec<u8>;
 type Address = String;
@@ -90,15 +91,28 @@ pub fn difficulty_bytes_as_u128 (v: &Vec<u8>) -> u128 {
     ((v[16] as u128) << 0x0 * 8)
 }
 
-
+#[derive(Debug)] 
+pub enum StringError {
+    StringParse(std::string::ParseError),
+    InvalidOption(String),    
+    Other
+}
+#[derive(Debug)] 
+pub enum BlockainFactoryError {
+    ZeroBlock,
+    ZeroBlockchain,        
+    IsNullTransaction,
+    Other
+}
 /// Allow the use of "{:?}" format specifier
 #[derive(Debug)] 
 pub enum CustomError {
-    StringParse(std::string::ParseError),
+    String(StringError),
     SerdeJson(serde_json::Error),
     IO(std::io::Error),
-    BlockchainFactory,
-    Other,
+    BlockchainFactory(BlockainFactoryError),
+    InvalidOption(String),        
+    Other
 }
 
 
@@ -106,32 +120,44 @@ pub enum CustomError {
 impl fmt::Display for CustomError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            CustomError::StringParse(ref cause) => write!(f, "StringParse Error: {}", cause),
+            CustomError::String(_) => write!(f, "String Error"),
             CustomError::SerdeJson(ref cause) => write!(f, "SerdeJson Error: {}", cause),
             CustomError::IO(ref cause) => write!(f, "IO Error: {}", cause),
-            CustomError::BlockchainFactory => write!(f, "BlockchainFactory error!"),
+            CustomError::BlockchainFactory(_) => write!(f, "BlockchainFactory error!"),
             CustomError::Other => write!(f, "Unknown error!"),
+            CustomError::InvalidOption(_) => write!(f, "Invalid Option!"),
         }
     }
 }
+
+// impl From<json::de::Error> for Error {
+//     fn from(err: toml::de::Error) -> Self {
+//         Error::Toml(err)
+//     }
+// }
+
 impl std::error::Error for CustomError{
     fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
-            CustomError::StringParse(ref cause) => Some(cause),
+            CustomError::String(_) => None,
             CustomError::SerdeJson(ref cause) => Some(cause),
             CustomError::IO(ref cause) => Some(cause),
-            CustomError::BlockchainFactory => None,
+            CustomError::BlockchainFactory(_) => None,
             CustomError::Other => None,
+            CustomError::InvalidOption(_) => None,
         }
     }
 
 
 }
-impl From<std::string::ParseError> for CustomError {
-    fn from(cause: std::string::ParseError) -> CustomError {
-        CustomError::StringParse(cause)
+
+impl From<std::string::ParseError> for StringError {
+    fn from(cause: std::string::ParseError) -> StringError {
+        StringError::InvalidOption(cause.to_string())
     }
 }
+
+
 impl From<serde_json::Error> for CustomError {
     fn from(cause: serde_json::Error) -> CustomError {
         CustomError::SerdeJson(cause)

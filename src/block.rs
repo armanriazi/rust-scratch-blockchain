@@ -2,8 +2,8 @@
 // #![warn(missing_doc_code_examples)]
 //#![feature(doc_cfg)]
 
-use std::{fmt::{ self, Debug, Formatter }, rc::Rc, cell::{RefCell, Ref, Cell}, borrow::Borrow};
-use crate::transaction::OptionTransaction;
+use std::{fmt::{ self, Debug, Formatter }, rc::Rc, cell::{RefCell, Ref, Cell}, borrow::Borrow, os::unix::prelude::OsStrExt};
+use crate::transaction::Transaction;
 use super::*;
 
 
@@ -27,36 +27,36 @@ pub struct Block<'a> {
     pub hash: Hash,
     pub prev_block_hash: Hash,
     pub nonce: u64,
-    pub option_transactions: &'a mut Rc<Cell<&'a [OptionTransaction]>>,
+    pub transactions: &'a mut Rc<Cell<&'a [Transaction]>>,
     pub difficulty: u128, 
 }
 
 impl<'a> Debug for Block<'a> {
     fn fmt (&self, f: &mut Formatter) -> fmt::Result {
-        let optrx=self.option_transactions.take();
+        let optrx=self.transactions.take();
         let result =  write!(f, "Prev hash of {} the Block[{}]: {} at: {} trx.len: {} nonce: {}",
             &hex::encode(&self.prev_block_hash),
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
-            &self.option_transactions.take().len(),
-            &self.nonce,
+            &self.transactions.take().len(),
+            &self.nonce
             );
-            self.option_transactions.set(optrx);
+            self.transactions.set(optrx);
             result
         }
     }
 
 
 impl<'a> Block<'a> {
-    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, option_transactions: &'a mut Rc<Cell<&'a [OptionTransaction]>>, difficulty: u128) -> Self {
+    pub fn new (index: u32, timestamp: u128, prev_block_hash: Hash, transactions: &'a mut Rc<Cell<&'a [Transaction]>>, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
             hash: vec![0; 32], 
             prev_block_hash,
             nonce: 0,
-            option_transactions,
+            transactions,
             difficulty,
         }
 }
@@ -83,6 +83,7 @@ impl<'a> Block<'a> {
                break;
             }
             
+            
         }
         Ok(self.hash.clone())
     }
@@ -100,9 +101,9 @@ impl<'a> Hashable for Block<'a> {
         bytes.extend(&self.prev_block_hash);
         bytes.extend(&u64_bytes(&self.nonce));
         bytes.extend(
-            self.option_transactions.take()
+            self.transactions.take()
                 .iter()
-                .flat_map(|transaction| transaction.puts.as_ref().unwrap().bytes())
+                .flat_map(|transaction| transaction.bytes())
                 .collect::<Vec<u8>>()
         );
         bytes.extend(&u128_bytes(&self.difficulty));

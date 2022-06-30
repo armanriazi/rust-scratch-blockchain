@@ -1,4 +1,7 @@
 
+
+use serde::{Deserialize, Serialize};
+
 // macro_rules! call_on_self {
 //     ($receiver:ident, $F:ident) => {
 //         $receiver.$F()
@@ -15,12 +18,13 @@
 // }
 use super::*;
 use std::{collections::HashSet, ops::Deref};
-use serde::{Deserialize, Serialize};
 
-#[derive(Debug,Clone,Deserialize,Serialize)]
-pub struct Value {
+extern crate serde;
+
+#[derive(Debug,Clone,serde::Deserialize,serde::Serialize)]
+pub struct Amount {
     pub to_addr: Address,
-    pub value: u64,
+    pub amount: u64,
 }
 
 // impl PartialEq<Value> for Value {
@@ -39,28 +43,54 @@ pub struct Value {
 /// </br></br>
 /// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
 
-#[derive(Debug,Deserialize,Serialize)]
-pub struct OptionTransaction {
-    pub puts: Option<Transaction>
-}
-impl Default for OptionTransaction{
+
+// trait TraitOptionTransaction{}
+// impl TraitOptionTransaction for OptionTransaction<'_>{}
+
+//#[derive(Serialize, Deserialize)]
+//#[serde(remote = "OptionTransaction")]
+
+//#[derive(Debug,Serialize, Deserialize)]
+// pub struct OptionTransaction<'a>{
+//     pub puts:  Option<&'a Transaction>
+// }
+// impl<'a> OptionTransaction<'a>{
+//     pub fn new(inputs: Vec<Amount>, outputs: Vec<Amount>) ->  Self {       
+               
+//         Some(Self {            
+//              inputs,
+//              outputs,
+//          })
+//      }
+    // pub fn new(&self) -> OptionTransaction<'a> {
+    //     let puts = self.puts;
+    //     OptionTransaction { puts, }
+    // }
+//}
+
+// impl<'a> std::ops::DerefMut for OptionTransaction<'a> {
+//     fn deref_mut(&mut self) -> &mut Self::Target {
+//         mut self.puts
+//     }
+// }
+// impl<'a> Default for OptionTransaction<'a>{
     
-    fn default () -> Self {
-        OptionTransaction {
-            puts: None
-        }
-    }
-}
-impl Deref for OptionTransaction {    
-    type Target = Option<Transaction>;
-    fn deref(&self) -> &Self::Target {        
-        &self.puts
-    }
-}
+//     fn default () -> Self {
+//         OptionTransaction {
+//             puts: &None
+//         }
+//     }
+// }
+// impl<'a> Deref for OptionTransaction<'a> {    
+//     type Target = Option<&'a Transaction>;
+//     fn deref(&self) -> &Self::Target {        
+//     self.puts.as_ref()
+//     }
+// }
 #[derive(Debug,Deserialize,Serialize)]
 pub struct Transaction {
-    pub inputs: Vec<Value>,
-    pub outputs: Vec<Value>,
+    pub inputs: Vec<Amount>,
+    pub outputs: Vec<Amount>,
 }
 
 pub enum IO{
@@ -82,7 +112,7 @@ pub trait SuperTransaction {}
      fn returns_closure_io_hash(&self,io: &IOH) -> Box<(dyn Fn() -> HashSet<Hash> + '_)>;
 }
 
-impl SuperTransaction for Transaction {}
+impl<'a> SuperTransaction for Transaction {}
 //impl Put for SuperTransaction {}
 
 impl Put for Transaction {
@@ -92,14 +122,14 @@ impl Put for Transaction {
          IO::Input => {Box::new(|| {
                 self.inputs
             .iter()
-            .map(|input| input.value)
+            .map(|input| input.amount)
             .sum()
             })   
          }  
          IO::Output => {Box::new(|| {
             self.outputs
                  .iter()
-                .map(|output| output.value)
+                .map(|output| output.amount)
                 .sum()
             })
           }
@@ -128,29 +158,26 @@ impl Put for Transaction {
   
 impl Transaction {
 
-    pub fn default() -> OptionTransaction {        
-        Self::new(vec![         
+    // pub fn default() -> OptionTransaction<'_> {        
+    //     Self::new(vec![         
                            
-        ], vec![
-            // transaction::Value {
-            //     to_addr: "Alice".to_owned(),
-            //     value: 47,
-            // },
-            // transaction::Value {
-            //     to_addr: "Bob".to_owned(),
-            //     value: 3
-            // }, 
-       ])
-    }
-
-   pub fn new(inputs: Vec<Value>, outputs: Vec<Value>) ->  OptionTransaction {       
-       
-       OptionTransaction{ puts:
-       Some(Self {            
-            inputs,
-            outputs,
-        })}
-    }
+    //     ], vec![
+    //         // transaction::Value {
+    //         //     to_addr: "Alice".to_owned(),
+    //         //     value: 47,
+    //         // },
+    //         // transaction::Value {
+    //         //     to_addr: "Bob".to_owned(),
+    //         //     value: 3
+    //         // }, 
+    //    ])
+    // }
+    pub fn new(inputs: Vec<Amount>, outputs: Vec<Amount>) ->  Transaction {                      
+         Self{            
+            inputs:inputs,
+            outputs:outputs,
+         }
+     }
 
 //    pub fn trx_data<F>(&mut self, mut f: F) // We bring in self, but only f is generic F. f is the closure    
 //     where
@@ -167,12 +194,12 @@ impl Transaction {
     }
 }
 
-impl Hashable for Value {
+impl Hashable for Amount{
     fn bytes (&self) -> Vec<u8> {
         let mut bytes = vec![];
 
         bytes.extend(self.to_addr.as_bytes());
-        bytes.extend(&u64_bytes(&self.value));
+        bytes.extend(&u64_bytes(&self.amount));
 
         bytes
      }

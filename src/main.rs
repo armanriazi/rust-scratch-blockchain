@@ -1,3 +1,5 @@
+#![deny(rust_2018_idioms)]
+
 use std::fs::File;
 use std::io::BufReader;
 use std::{env};
@@ -7,11 +9,13 @@ use std::env::{set_var};
 use crate::factory::blockchain_factory;
 pub  mod factory;
 pub  mod sample;
-
+#[deny(elided_lifetimes_in_paths)]
 #[allow(dead_code)]
 #[allow(unused_mut)]
 #[macro_use(concat_string)]
 extern crate concat_string;
+#[macro_use]
+extern crate serde_derive;
 fn main() -> Result<(), CustomError> {
     let  difficulty_str=var_ret_difficulty("0x00ffffffffffffffffffffffffffffff"); 
     if difficulty_str.is_empty(){

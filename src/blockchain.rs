@@ -1,4 +1,4 @@
-use crate::transaction::OptionTransaction;
+use crate::transaction::Transaction;
 use crate::transaction::Put;
 use crate::transaction::IO as IO;
 use crate::transaction::IOH as IOH;
@@ -63,8 +63,8 @@ impl<'a> Blockchain<'a> {
             }
         }
 
-        if let Some((coinbase, option_transactions)) =  block.option_transactions.take().split_first(){
-            if ! coinbase.puts.as_ref().unwrap().is_coinbase() {
+        if let Some((coinbase, option_transactions)) =  block.transactions.take().split_first(){
+            if ! coinbase.is_coinbase() {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
             }
 
@@ -75,8 +75,8 @@ impl<'a> Blockchain<'a> {
             
             for transaction in option_transactions {
   
-                let input_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Input);
-                let output_hashes = transaction.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Output);
+                let input_hashes = transaction.returns_closure_io_hash(&IOH::Input);
+                let output_hashes = transaction.returns_closure_io_hash(&IOH::Output);
                 
                 if
                     !(&input_hashes() - &self.unspent_outputs).is_empty() ||
@@ -85,8 +85,8 @@ impl<'a> Blockchain<'a> {
                     return Err(BlockValidationErr::InvalidInput);
                 }
 
-                let input_value= transaction.puts.as_ref().unwrap().returns_closure_io(&IO::Input);
-                let output_value = transaction.puts.as_ref().unwrap().returns_closure_io(&IO::Output);
+                let input_value= transaction.returns_closure_io(&IO::Input);
+                let output_value = transaction.returns_closure_io(&IO::Output);
 
 
                 if &output_value()>&input_value() {
@@ -101,13 +101,13 @@ impl<'a> Blockchain<'a> {
                 block_created.extend(output_hashes());
             }
 
-            let coinbase_output_value = coinbase.puts.as_ref().unwrap().returns_closure_io(&IO::Output);
+            let coinbase_output_value = coinbase.returns_closure_io(&IO::Output);
                     
 
             if coinbase_output_value() < total_fee {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
             } else {
-                let coinbase_output_hashes=coinbase.puts.as_ref().unwrap().returns_closure_io_hash(&IOH::Output);
+                let coinbase_output_hashes=coinbase.returns_closure_io_hash(&IOH::Output);
                 block_created.extend(coinbase_output_hashes());
             }
 
