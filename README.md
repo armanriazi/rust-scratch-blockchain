@@ -14,7 +14,9 @@
 
 > *Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
 
-> I tried to use fundamental concepts for example: all of us know any block have not any copy so because of it we calling blockchain! Unlike many existing repositories on github(testbed/scratched projects-non productive) that almost using Copy/Clone features of Rust-Lang.
+### The difference between the current work and the previous work
+
+> I have tried to use fundamental concepts correctly, for example, all of us know any block have not any copy so because of it we are calling blockchain! Unlike many repositories on GitHub(testbed/scratched projects-non productive) that almost use Copy/Clone features of Rust-Lang.  In the following, there are some features that cause a different project.
 
 > Currently Status: Under Refactoring
 
