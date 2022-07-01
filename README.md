@@ -1,5 +1,4 @@
 
-![TOC]
 
 ## Welcome To The Home Blockchain Of 🦀Rustaceans
 
@@ -14,6 +13,8 @@
 > As you follow materials you can see (future work) which means you can add these concepts to the project. I have some **idea** that you can affort on it to completing future works.
 
 > *Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
+
+> I tried to use fundamental concepts for example: all of us know any block have not any copy so because of it we calling blockchain! Unlike many existing repositories on github(testbed/scratched projects-non productive) that almost using Copy/Clone features of Rust-Lang.
 
 > Currently Status: Under Refactoring
 
@@ -35,9 +36,10 @@ DIFFICULTY={difficulty} cargo {mode} {file name}
 > Example: 
 
 ```
-DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo file sample-bolocks.json
-DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo macrojson
-DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo strjson
+cargo build
+DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run file sample-bolocks.json
+DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run macrojson
+DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run stringjson
 time cargo run
 cargo watch -x run
 ```
@@ -47,15 +49,17 @@ cargo watch -x run
 
 - [✓] Modular
 
-- [✓] UnitTest(future work)
+- [✓] UnitTest(semi:future work)
 
 - [✓] Customized Error Handling
 
-- [✓] Json& Object Value Data
+- [✓] Json & String Data Deserialized
 
 - [✓] Closure(Functional Programming)
 
 - [✓] Cryptography-Hashing Alogrithm SHA-256
+
+- [✓] Configuration Files(semi- devOps)
 
 ### Used Concepts
 
