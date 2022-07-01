@@ -22,22 +22,23 @@
 ### Instructions for working with
 
 ```
-DIFFICULTY={difficulty} cargo {mode} {name of transactions} {file name}
+DIFFICULTY={difficulty} cargo {mode} {file name}
 ```
 > {difficulty}: (optional-key-env) value default 0x00ffffffffffffffffffffffffffffff.It must be 32 byte.
 
-> {mode}: object, module, file
+> {mode}: macro, string, file/ default mode is on the macrojson mode.
+>>{macro, string} there is in project and you can not access or manipulate except by getting the project. serde_json support string and macro based on called library.
+>> {file} json file is external .json file that you can set it for command line
 
-> {name of transactions} with comma seperator
-
-> {file name} index directory of the project Sample.json
+> {file name} index directory of the project sample-bolocks.json
 
 > Example: 
 
 ```
-DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo file transaction1,transaction2 Sample.json
-DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo object transaction1,transaction2
-time cargo module transaction1,transaction2
+DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo file sample-bolocks.json
+DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo macrojson
+DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo strjson
+time cargo run
 cargo watch -x run
 ```
 *Using time and watch is optional and depends on your purpose*
@@ -224,6 +225,9 @@ these also support a form of inheritance that’s common in most object oriented
   > Floating-point types include “not a number” values (represented in Rust syntax as NAN values) to handle these cases.
 	
 > NAN values poison other numbers. Almost all operations interacting with NAN return NAN. Another thing to be mindful of is that, by definition, NAN values are never equal. 
+> Programming language design is often thought of in terms of which features you include, but the features you exclude are important too. Rust doesn’t have the null feature that many other languages have. Null is a value that means there is no value there. In languages with null, variables can always be in one of two states: null or not-null.
+> In his 2009 presentation “Null References: The Billion Dollar Mistake,” Tony Hoare, the inventor of null, has this to say:
+I call it my billion-dollar mistake. At that time, I was designing the first comprehensive type system for references in an object-oriented language. My goal was to ensure that all use of references should be absolutely safe, with checking performed automatically by the compiler. But I couldn’t resist the temptation to put in a null reference, simply because it was so easy to implement. This has led to innumerable errors, vulnerabilities, and system crashes, which have probably caused a billion dollars of pain and damage in the last forty years.	
 	
 > To program defensively, make use of the is_nan() and is_finite() methods. Inducing a crash, rather than silently proceeding with a mathematical error, allows you to debug close to what has caused the problem. The following illustrates using the is_finite()	
 
