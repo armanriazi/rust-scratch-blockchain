@@ -34,12 +34,27 @@ members = [
     "utils"
 ]
 
-[dependencies]
+[dev-dependencies]
+env_logger = "0.9.0"
+log = "0.4.0"
+pretty_assertions = "1"
 utils = { path = "./utils" }
 concat-string = "1.0.1"
 # json output
 json = "0.12.4"
 # doc-cfg = { version = "0.1" }
+hex = "0.3.2"
+crypto-hash = "0.3.3"
+serde_json = "1.0.82"
+serde = { version = "1.0.137", features = ["derive"] }
+serde_derive = { version = "1.0.137"}
+
+[dependencies]
+log = "0.4.0"
+env_logger = "0.9.0"
+utils = { path = "./utils" }
+concat-string = "1.0.1"
+json = "0.12.4"
 hex = "0.3.2"
 crypto-hash = "0.3.3"
 serde_json = "1.0.82"

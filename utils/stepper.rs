@@ -1,30 +1,29 @@
-
-use std::ops::AddAssign;
 use std::cmp::PartialOrd;
+use std::ops::AddAssign;
 
-
-pub struct Stepper<T>{
-    curr:T,
-    step:T,
-    stop:T,
+pub struct Stepper<T> {
+    curr: T,
+    step: T,
+    stop: T,
 }
 
-impl<T> Stepper<T>{
-    pub fn new(start:T,stop:T,step:T)->Self{
-        Stepper{
-            curr:start,
-            stop:stop,
-            step:step,
+impl<T> Stepper<T> {
+    pub fn new(start: T, stop: T, step: T) -> Self {
+        Stepper {
+            curr: start,
+            stop: stop,
+            step: step,
         }
     }
 }
 
 impl<T> Iterator for Stepper<T>
-    where T:AddAssign + Copy + PartialOrd
+where
+    T: AddAssign + Copy + PartialOrd,
 {
-    type Item=T;
+    type Item = T;
 
-    fn next(&mut self)->Option<T>{
+    fn next(&mut self) -> Option<T> {
         if self.curr >= self.stop {
             return None;
         }
