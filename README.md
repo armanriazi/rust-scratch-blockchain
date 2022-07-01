@@ -379,6 +379,6 @@ Wrapping unsafe code in a safe abstraction prevents uses of unsafe from leaking 
 
 nom is the fruit of the work of many contributors over the years, many thanks for your help!
 
-<a href="https://github.com/geal/nom/graphs/contributors">
+<a href="https://github.com/armanriazi/rust-scratch-blockchain/graphs/contributors">
   Contributors
 </a>
