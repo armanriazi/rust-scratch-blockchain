@@ -34,7 +34,7 @@ where
         .for_each(|(_i, block)| {
             let mut prev_hash: Box<[u8]> = Box::default();
 
-            //println!("\nBlock {:?}\n",block);
+            info!("\nBlock {:?}\n",block);
             block
                 .1
                 .as_array()
@@ -79,17 +79,33 @@ where
 
                 let mut genesis_block = Block::new(0, now(), vec![0; 32], &mut Rc::clone(rc), difficulty);
                 prev_hash = genesis_block.mine().unwrap().into_boxed_slice();
-                blockchain.update_with_block(genesis_block);
+                info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
+                update_blockchain_result(&mut blockchain, genesis_block,&_i);
+                
             } else if _i > 0 {
                 let mut maked_block: Block =
                     Block::new(_i as u32, now(), prev_hash.to_vec(), &mut Rc::clone(rc), difficulty);
                 prev_hash = maked_block.mine().unwrap().into_boxed_slice();
-                blockchain.update_with_block(maked_block);
-                //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[_i].prev_block_hash.clone());
+                info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
+                update_blockchain_result(&mut blockchain, maked_block,&_i);                
             }
         });
 
     Ok(())
+}
+
+fn update_blockchain_result(blockchain: &mut Blockchain, block: Block,& i:&usize) {
+    std::process::exit(match blockchain.update_with_block(block) {
+        Ok(()) => {
+            info!("Success Updated With the block {}.\n", i.to_owned());
+            info!("**Maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());
+            200
+        }
+        Err(err) => {
+            eprintln!("Error in the block{} : {err:?}",i.to_owned());
+            1
+        }
+    });
 }
 
 fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError> {

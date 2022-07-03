@@ -9,8 +9,7 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
             "transactions":[{
                 "transaction1":[{
                         "inputs":[{
-                            "to_addr": "",
-                            "value": ""
+                           
                         }],
                         "outputs":[{
                             "to_addr": "Alice",
@@ -66,12 +65,7 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                                 "to_addr": "Bina",
                                 "value": "10"
                             }],
-                            "outputs":[{
-                                "to_addr": "Mina",
-                                "value": "48"
-                            },{
-                                "to_addr": "Nuha",
-                                "value": "3"
+                            "outputs":[{                             
                             }]
                     }]
                 }]

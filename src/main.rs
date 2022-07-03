@@ -87,7 +87,7 @@ fn init_env_logger(is_enable:bool) {
     let mut builder = Builder::from_default_env();
     builder.target(Target::Stdout);
     if is_enable{
-       &builder.init();
+       builder.init();
     }
         
     if log_enabled!(Level::Info) {            
