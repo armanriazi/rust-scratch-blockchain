@@ -18,12 +18,12 @@ pub enum BlockValidationErr {
 }
 
 /// On update_with_block() we check (+)Overspending, (+)Double Spending, (-)Impersonate
-pub struct Blockchain<'a> {
-    pub blocks: Vec<Block<'a>>,
+pub struct Blockchain  {
+    pub blocks: Vec<Block >,
     unspent_outputs: HashSet<Hash>,
 }
 
-impl<'a> Default for Blockchain<'a> {
+impl  Default for Blockchain  {
     fn default() -> Self {
         Blockchain {
             blocks: vec![],
@@ -31,7 +31,7 @@ impl<'a> Default for Blockchain<'a> {
         }
     }
 }
-impl<'a> Blockchain<'a> {
+impl  Blockchain  {
     pub fn new() -> Self {
         Blockchain {
             blocks: vec![],
@@ -39,7 +39,7 @@ impl<'a> Blockchain<'a> {
         }
     }
 
-    pub fn update_with_block(&mut self, block: Block<'a>) -> Result<(), BlockValidationErr> {
+    pub fn update_with_block(&mut self, block: Block ) -> Result<(), BlockValidationErr> {
         let i = self.blocks.len();
 
         if block.index != i as u32 {
@@ -61,7 +61,7 @@ impl<'a> Blockchain<'a> {
             }
         }
 
-        if let Some((coinbase, option_transactions)) = block.transactions.take().split_first() {
+        if let Some((coinbase, option_transactions)) = block.transactions.split_first() {
             if !coinbase.is_coinbase() {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
             }

@@ -6,22 +6,22 @@ use std::borrow::{Borrow, BorrowMut};
 use std::cell::{Cell, Ref, RefCell};
 use std::rc::Rc;
 
-//pub unsafe trait Factory<'a>{
+//pub unsafe trait Factory{
 
 #[allow(dead_code)]
 #[allow(unused_mut)]
 #[deny(elided_lifetimes_in_paths)]
-pub(crate) fn blockchain_factory<'a, F>(
-    mut blockchain: Blockchain<'a>,
+pub fn blockchain_factory<F>(
+    mut blockchain: Blockchain,
     difficulty: u128,
     f: F,
 ) -> Result<(), CustomError>
 where
     F: FnOnce() -> Result<serde_json::Value, CustomError>,
 {
-    let mut maked_transactions_of_a_block: Vec<Transaction<'a>> = vec![];
+    let mut maked_transactions_of_a_block: Vec<Transaction> = vec![];
     let serde_values_transactions: serde_json::Value =
-        serde_json::from_value(f().unwrap()).unwrap();
+        serde_json::from_value(f().unwrap())?;//.unwrap();
     let blocks_val: serde_json::Value = serde_values_transactions["blocks"].clone();
 
     //let mut blockchain=Blockchain::new();
@@ -53,7 +53,7 @@ where
                         let trx = (transactions[0].as_object().unwrap())
                             .get(&trx_name)
                             .unwrap();
-                        let puts: Transaction<'a> = transaction_split(trx).unwrap();
+                        let puts: Transaction = transaction_split(trx).unwrap();
                         maked_transactions_of_a_block.push(puts);
                     }
                 });
@@ -61,21 +61,28 @@ where
             //let dd=pp(maked_transactions_of_a_block);
             //let  rc_maked_transactions_of_a_block=  call_maked_trx(|| dd);
             //let refcell_trx=rc_maked_transactions_of_a_block;
-            let mut c: Cell<&[Transaction<'a>]> =
-                Cell::new(maked_transactions_of_a_block.as_slice());
-            let mut r: Rc<Cell<&[Transaction<'a>]>> = Rc::new(c);
-            let mut rc: &mut Rc<Cell<&[Transaction<'a>]>> = &mut r;
+            
+            // let mut c: Cell<&[Transaction]> =
+            //     Cell::new(maked_transactions_of_a_block.as_slice());
+            // let mut r: Rc<Cell<&[Transaction]>> = Rc::new(c);
+            // let mut rc: &mut Rc<Cell<[Transaction]>> = &mut r;
+
+            let mut c: Cell<Vec<Transaction>> =
+                Cell::new(maked_transactions_of_a_block.to_vec());
+            let mut r: Rc<Cell<Vec<Transaction>>> = Rc::new(c);
+            let mut rc: &mut Rc<Cell<Vec<Transaction>>> = &mut r;
+
 
             if _i == 0 {
                 //let u=rc_maked_transactions_of_a_block(vecopt);
                 //  let y=(||rc_maked_transactions_of_a_block(vecopt);
 
-                let mut genesis_block = Block::new(0, now(), vec![0; 32], rc, difficulty);
+                let mut genesis_block = Block::new(0, now(), vec![0; 32], &mut Rc::clone(rc), difficulty);
                 prev_hash = genesis_block.mine().unwrap().into_boxed_slice();
                 blockchain.update_with_block(genesis_block);
             } else if _i > 0 {
-                let mut maked_block: Block<'_> =
-                    Block::new(_i as u32, now(), prev_hash.to_vec(), rc, difficulty);
+                let mut maked_block: Block =
+                    Block::new(_i as u32, now(), prev_hash.to_vec(), &mut Rc::clone(rc), difficulty);
                 prev_hash = maked_block.mine().unwrap().into_boxed_slice();
                 blockchain.update_with_block(maked_block);
                 //println!("**maked_hash:**\n{:?}\n",&blockchain.blocks[_i].prev_block_hash.clone());
@@ -85,9 +92,9 @@ where
     Ok(())
 }
 
-fn transaction_split<'a>(trx: &serde_json::Value) -> Result<Transaction<'a>, CustomError> {
-    let mut trx_inputs_model_vec: Vec<Amount<'a>> = vec![];
-    let mut new_option_transaction: Transaction<'a>;
+fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError> {
+    let mut trx_inputs_model_vec: Vec<Amount> = vec![];
+    let mut new_option_transaction: Transaction;
 
     if trx.is_null() {
         return Err(CustomError::BlockchainFactory(BlockainFactoryError::Other));
@@ -104,8 +111,8 @@ fn transaction_split<'a>(trx: &serde_json::Value) -> Result<Transaction<'a>, Cus
 
         for item_internal_inputs in trx_inputs_vec {
             let mut trx_inputs_model = Amount {
-                to_addr: &String::from(""),
-                amount: &0,
+                to_addr: String::from(""),
+                amount: 0,
             };
 
             if !item_internal_inputs.is_null() {
@@ -115,8 +122,8 @@ fn transaction_split<'a>(trx: &serde_json::Value) -> Result<Transaction<'a>, Cus
                         && item_internal_inputs["value"].as_str().unwrap().is_empty()))
                 {
                     trx_inputs_model = Amount {
-                        to_addr: &item_internal_inputs["to_addr"].as_str().unwrap().to_owned(),
-                        amount: &item_internal_inputs["value"]
+                        to_addr: item_internal_inputs["to_addr"].as_str().unwrap().to_owned(),
+                        amount: item_internal_inputs["value"]
                             .as_str()
                             .unwrap()
                             .parse::<u64>()
@@ -128,7 +135,7 @@ fn transaction_split<'a>(trx: &serde_json::Value) -> Result<Transaction<'a>, Cus
         }
     }
 
-    let mut trx_outputs_model_vec: Vec<Amount<'a>> = vec![];
+    let mut trx_outputs_model_vec: Vec<Amount> = vec![];
     let trx_outputs = (trx[0].as_object().unwrap()).get("outputs").unwrap();
 
     if !(trx_outputs.is_null()) && !(trx_outputs.as_array().is_none()) {
@@ -136,8 +143,8 @@ fn transaction_split<'a>(trx: &serde_json::Value) -> Result<Transaction<'a>, Cus
 
         for item_internal_outputs in trx_outputs_vec {
             let mut trx_outputs_model = Amount {
-                to_addr: &String::from(""),
-                amount: &0,
+                to_addr: String::from(""),
+                amount: 0,
             };
 
             if !item_internal_outputs.is_null() {
@@ -150,11 +157,11 @@ fn transaction_split<'a>(trx: &serde_json::Value) -> Result<Transaction<'a>, Cus
                             .is_empty())
                 {
                     trx_outputs_model = Amount {
-                        to_addr: &item_internal_outputs["to_addr"]
+                        to_addr: item_internal_outputs["to_addr"]
                             .as_str()
                             .unwrap()
                             .to_owned(),
-                        amount: &item_internal_outputs["value"]
+                        amount: item_internal_outputs["value"]
                             .as_str()
                             .unwrap()
                             .parse::<u64>()

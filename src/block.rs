@@ -26,19 +26,20 @@ use std::{
 /// </br></br>
 /// OverSpending: Sum(inputs)>=Sum(Outputs). I can't input 5 coins and be able to output 7. (on other hand inputs have to be greater since must be enough fee in input section for paying to miner.)
 
-pub struct Block<'a> {
+#[derive()]
+pub struct Block {
     pub index: u32,
     pub timestamp: u128,
     pub hash: Hash,
     pub prev_block_hash: Hash,
     pub nonce: u64,
-    pub transactions: &'a mut Rc<Cell<&'a [Transaction<'a>]>>,
+    pub transactions:  Vec<Transaction> ,
     pub difficulty: u128,
 }
 
-impl<'a> Debug for Block<'a> {
+impl Debug for Block {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        let optrx = self.transactions.take();
+        //let optrx = self.transactions;
         let result = write!(
             f,
             "Prev hash of {} the Block[{}]: {} at: {} trx.len: {} nonce: {}",
@@ -46,20 +47,20 @@ impl<'a> Debug for Block<'a> {
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
-            &self.transactions.take().len(),
+            &self.transactions.len(),
             &self.nonce
         );
-        self.transactions.set(optrx);
+        //self.transactions.set(optrx);
         result
     }
 }
 
-impl<'a> Block<'a> {
+impl Block {
     pub fn new(
         index: u32,
         timestamp: u128,
         prev_block_hash: Hash,
-        transactions: &'a mut Rc<Cell<&'a [Transaction<'a>]>>,
+        transactions: &mut Rc<Cell<Vec<Transaction>>>,
         difficulty: u128,
     ) -> Self {
         Block {
@@ -68,7 +69,7 @@ impl<'a> Block<'a> {
             hash: vec![0; 32],
             prev_block_hash,
             nonce: 0,
-            transactions,
+            transactions: transactions.take().to_vec(),
             difficulty,
         }
     }
@@ -100,7 +101,7 @@ impl<'a> Block<'a> {
 /// Concatenate together all the bytes
 /// </br></br>
 /// Generate unique data fingerprint: the hash
-impl<'a> Hashable for Block<'a> {
+impl Hashable for Block {
     fn bytes(&self) -> Vec<u8> {
         let mut bytes = vec![];
 
@@ -109,8 +110,7 @@ impl<'a> Hashable for Block<'a> {
         bytes.extend(&self.prev_block_hash);
         bytes.extend(&u64_bytes(&self.nonce));
         bytes.extend(
-            self.transactions
-                .take()
+            self.transactions                
                 .iter()
                 .flat_map(|transaction| transaction.bytes())
                 .collect::<Vec<u8>>(),

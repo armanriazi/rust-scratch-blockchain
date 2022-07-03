@@ -43,30 +43,35 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                 "transactions":[{
                     "transaction1":[{
                             "inputs":[{
+                                "to_addr": "Mina",
+                                "value": "48"
+                            },{
+                                "to_addr": "Nuha",
+                                "value": "3"
                             }],
                             "outputs":[{
-                                "to_addr": "Alice",
+                                "to_addr": "Tina",
                                 "value": "10"
                             },{
-                                "to_addr": "Bob",
-                                "value": "0"
+                                "to_addr": "Bina",
+                                "value": "10"
                             }]
                     }],
                     "transaction2":[{
                             "inputs":[{
                             },{
-                                "to_addr": "Alice",
+                                "to_addr": "Tina",
                                 "value": "10"
                             },{
-                                "to_addr": "Bob",
-                                "value": "0"
+                                "to_addr": "Bina",
+                                "value": "10"
                             }],
                             "outputs":[{
                                 "to_addr": "Mina",
-                                "value": "0"
+                                "value": "48"
                             },{
                                 "to_addr": "Nuha",
-                                "value": "232"
+                                "value": "3"
                             }]
                     }]
                 }]

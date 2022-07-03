@@ -1,6 +1,7 @@
 #![deny(rust_2018_idioms)]
 #![warn(rust_2021_idioms)]
 
+use env_logger::{Builder, Target};
 use proc_macro;
 use crate::factory::blockchain_factory;
 use library_blockchain::*;
@@ -20,21 +21,13 @@ pub mod sample;
 #[allow(unused_mut)]
 #[macro_use]
 extern crate log;
-#[macro_use]
-extern crate log;
 #[macro_use(concat_string)]
 extern crate concat_string;
 
 fn main() -> Result<(), CustomError> {
 
     //env_logger::init();
-    fn init() {
-        
-        let _ = env_logger::builder().is_test(true).try_init();        
-        if log_enabled!(Level::Info) {            
-            info!("Welcome to env_logger");
-        }
-    }
+    init_env_logger(true);
 
     info!("starting up");
 
@@ -62,38 +55,55 @@ fn main() -> Result<(), CustomError> {
         println!("**************************************************************");
         blockchain_factory(blockchain, difficulty, || {
             sample_trx_json_data_block_from_file(&file)
-        })
-        .unwrap();
+        })?;
+        //.unwrap();
         //println!("\nBlockchain:\n{:?}", &blockchain);
     } else if &mode == "macrojson" {
         println!("Selected mode is macrojson\n");
         blockchain_factory(blockchain, difficulty, || {
             sample::sample_trx_json_data_from_module()
-        })
-        .unwrap();
+        })?;
+        //.unwrap();
     } else if &mode == "stringjson" {
         println!("Selected mode is stringjson\n");
         blockchain_factory(blockchain, difficulty, || {
             sample::sample_trx_json_data_from_string()
-        })
-        .unwrap();
+        })?;
+        //.unwrap();
     } else {
         println!("The mode is not selected! Default is macrojson\n");
         blockchain_factory(blockchain, difficulty, || {
             sample::sample_trx_json_data_from_module()
-        })
-        .unwrap();
+        })?;
+        //.unwrap();
     }
     
     //println!("**Maked Blockchain:**\n{:?}\n",&blockchain.blocks);
     Ok(())
 }
 
+fn init_env_logger(is_enable:bool) {
+        
+    let mut builder = Builder::from_default_env();
+    builder.target(Target::Stdout);
+    if is_enable{
+       &builder.init();
+    }
+        
+    if log_enabled!(Level::Info) {            
+        info!("------------Welcome to env_logger------------");
+    }
+    else  {
+        println!("----------env_logger have not been activated----------");
+    }
+}
+
 fn sample_trx_json_data_block_from_file(file: &File) -> Result<serde_json::Value, CustomError> {
     println!("Selected mode is file!");
 
     let reader = BufReader::new(file);
-    let serde_values_transactions = serde_json::from_reader(reader).unwrap();
+    let serde_values_transactions = serde_json::from_reader(reader)?;
+    //.unwrap();
 
     return Ok(serde_values_transactions);
 }
