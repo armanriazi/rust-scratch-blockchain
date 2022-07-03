@@ -1,3 +1,5 @@
+use log::info;
+
 use super::*;
 use crate::transaction::Put;
 use crate::transaction::Transaction;
@@ -69,11 +71,16 @@ impl  Blockchain  {
             let mut block_spent: HashSet<Hash> = HashSet::new();
             let mut block_created: HashSet<Hash> = HashSet::new();
             let mut total_fee = 0;
-
-            for transaction in option_transactions {
+          
+            for transaction in option_transactions {  
                 let input_hashes = transaction.returns_closure_io_hash(&IOH::Input);
                 let output_hashes = transaction.returns_closure_io_hash(&IOH::Output);
 
+                info!("input_hashes {:?}\n",input_hashes());
+                info!("output_hashes {:?}\n",output_hashes());
+                info!("unspent_outputs {:?}\n",&self.unspent_outputs);
+                info!("block_spent {:?}\n",&block_spent);
+                
                 if !(&input_hashes() - &self.unspent_outputs).is_empty()
                     || !(&input_hashes() & &block_spent).is_empty()
                 {

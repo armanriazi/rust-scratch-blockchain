@@ -18,15 +18,30 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                             "to_addr": "Bob",
                             "value": "10"
                         }]
-                }] ,
-                "transaction2":[{
+                }] 
+            }]
+        }],
+        "block2":[{
+            "transactions":[{
+                "transaction1":[{
                         "inputs":[{
-                        },{
+                           
+                        }],
+                        "outputs":[{
                             "to_addr": "Alice",
                             "value": "50"
                         },{
                             "to_addr": "Bob",
                             "value": "10"
+                        }]
+                }] ,
+                "transaction2":[{
+                        "inputs":[{                    
+                            "to_addr": "Alice",
+                            "value": "49"
+                        },{
+                            "to_addr": "Bob",
+                            "value": "9"
                         }],
                         "outputs":[{
                             "to_addr": "Mina",
@@ -38,7 +53,7 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                 }]
             }]
         }],
-        "block2":[{
+        "block3":[{
                 "transactions":[{
                     "transaction1":[{
                             "inputs":[{
@@ -57,8 +72,7 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                             }]
                     }],
                     "transaction2":[{
-                            "inputs":[{
-                            },{
+                            "inputs":[{                            
                                 "to_addr": "Tina",
                                 "value": "10"
                             },{
@@ -138,7 +152,7 @@ pub fn sample_trx_json_data_from_string() -> Result<serde_json::Value, CustomErr
                                 "value": "0"                           
                             },{
                                 "to_addr": "Nuha",
-                                "value": "232"                                                          
+                                "value": "0"                                                          
                             }]    
                     }]                             
                 }]                 

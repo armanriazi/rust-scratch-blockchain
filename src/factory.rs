@@ -19,22 +19,19 @@ pub fn blockchain_factory<F>(
 where
     F: FnOnce() -> Result<serde_json::Value, CustomError>,
 {
-    let mut maked_transactions_of_a_block: Vec<Transaction> = vec![];
     let serde_values_transactions: serde_json::Value =
         serde_json::from_value(f().unwrap())?;//.unwrap();
     let blocks_val: serde_json::Value = serde_values_transactions["blocks"].clone();
-
-    //let mut blockchain=Blockchain::new();
-
+    let mut prev_hash: Box<[u8]> = Box::default();
     blocks_val[0]
         .as_object()
         .unwrap()
         .into_iter()
         .enumerate()
         .for_each(|(_i, block)| {
-            let mut prev_hash: Box<[u8]> = Box::default();
-
-            info!("\nBlock {:?}\n",block);
+            
+            let mut maked_transactions_of_a_block: Vec<Transaction> = vec![];
+            //info!("\nBlock {:?}\n",block);
             block
                 .1
                 .as_array()
@@ -46,7 +43,7 @@ where
                     let obg_trx = transactions.as_array().unwrap();
                     let trx = obg_trx[0].as_object().unwrap();
                     let length = &trx.keys().len() + 1;
-                    //println!("\n{:?}\n",trx);
+                    //info!("\n{:?}\n",trx);
 
                     for c in 1..length {
                         let trx_name = concat_string!("transaction", c.to_string());
@@ -54,40 +51,30 @@ where
                             .get(&trx_name)
                             .unwrap();
                         let puts: Transaction = transaction_split(trx).unwrap();
+                        info!("\n{:?}\n",puts);
                         maked_transactions_of_a_block.push(puts);
                     }
                 });
 
-            //let dd=pp(maked_transactions_of_a_block);
-            //let  rc_maked_transactions_of_a_block=  call_maked_trx(|| dd);
-            //let refcell_trx=rc_maked_transactions_of_a_block;
-            
-            // let mut c: Cell<&[Transaction]> =
-            //     Cell::new(maked_transactions_of_a_block.as_slice());
-            // let mut r: Rc<Cell<&[Transaction]>> = Rc::new(c);
-            // let mut rc: &mut Rc<Cell<[Transaction]>> = &mut r;
-
             let mut c: Cell<Vec<Transaction>> =
-                Cell::new(maked_transactions_of_a_block.to_vec());
+                    Cell::new(maked_transactions_of_a_block.to_vec());
             let mut r: Rc<Cell<Vec<Transaction>>> = Rc::new(c);
             let mut rc: &mut Rc<Cell<Vec<Transaction>>> = &mut r;
 
-
             if _i == 0 {
-                //let u=rc_maked_transactions_of_a_block(vecopt);
-                //  let y=(||rc_maked_transactions_of_a_block(vecopt);
-
                 let mut genesis_block = Block::new(0, now(), vec![0; 32], &mut Rc::clone(rc), difficulty);
                 prev_hash = genesis_block.mine().unwrap().into_boxed_slice();
                 info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
-                update_blockchain_result(&mut blockchain, genesis_block,&_i);
+                blockchain.update_with_block(genesis_block);
+                //update_blockchain_result(&mut blockchain, genesis_block,&_i);
                 
             } else if _i > 0 {
                 let mut maked_block: Block =
-                    Block::new(_i as u32, now(), prev_hash.to_vec(), &mut Rc::clone(rc), difficulty);
+                    Block::new(_i as u32, now(), prev_hash.clone().to_vec(), &mut Rc::clone(rc), difficulty);
                 prev_hash = maked_block.mine().unwrap().into_boxed_slice();
                 info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
-                update_blockchain_result(&mut blockchain, maked_block,&_i);                
+                blockchain.update_with_block(maked_block);
+                //update_blockchain_result(&mut blockchain, maked_block,&_i);                
             }
         });
 
@@ -95,14 +82,15 @@ where
 }
 
 fn update_blockchain_result(blockchain: &mut Blockchain, block: Block,& i:&usize) {
+    
     std::process::exit(match blockchain.update_with_block(block) {
         Ok(()) => {
-            info!("Success Updated With the block {}.\n", i.to_owned());
-            info!("**Maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());
-            200
+            info!("Success updated With the block {}.\n", i.to_owned());
+            //info!("**Maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());
+            0
         }
         Err(err) => {
-            eprintln!("Error in the block{} : {err:?}",i.to_owned());
+            eprintln!("Did not update on the Blockchain-Error in the block {} : {err:?}.",i.to_owned());
             1
         }
     });

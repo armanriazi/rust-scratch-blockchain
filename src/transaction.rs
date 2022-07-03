@@ -150,20 +150,20 @@ impl  Put for Transaction  {
 }
 
 impl  Transaction  {
-    // pub fn default() -> OptionTransaction<'_> {
-    //     Self::new(vec![
+    pub fn default() -> Transaction {
+        Self::new(vec![
 
-    //     ], vec![
-    //         // transaction::Value {
-    //         //     to_addr: "Alice".to_owned(),
-    //         //     value: 47,
-    //         // },
-    //         // transaction::Value {
-    //         //     to_addr: "Bob".to_owned(),
-    //         //     value: 3
-    //         // },
-    //    ])
-    // }
+        ], vec![
+            // transaction::Value {
+            //     to_addr: "Alice".to_owned(),
+            //     value: 47,
+            // },
+            // transaction::Value {
+            //     to_addr: "Bob".to_owned(),
+            //     value: 3
+            // },
+       ])
+    }
     pub fn new(inputs: Vec<Amount >, outputs: Vec<Amount >) -> Transaction  {
         Self {
             inputs: inputs,
