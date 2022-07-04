@@ -4,6 +4,7 @@ use library_blockchain::*;
 use serde_json::Value;
 use std::borrow::{Borrow, BorrowMut};
 use std::cell::{Cell, Ref, RefCell};
+use std::ops::Add;
 use std::rc::Rc;
 
 //pub unsafe trait Factory{
@@ -51,7 +52,7 @@ where
                             .get(&trx_name)
                             .unwrap();
                         let puts: Transaction = transaction_split(trx).unwrap();
-                        info!("\n{:?}\n",puts);
+                        println!("\n{:?}\n",puts);
                         maked_transactions_of_a_block.push(puts);
                     }
                 });
@@ -64,17 +65,15 @@ where
             if _i == 0 {
                 let mut genesis_block = Block::new(0, now(), vec![0; 32], &mut Rc::clone(rc), difficulty);
                 prev_hash = genesis_block.mine().unwrap().into_boxed_slice();
-                //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
-                blockchain.update_with_block(genesis_block);
-                //update_blockchain_result(&mut blockchain, genesis_block,&_i);
+                //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());                
+                update_blockchain_result(&mut blockchain, genesis_block,&_i);
                 
             } else if _i > 0 {
                 let mut maked_block: Block =
                     Block::new(_i as u32, now(), prev_hash.clone().to_vec(), &mut Rc::clone(rc), difficulty);
                 prev_hash = maked_block.mine().unwrap().into_boxed_slice();
-                //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
-                blockchain.update_with_block(maked_block);
-                //update_blockchain_result(&mut blockchain, maked_block,&_i);                
+                //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());                
+                update_blockchain_result(&mut blockchain, maked_block,&_i);                
             }
         });
 
@@ -83,17 +82,20 @@ where
 
 fn update_blockchain_result(blockchain: &mut Blockchain, block: Block,& i:&usize) {
     
-    std::process::exit(match blockchain.update_with_block(block) {
-        Ok(()) => {
-            info!("Success updated With the block {}.\n", i.to_owned());
+    //std::process::exit(
+        
+        match blockchain.update_with_block(block) {
+        Ok(_) => {
+            info!("Success updated With the block {}.\n", 1+i.to_owned());
             //info!("**Maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());
-            0
+            //0
         }
         Err(err) => {
-            eprintln!("Did not update on the Blockchain-Error in the block {} : {err:?}.",i.to_owned());
-            1
+            eprintln!("Did not update on the Blockchain-Error in the block {} : {err:?}.",1+i.to_owned());
+            //1
         }
-    });
+    }
+    //);
 }
 
 fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError> {
@@ -114,10 +116,7 @@ fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError
         let trx_inputs_vec = trx_inputs.as_array().unwrap();
 
         for item_internal_inputs in trx_inputs_vec {
-            let mut trx_inputs_model = Amount {
-                to_addr: String::from(""),
-                amount: 0,
-            };
+            let mut trx_inputs_model ;
 
             if !item_internal_inputs.is_null() {
                 if !((item_internal_inputs["value"].is_null()
@@ -146,10 +145,7 @@ fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError
         let trx_outputs_vec = trx_outputs.as_array().unwrap();
 
         for item_internal_outputs in trx_outputs_vec {
-            let mut trx_outputs_model = Amount {
-                to_addr: String::from(""),
-                amount: 0,
-            };
+            let mut trx_outputs_model ;
 
             if !item_internal_outputs.is_null() {
                 if !((item_internal_outputs["value"].is_null()

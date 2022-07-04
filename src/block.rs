@@ -26,7 +26,7 @@ use std::{
 /// </br></br>
 /// OverSpending: Sum(inputs)>=Sum(Outputs). I can't input 5 coins and be able to output 7. (on other hand inputs have to be greater since must be enough fee in input section for paying to miner.)
 
-#[derive()]
+//#[derive()]
 pub struct Block {
     pub index: u32,
     pub timestamp: u128,

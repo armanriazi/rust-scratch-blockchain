@@ -107,6 +107,7 @@ pub enum BlockValidationError {
     InvalidInput,
     InsufficientInputValue,
     InvalidCoinbaseTransaction,
+    InvalidCoinbaseTransactionFee,
 }
 /// Allow the use of "{:?}" format specifier
 #[derive(Debug)]
@@ -137,6 +138,7 @@ impl fmt::Display for crate::BlockValidationError {
                 BlockValidationError::AchronologicalTimestamp => write!(f, "BlockValidation:AchronologicalTimestamp Error"),
                 BlockValidationError::InsufficientInputValue => write!(f, "BlockValidation:InsufficientInputValue Error"),
                 BlockValidationError::InvalidCoinbaseTransaction => write!(f, "BlockValidation:InvalidCoinbaseTransaction Error"),
+                BlockValidationError::InvalidCoinbaseTransactionFee => write!(f, "BlockValidation:InvalidCoinbaseTransactionFee Error"),
                 BlockValidationError::InvalidGenesisBlockFormat => write!(f, "BlockValidation:InvalidGenesisBlockFormat Error"),
                 BlockValidationError::InvalidHash => write!(f, "BlockValidation:InvalidHash Error"),
                 BlockValidationError::InvalidInput=> write!(f, "BlockValidation:InvalidInput Error"),

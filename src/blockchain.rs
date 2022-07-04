@@ -10,6 +10,7 @@ use std::collections::HashSet;
 
 
 /// On update_with_block() we check (+)Overspending, (+)Double Spending, (-)Impersonate
+#[derive(Debug)]
 pub struct Blockchain  {
     pub blocks: Vec<Block >,
     unspent_outputs: HashSet<Hash>,
@@ -31,10 +32,10 @@ impl  Blockchain  {
         }
     }
 
-    pub fn update_with_block(&mut self, block: Block ) -> Result<(), CustomError> {
-        let i = self.blocks.len();
+    pub fn update_with_block(&mut self, block: Block ) -> Result<&Vec<Block>, CustomError> {
+        let i = &self.blocks.len();
 
-        if block.index != i as u32 {
+        if block.index != *i as u32 {
             return Err(CustomError::BlockValidation(
                 BlockValidationError::MismatchedIndex,
             ));
@@ -43,7 +44,7 @@ impl  Blockchain  {
             return Err(CustomError::BlockValidation(
                 BlockValidationError::InvalidHash,
             ));
-        } else if i != 0 {
+        } else if *i != 0 {
             // Not genesis block
             let prev_block = &self.blocks[i - 1];
             if block.timestamp <= prev_block.timestamp {
@@ -79,13 +80,17 @@ impl  Blockchain  {
                 let input_hashes = transaction.returns_closure_io_hash(&IOH::Input);
                 let output_hashes = transaction.returns_closure_io_hash(&IOH::Output);
 
-                info!("---------------------------\n");
-                info!("input_hashes {:?}\n",input_hashes());
-                info!("output_hashes {:?}\n",output_hashes());
-                info!("unspent_outputs {:?}\n",&self.unspent_outputs);
-                info!("block_spent {:?}\n",&block_spent);
-                info!("---------------------------\n");
+                println!("---------------------------\n");
+                println!("input_hashes {:?}\n",input_hashes());
+                println!("output_hashes {:?}\n",output_hashes());
+                println!("unspent_outputs {:?}\n",&self.unspent_outputs);
+                println!("block_spent {:?}\n",&block_spent);
+                println!("---------------------------\n");
                 
+                
+                println!("input_hashes - unspent_outputs={}\n",(!(&input_hashes() - &self.unspent_outputs).is_empty()).to_string());
+                println!("input_hashes & block_spent={}\n",(!(&input_hashes() & &block_spent).is_empty()).to_string());
+
                 if !(&input_hashes() - &self.unspent_outputs).is_empty()
                     || !(&input_hashes() & &block_spent).is_empty()
                 {
@@ -115,7 +120,7 @@ impl  Blockchain  {
 
             if coinbase_output_value() < total_fee {
                 return Err(CustomError::BlockValidation(
-                    BlockValidationError::InvalidCoinbaseTransaction,
+                    BlockValidationError::InvalidCoinbaseTransactionFee,
                 ));
             } else {
                 let coinbase_output_hashes = coinbase.returns_closure_io_hash(&IOH::Output);
@@ -127,8 +132,8 @@ impl  Blockchain  {
             self.unspent_outputs.extend(block_created);
         }
         println!("**Maked Blockchain:**\n{:?}\n", &block);
-        self.blocks.push(block);
+        &self.blocks.push(block);
 
-        Ok(())
+        Ok(&self.blocks)
     }
 }
