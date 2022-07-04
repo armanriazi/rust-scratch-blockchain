@@ -2,7 +2,7 @@
 name = "utils"
 version = "0.0.1"
 authors = ["Arman <armanriyazi.github.io@gmail.com>"]
-description = "A scratched blockchain implementation"
+description = "A native utils-remotly"
 edition = "2021"
 readme = "README.md"
 license = "MIT"
