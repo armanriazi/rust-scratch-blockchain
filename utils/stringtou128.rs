@@ -26,6 +26,6 @@ fn is_run_app_stringtou128(difficulty_str: &String) -> Result<&str, &str> {
     match l {
         34 => Ok(&(difficulty_str).as_str()),
         _ => Err("difficulty length must be 34 char"),
-    }
-    //Ok(()))
+    };
+    Ok("")
 }
