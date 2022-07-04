@@ -54,7 +54,7 @@ serde_derive = { version = "1.0.137"}
 [dependencies]
 log = "0.4.0"
 env_logger = "0.9.0"
-utils = { path = "./utils", version = "0.1.0" }
+utils = { path = "./utils", version = "0.0.1" }
 concat-string = "1.0.1"
 json = "0.12.4"
 hex = "0.3.2"
