@@ -1,12 +1,14 @@
 [package]
-name = "rust-scratche-blockchain"
+name = "blockchain-scratch-rust"
 version = "0.1.0"
 authors = ["Arman <armanriyazi.github.io@gmail.com>"]
+description = "A scratched blockchain implementation"
 edition = "2021"
 readme = "README.md"
 license = "MIT"
-
-keywords = ["msrv", "rust-version", "toolchain", "find", "blockchain"]
+homepage = "https://armanriazi.github.io/site/public/programming/rust/rust-scratch-blockchain"
+repository = "https://github.com/armanriazi/rust-scratch-blockchain"
+keywords = ["msrv", "rust-version", "toolchain", "find", "blockchain","proof","dao","substrate","decentralized","cryptocurrency"]
 categories = ["development-tools", "development-tools::cargo-plugins", "command-line-utilities"]
 
 [package.metadata]

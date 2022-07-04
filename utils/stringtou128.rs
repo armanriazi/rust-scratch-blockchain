@@ -1,5 +1,6 @@
 pub fn string_to_u128(difficulty_str: &String) -> u128 {
-    std::process::exit(match is_run_app_stringtou128(&difficulty_str) {
+    //std::process::exit(
+        match is_run_app_stringtou128(&difficulty_str) {
         Ok(str) => {
             let diff_str = str.trim().to_lowercase().to_string();
             let diff_digits = diff_str.strip_prefix("0x").unwrap();
@@ -13,10 +14,11 @@ pub fn string_to_u128(difficulty_str: &String) -> u128 {
             return difficulty;
         }
         Err(err) => {
-            eprintln!("error: {err:?}");
+            eprintln!("Error string_to_u128: {err:?}");
             1
         }
-    });
+    }
+//);
 }
 
 fn is_run_app_stringtou128(difficulty_str: &String) -> Result<&str, &str> {

@@ -108,6 +108,7 @@ pub enum BlockValidationError {
     InsufficientInputValue,
     InvalidCoinbaseTransaction,
     InvalidCoinbaseTransactionFee,
+    NonceAttemptFailed
 }
 /// Allow the use of "{:?}" format specifier
 #[derive(Debug)]
@@ -144,6 +145,7 @@ impl fmt::Display for crate::BlockValidationError {
                 BlockValidationError::InvalidInput=> write!(f, "BlockValidation:InvalidInput Error"),
                 BlockValidationError::MismatchedIndex=> write!(f, "BlockValidation:MismatchedIndex Error"),
                 BlockValidationError::MismatchedPreviousHash=> write!(f, "BlockValidation:MismatchedPreviousHash Error"),
+                BlockValidationError::NonceAttemptFailed=> write!(f, "BlockValidation:NonceAttemptFailed Error"),                
             }
         }
 }

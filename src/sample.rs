@@ -28,10 +28,10 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                         }],
                         "outputs":[{
                             "to_addr": "Alice",
-                            "value": "0"
+                            "value": "1000"
                         },{
                             "to_addr": "Bob",
-                            "value": "0"
+                            "value": "1000"
                         }]
                 }] ,
                 "transaction2":[{
@@ -44,119 +44,39 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                         }],
                         "outputs":[{
                             "to_addr": "Alice",
-                            "value": "50"
+                            "value": "40"
                         },{
                             "to_addr": "Bob",
-                            "value": "10"
+                            "value": "20"
                         }]
                 }]
             }]
-        }],
-        "block3":[{
-                "transactions":[{
-                    "transaction1":[{
-                            "inputs":[{                             
-                            }],
-                            "outputs":[{
-                                "to_addr": "Alice",
-                                "value": "0"
-                            },{
-                                "to_addr": "Bob",
-                                "value": "0"
-                            }]
-                    }],
-                    "transaction2":[{
-                            "inputs":[{        
-                                "to_addr": "Alice",
-                                "value": "50"
-                            },{
-                                "to_addr": "Bob",
-                                "value": "10"                                                                       
-                            }],
-                            "outputs":[{       
-                                "to_addr": "Alice",
-                                "value": "50"
-                            },{
-                                "to_addr": "Bob",
-                                "value": "10"                      
-                            }]
-                    }]
-                }]
         }]
       }]
     }))
 }
 
 pub fn sample_trx_json_data_from_string() -> Result<serde_json::Value, CustomError> {
-    let json = r#"
+    let json = r#"{
     "blocks":[{    
         "block1":[{
             "transactions":[{
-                "transaction1":[{
-                        "inputs":[{        
-                            "to_addr": "",
-                            "value": ""                               
-                        }],    
+                    "transaction1":[{
+                        "inputs":[{                          
+                        }],
                         "outputs":[{
                             "to_addr": "Alice",
-                            "value": "50"                           
+                            "value": "1000"
                         },{
                             "to_addr": "Bob",
-                            "value": "10"                                         
-                        }]    
-                }] ,
-                "transaction2":[{
-                        "inputs":[{                                                              
-                        },{
-                            "to_addr": "Alice",
-                            "value": "50"                           
-                        },{
-                            "to_addr": "Bob",
-                            "value": "10"                            
-                        }],    
-                        "outputs":[{       
-                            "to_addr": "Mina",
-                            "value": "48"                           
-                        },{
-                            "to_addr": "Nuha",
-                            "value": "3"                                                          
-                        }]    
-                }]                             
+                            "value": "1000"
+                        }]
+                    }]
             }]
-        }],
-        "block2":[{
-                "transactions":[{
-                    "transaction1":[{
-                            "inputs":[{                           
-                            }],    
-                            "outputs":[{
-                                "to_addr": "Alice",
-                                "value": "10"                           
-                            },{
-                                "to_addr": "Bob",
-                                "value": "0"                                         
-                            }]    
-                    }],
-                    "transaction2":[{
-                            "inputs":[{                                                              
-                            },{
-                                "to_addr": "Alice",
-                                "value": "10"                           
-                            },{
-                                "to_addr": "Bob",
-                                "value": "0"                            
-                            }],    
-                            "outputs":[{       
-                                "to_addr": "Mina",
-                                "value": "0"                           
-                            },{
-                                "to_addr": "Nuha",
-                                "value": "0"                                                          
-                            }]    
-                    }]                             
-                }]                 
-        }]      
-    }]"#;
+        }]
+    }]
+    }
+    "#;
 
     let js = serde_json::from_str(json).unwrap();
 

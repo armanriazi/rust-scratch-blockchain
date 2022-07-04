@@ -1,0 +1,65 @@
+{
+    "blocks":[{    
+        "block1":[{
+            "transactions":[{
+                "transaction1":[{
+                    "inputs":[{
+                                    
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Alice",
+                        "value": "50"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "7"                           
+                    }]    
+                }]                        
+            }]                 
+        }] ,
+        "block2":[{
+            "transactions":[{
+                "transaction1":[{
+                    "inputs":[{
+                     
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Chris",
+                        "value": "536"                         
+                    }]    
+                }],
+                "transaction2":[{
+                    "inputs":[{
+                        "to_addr": "Alice",
+                        "value": "50"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "7"      
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Alice",
+                        "value": "49"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "6"                        
+                    }]    
+                }]                          
+            }]                 
+        }],
+        "block3":[{
+            "transactions":[{
+                "transaction1":[{
+                    "inputs":[{                                                                    
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Alice",
+                        "value": "49"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "6"                           
+                    }]    
+                }]                        
+            }]                 
+        }]        
+     }] 
+    }
+    

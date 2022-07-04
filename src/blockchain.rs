@@ -1,16 +1,18 @@
-use log::info;
+
+
+use serde::Serialize;
 
 use super::*;
 use crate::transaction::Put;
-use crate::transaction::Transaction;
+
 use crate::transaction::IO;
-use crate::transaction::IOH;
 use std::collections::HashSet;
 
 
 
-/// On update_with_block() we check (+)Overspending, (+)Double Spending, (-)Impersonate
-#[derive(Debug)]
+/// Collection of related blocks as the same as linked lists
+/// In this program logic of POW algorithm have used.
+#[derive(Debug,Serialize)]
 pub struct Blockchain  {
     pub blocks: Vec<Block >,
     unspent_outputs: HashSet<Hash>,
@@ -32,6 +34,10 @@ impl  Blockchain  {
         }
     }
 
+    /// In the update_with_block() checking for (+)Overspending, (+)Double Spending, (-)Impersonate.
+    /// Define BlockValidationError for violation of the rules POW
+    /// Call input and output hash function  
+    /// Retain unspent_outputs of the Blockchain
     pub fn update_with_block(&mut self, block: Block ) -> Result<&Vec<Block>, CustomError> {
         let i = &self.blocks.len();
 
@@ -77,26 +83,27 @@ impl  Blockchain  {
             let mut total_fee = 0;
           
             for transaction in option_transactions {  
-                let input_hashes = transaction.returns_closure_io_hash(&IOH::Input);
-                let output_hashes = transaction.returns_closure_io_hash(&IOH::Output);
+                let input_hashes = transaction.returns_closure_io_hash(&IO::Input);
+                let output_hashes = transaction.returns_closure_io_hash(&IO::Output);
 
-                println!("---------------------------\n");
-                println!("input_hashes {:?}\n",input_hashes());
-                println!("output_hashes {:?}\n",output_hashes());
-                println!("unspent_outputs {:?}\n",&self.unspent_outputs);
-                println!("block_spent {:?}\n",&block_spent);
-                println!("---------------------------\n");
-                
-                
-                println!("input_hashes - unspent_outputs={}\n",(!(&input_hashes() - &self.unspent_outputs).is_empty()).to_string());
-                println!("input_hashes & block_spent={}\n",(!(&input_hashes() & &block_spent).is_empty()).to_string());
-
+                // info!("---------------------------\n");
+                // info!("input_hashes {:?}\n",input_hashes());
+                // info!("output_hashes {:?}\n",output_hashes());
+                // info!("unspent_outputs {:?}\n",&self.unspent_outputs);
+                // info!("block_spent {:?}\n",&block_spent);
+                // info!("---------------------------\n");
+                                             
                 if !(&input_hashes() - &self.unspent_outputs).is_empty()
                     || !(&input_hashes() & &block_spent).is_empty()
                 {
-                    return Err(CustomError::BlockValidation(
-                        BlockValidationError::InvalidInput,
-                    ));
+                    if *i==0 {                                
+                        //info!("input_hashes - unspent_outputs={}\n",(!(&input_hashes() - &self.unspent_outputs).is_empty()).to_string());
+                        //info!("input_hashes & block_spent={}\n",(!(&input_hashes() & &block_spent).is_empty()).to_string());
+                    
+                        return Err(CustomError::BlockValidation(
+                            BlockValidationError::InvalidInput
+                        ));
+                    }
                 }
 
                 let input_value = transaction.returns_closure_io(&IO::Input);
@@ -123,7 +130,7 @@ impl  Blockchain  {
                     BlockValidationError::InvalidCoinbaseTransactionFee,
                 ));
             } else {
-                let coinbase_output_hashes = coinbase.returns_closure_io_hash(&IOH::Output);
+                let coinbase_output_hashes = coinbase.returns_closure_io_hash(&IO::Output);
                 block_created.extend(coinbase_output_hashes());
             }
 
@@ -131,8 +138,8 @@ impl  Blockchain  {
                 .retain(|output| !block_spent.contains(output));
             self.unspent_outputs.extend(block_created);
         }
-        println!("**Maked Blockchain:**\n{:?}\n", &block);
-        &self.blocks.push(block);
+        println!("**BlOcKcHaIn SiGnAls:**\n{:?}\n", &block);
+        let _ = &self.blocks.push(block);
 
         Ok(&self.blocks)
     }

@@ -2,31 +2,39 @@
 // #![warn(missing_doc_code_examples)]
 //#![feature(doc_cfg)]
 
+use serde::{Serialize};
+
 use super::*;
 use crate::transaction::Transaction;
 use std::{
-    borrow::Borrow,
-    cell::{Cell, Ref, RefCell},
+    cell::{Cell},
     fmt::{self, Debug, Formatter},
-    os::unix::prelude::OsStrExt,
     rc::Rc,
 };
 
-/// payload include transactions,difficulty,..
+/// Payload include transactions, difficulty,..
 /// </br></br>
 /// Order store of bytes: there are 2 types big-endian like 00 00 00 2a, little-endian like (our choice) 2a 00 00 00, u128 is in edian order, so because this material 16bytes of our hash will appear at the end of out hash's byte sector.
 /// </br></br>
 /// nonce is just field for changes in block as an arbitary that hashed along with the data. so generating the correct hash for a block is like the puzzle , and the nonce is the key to that puzzle. the process of finding that key is called mining.
 /// </br></br>
-/// Impersonation: This can be solved by adding a "Signature" to outpus to verify they are being spent by their owner.(We can't assume that whoever sent us the trx over the network is also the person who created the trx. For now we'll kind of ignore solving this problem. we might come back to it when we go over smart contracts)
 /// </br></br>
-/// DoubleSpending: Make Sure that any one output is never used as an input more than once. This can be done by maintaining a pool of unspent outputs and rejecting any trx that tries to spend outputs that don't exist in the pool.
-/// </br></br>
-/// Inputs: unused outputs from prev TRXs, Outputs: new outouts That can be used in future TRXs.
+/// Overspending: where did the money come from?  inputs must be >= sum of values of generated outputs.
 /// </br></br>
 /// OverSpending: Sum(inputs)>=Sum(Outputs). I can't input 5 coins and be able to output 7. (on other hand inputs have to be greater since must be enough fee in input section for paying to miner.)
+/// </br></br>
+/// Impersonation: this can be solved by adding a "Signature" to outpus to verify they are being spent by their owner.(We can't assume that whoever sent us the trx over the network is also the person who created the trx. For now we'll kind of ignore solving this problem. we might come back to it when we go over smart contracts).
+/// </br></br>
+/// Impersonation: who owns the money and who is sending it?  Solved by adding signature and smart contract(not cover in this example).
+/// </br></br>
+/// DoubleSpending: make sure that anyone output is never used as an input more than once. This can be done by maintaining a pool of unspent outputs and rejecting any trx that tries to spend outputs that don't exist in the pool.
+/// </br></br>
+/// Double Spending: is the money avaliable? any one output is never used as an input more than once.
+/// </br></br>
+/// </br></br>
+/// Inputs: unused outputs from prev TRXs, Outputs: new outouts That can be used in future TRXs.
 
-//#[derive()]
+#[derive(Serialize)]
 pub struct Block {
     pub index: u32,
     pub timestamp: u128,
@@ -39,19 +47,13 @@ pub struct Block {
 
 impl Debug for Block {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        //let optrx = self.transactions;
-        let result = write!(
-            f,
-            "Prev hash of {} the Block[{}]: {} at: {} trx.len: {} nonce: {}",
-            &hex::encode(&self.prev_block_hash),
+        write!(f, "Block[{}]: {} at: {} with: {} trx, nonce: {}",
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
             &self.transactions.len(),
-            &self.nonce
-        );
-        //self.transactions.set(optrx);
-        result
+            &self.nonce,
+       )
     }
 }
 
@@ -76,7 +78,7 @@ impl Block {
 
     /// 0xfff... lowest difficulty
     /// </br>
-    /// 0x000... => highest difficulty => taking more time=> more highest nonce=> the end of blockhash view see more zero so nonce 0 means end of of blockchash there isn'nt any zero
+    /// 0x000... => highest difficulty => taking more time=> more highest nonce=> the end of blockhash see more zero so nonce 0 means end of of blockchash there isn'nt any zero at the end of blockhash.
     /// </br></br>
     /// nonce is just field for changes in block as an arbitary that hashed along with the data. so generating the correct hash for a block is like the puzzle , and the nonce is the key to that puzzle. the process of finding that key is called mining.
     /// </br></br>
@@ -90,11 +92,12 @@ impl Block {
 
             if check_difficulty(&hash, self.difficulty) {
                 self.hash = hash;
-
-                break;
+                return Ok(self.hash.clone())
+             
             }
         }
-        Ok(self.hash.clone())
+        return Err(CustomError::BlockValidation(BlockValidationError::NonceAttemptFailed));
+      
     }
 }
 

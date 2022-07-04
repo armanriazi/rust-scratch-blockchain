@@ -16,9 +16,9 @@
 
 ### The difference between the current work and the prev works
 
-> I have tried to use fundamental concepts correctly, for example, all of us know any block have not any copy so because of it we are calling blockchain! Unlike many repositories on GitHub(testbed/scratched projects-non productive) that almost use Copy/Clone features of Rust-Lang.  In the following, there are some features that cause a different project.
+> I have tried to use fundamental concepts correctly, for example, all of us know any block have not any copy so because of it we are calling blockchain! Unlike many repositories on GitHub(testbed/scratched projects-non productive) that almost use Copy/Clone attributes of Rust-Lang for creating block. In the following, there are some features that cause a different project.
 
-> Currently Status: Under Refactoring
+> Currently Status: Under refactoring with contributors
 
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
@@ -39,11 +39,13 @@ DIFFICULTY={difficulty} cargo {mode} {file name}
 
 ```
 cargo build
-DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run file sample-bolocks.json
+cargo run
+RUST_LOG=INFO DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run file sample-bolocks.json
 DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run macrojson
 DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run stringjson
 time cargo run
 cargo watch -x run
+cargo test
 ```
 *Using time and watch is optional and depends on your purpose*
 
@@ -51,17 +53,18 @@ cargo watch -x run
 
 - [✓] Modular
 
-- [✓] UnitTest(semi:future work)
-
 - [✓] Customized Error Handling
 
 - [✓] Json & String Data Deserialized
 
-- [✓] Closure(Functional Programming)
+- [✓] Functional Programming(Closure)
 
 - [✓] Cryptography-Hashing Alogrithm SHA-256
 
-- [✓] Configuration Files(semi- devOps)
+- [-] Unit & Integration Testing(structure-need more time in the future)
+
+- [-] Configuration Files(devOps-need more time in the future)
+
 
 ### Used Concepts
 
@@ -375,6 +378,8 @@ To isolate unsafe code as much as possible, it’s best to enclose unsafe code w
 > Parts of the standard library are implemented as safe abstractions over unsafe code that has been audited.
 Wrapping unsafe code in a safe abstraction prevents uses of unsafe from leaking out into all the places that you or your users might want to use the functionality implemented with unsafe code, because using a safe abstraction is safe.
 
+---
+
 # Contributors
 
 nom is the fruit of the work of many contributors over the years, many thanks for your help!
@@ -382,3 +387,18 @@ nom is the fruit of the work of many contributors over the years, many thanks fo
 <a href="https://github.com/armanriazi/rust-scratch-blockchain/graphs/contributors">
   Contributors
 </a>
+
+---
+
+# Thanks
+[Convert string to u128](https://users.rust-lang.org/u/LegionMammal978)
+
+---
+
+# Solved Issues
+
+[Convert-string-to-u128](https://users.rust-lang.org/t/convert-string-to-u128/77183)
+
+[Error the method `take` exists for struct `Rc<Cell<&’a Vec<>>>](https://users.rust-lang.org/t/error-the-method-take-exists-for-struct-rc-cell-a-vec/77602/)
+
+[Blockchain Without Copy,Clone Block-Refcell ](https://users.rust-lang.org/t/blockchain-without-copy-clone-block-refcell/77448/)

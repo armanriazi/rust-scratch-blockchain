@@ -7,7 +7,7 @@ mod tests {
     //use crate::lib::*;
     //use crate::common::*;    
     use pretty_assertions::assert_eq; 
-    use log::{debug, error, log_enabled, info, Level};
+    use log::{info};
     fn init() {
         let _ = env_logger::builder().is_test(true).try_init();
     }

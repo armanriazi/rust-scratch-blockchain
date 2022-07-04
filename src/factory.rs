@@ -1,17 +1,12 @@
 use super::*;
-use library_blockchain::transaction::{Amount, SuperTransaction, Transaction};
-use library_blockchain::*;
-use serde_json::Value;
-use std::borrow::{Borrow, BorrowMut};
-use std::cell::{Cell, Ref, RefCell};
-use std::ops::Add;
-use std::rc::Rc;
+use library_blockchain::transaction::{Amount, Transaction};
 
-//pub unsafe trait Factory{
+use std::cell::{Cell};
+use std::rc::Rc;
 
 #[allow(dead_code)]
 #[allow(unused_mut)]
-#[deny(elided_lifetimes_in_paths)]
+// #[deny(elided_lifetimes_in_paths)]
 pub fn blockchain_factory<F>(
     mut blockchain: Blockchain,
     difficulty: u128,
@@ -52,7 +47,7 @@ where
                             .get(&trx_name)
                             .unwrap();
                         let puts: Transaction = transaction_split(trx).unwrap();
-                        println!("\n{:?}\n",puts);
+                        //info!("\n{:?}\n",puts);
                         maked_transactions_of_a_block.push(puts);
                     }
                 });
@@ -100,7 +95,7 @@ fn update_blockchain_result(blockchain: &mut Blockchain, block: Block,& i:&usize
 
 fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError> {
     let mut trx_inputs_model_vec: Vec<Amount> = vec![];
-    let mut new_option_transaction: Transaction;
+    let new_option_transaction: Transaction;
 
     if trx.is_null() {
         return Err(CustomError::BlockchainFactory(BlockainFactoryError::Other));
@@ -116,7 +111,7 @@ fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError
         let trx_inputs_vec = trx_inputs.as_array().unwrap();
 
         for item_internal_inputs in trx_inputs_vec {
-            let mut trx_inputs_model ;
+            let trx_inputs_model ;
 
             if !item_internal_inputs.is_null() {
                 if !((item_internal_inputs["value"].is_null()
@@ -145,7 +140,7 @@ fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError
         let trx_outputs_vec = trx_outputs.as_array().unwrap();
 
         for item_internal_outputs in trx_outputs_vec {
-            let mut trx_outputs_model ;
+            let trx_outputs_model ;
 
             if !item_internal_outputs.is_null() {
                 if !((item_internal_outputs["value"].is_null()

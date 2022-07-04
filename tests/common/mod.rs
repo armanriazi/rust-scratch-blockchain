@@ -1,23 +1,21 @@
 
-use proptest::prelude::*;
+
 // Credit: https://stackoverflow.com/a/44378174/2773837
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use std::collections::HashSet;
 use std::{
-    borrow::Borrow,
-    cell::{Cell, Ref, RefCell},
-    fmt::{self, Debug, Formatter},
+    cell::{Cell},
     os::unix::prelude::OsStrExt,
     rc::Rc,
 };
-use std::{ops::Deref};
+
 
 extern crate serde;
 
-use serde::{Deserialize, Serialize};
 
-use crate::tests;
+
+
 
 
 type Hash = Vec<u8>;

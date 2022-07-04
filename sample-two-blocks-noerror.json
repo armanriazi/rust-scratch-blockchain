@@ -23,11 +23,7 @@
                 "transaction1":[
                     {
                             "inputs":[{
-                                "to_addr": "Alice",
-                                "value": "45"                           
-                            },{
-                                "to_addr": "Bob",
-                                "value": "1"                           
+                      
                             }],    
                             "outputs":[{   
                                 "to_addr": "Alice",

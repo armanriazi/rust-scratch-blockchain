@@ -1,8 +1,8 @@
 #![deny(rust_2018_idioms)]
-#![warn(rust_2021_idioms)]
+#![warn(rust_2018_idioms)]
 
 use env_logger::{Builder, Target};
-use proc_macro;
+
 use crate::factory::blockchain_factory;
 use library_blockchain::*;
 use library_utils::stringtou128::string_to_u128;
@@ -10,13 +10,13 @@ use std::env;
 use std::env::set_var;
 use std::fs::File;
 use std::io::BufReader;
-use log::{debug, error, log_enabled, info, Level,trace};
-//use concat_string;
+use log::{log_enabled, info, Level};
+
 pub mod factory;
 pub mod sample;
 
 
-#[deny(elided_lifetimes_in_paths)]
+//#[deny(elided_lifetimes_in_paths)]
 #[allow(dead_code)]
 #[allow(unused_mut)]
 #[macro_use]
@@ -24,12 +24,14 @@ extern crate log;
 #[macro_use(concat_string)]
 extern crate concat_string;
 
+/// DIFFICULTY=0x000fffffffffffffffffffffffffffff cargo run
+/// RUST_LOG=INFO DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run file sample-bolocks.json 
 fn main() -> Result<(), CustomError> {
 
-    //env_logger::init();
+  
     init_env_logger(true);
 
-    info!("starting up");
+    info!("Starting Up...");
 
 
     let difficulty_str = var_ret_difficulty("0x00ffffffffffffffffffffffffffffff");
@@ -41,11 +43,11 @@ fn main() -> Result<(), CustomError> {
     let mut args: Vec<String> = env::args().collect();
     let mut mode = String::default();
     let mut file_name = String::default();
-    let mut blockchain = Blockchain::new();
+    let blockchain = Blockchain::new();
 
     if (&args).len() <= 1 {
-        println!("** Please select a runner mode\n Help(file path transaction_list, or module transaction_list)\n Default is cargo run module **\n");
-        args.push("module".to_owned());
+        println!("** Please select a runner mode\n Help(file path transaction_list, or macrojson transaction_list)\n Default is cargo run macrojson **\n");
+        args.push("macrojson".to_owned());
     } else {
         mode = (&args[1]).trim().to_lowercase();
     }
@@ -56,29 +58,26 @@ fn main() -> Result<(), CustomError> {
         blockchain_factory(blockchain, difficulty, || {
             sample_trx_json_data_block_from_file(&file)
         })?;
-        //.unwrap();
-        //println!("\nBlockchain:\n{:?}", &blockchain);
+                
     } else if &mode == "macrojson" {
         println!("Selected mode is macrojson\n");
         blockchain_factory(blockchain, difficulty, || {
             sample::sample_trx_json_data_from_module()
         })?;
-        //.unwrap();
+        
     } else if &mode == "stringjson" {
         println!("Selected mode is stringjson\n");
         blockchain_factory(blockchain, difficulty, || {
             sample::sample_trx_json_data_from_string()
         })?;
-        //.unwrap();
+        
     } else {
         println!("The mode is not selected! Default is macrojson\n");
         blockchain_factory(blockchain, difficulty, || {
             sample::sample_trx_json_data_from_module()
         })?;
-        //.unwrap();
+        
     }
-    
-    //println!("**Maked Blockchain:**\n{:?}\n",&blockchain.blocks);
     Ok(())
 }
 
@@ -103,7 +102,7 @@ fn sample_trx_json_data_block_from_file(file: &File) -> Result<serde_json::Value
 
     let reader = BufReader::new(file);
     let serde_values_transactions = serde_json::from_reader(reader)?;
-    //.unwrap();
+    
 
     return Ok(serde_values_transactions);
 }
@@ -117,20 +116,3 @@ fn var_ret_difficulty(difficulty_arg: &str) -> String {
         }
     }
 }
-
-// pub fn shave_the_yak(yak: &mut Yak) {
-//     trace!(target = "yak_events", yak = as_serde!(yak); "Commencing yak shaving");
-
-//     loop {
-//         match find_a_razor() {
-//             Ok(razor) => {
-//                 info!(razor = razor; "Razor located");
-//                 yak.shave(razor);
-//                 break;
-//             }
-//             Err(err) => {
-//                 warn!(err = as_error!(err); "Unable to locate a razor, retrying");
-//             }
-//         }
-//     }
-// }

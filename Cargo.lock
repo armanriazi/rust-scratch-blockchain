@@ -80,6 +80,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
+name = "blockchain-scratch-rust"
+version = "0.1.0"
+dependencies = [
+ "concat-string",
+ "crypto-hash",
+ "env_logger",
+ "hex",
+ "json",
+ "log",
+ "pretty_assertions",
+ "proptest",
+ "rust-releases",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "tracing-subscriber",
+ "utils",
+]
+
+[[package]]
 name = "byteorder"
 version = "1.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -683,26 +703,6 @@ dependencies = [
  "rust-releases-io",
  "thiserror",
  "time",
-]
-
-[[package]]
-name = "rust-scratche-blockchain"
-version = "0.1.0"
-dependencies = [
- "concat-string",
- "crypto-hash",
- "env_logger",
- "hex",
- "json",
- "log",
- "pretty_assertions",
- "proptest",
- "rust-releases",
- "serde",
- "serde_derive",
- "serde_json",
- "tracing-subscriber",
- "utils",
 ]
 
 [[package]]

@@ -8,12 +8,12 @@
             "type": "lldb",
             "request": "launch",
             "name": "test-mod tests",
-            "program": "${workspaceFolder}/target/debug/deps/rust-scratche-blockchain",
+            "program": "${workspaceFolder}/target/debug/deps/rust-scratch-blockchain",
             "args": [ "tests", "--nocapture" ],
             "cwd": "${workspaceFolder}",
             "sourceMap": {},
             "sourceLanguages": [ "rust" ],
-            "relativePathBase": "/mnt/home/rust-scratche-blockchain"
+            "relativePathBase": "/mnt/home/rust-scratch-blockchain"
         }, 
         {
             "type": "lldb",
