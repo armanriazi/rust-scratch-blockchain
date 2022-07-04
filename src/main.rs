@@ -5,7 +5,7 @@ use env_logger::{Builder, Target};
 
 use crate::factory::blockchain_factory;
 use library_blockchain::*;
-mod  library_utils;
+use  library_utils::{*, stringtou128::string_to_u128};
 use std::env;
 use std::env::set_var;
 use std::fs::File;
