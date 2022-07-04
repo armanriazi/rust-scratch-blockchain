@@ -41,7 +41,7 @@ proptest = "1"
 env_logger = "0.9.0"
 log = "0.4.0"
 pretty_assertions = "1"
-utils = { path = "./utils" }
+utils = { path = "./utils", version = "0.1.0" }
 concat-string = "1.0.1"
 # json output
 json = "0.12.4"

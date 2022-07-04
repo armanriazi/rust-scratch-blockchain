@@ -1,7 +1,8 @@
 [package]
 name = "utils"
 version = "0.1.0"
-authors = ["Arman <arman2riazi@gmail.com>"]
+authors = ["Arman <armanriyazi.github.io@gmail.com>"]
+description = "A scratched blockchain implementation"
 edition = "2021"
 readme = "README.md"
 license = "MIT"
