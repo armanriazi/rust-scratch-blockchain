@@ -1,5 +1,5 @@
 [package]
-name = "utils"
+name = "library_utils"
 version = "0.0.1"
 authors = ["Arman <armanriyazi.github.io@gmail.com>"]
 description = "A native utils-remotly"
