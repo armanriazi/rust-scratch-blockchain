@@ -1,7 +1,7 @@
 pub fn string_to_u128(difficulty_str: &String) -> u128 {
     //std::process::exit(
         match is_run_app_stringtou128(&difficulty_str) {
-        Ok(str) => {
+        Some(str) => {
             let diff_str = str.trim().to_lowercase().to_string();
             let diff_digits = diff_str.strip_prefix("0x").unwrap();
             let difficulty = u128::from_str_radix(diff_digits, 16).unwrap();
@@ -13,19 +13,20 @@ pub fn string_to_u128(difficulty_str: &String) -> u128 {
             assert_eq!(diff_str, de_diff_str);
             return difficulty;
         }
-        Err(err) => {
-            eprintln!("Error string_to_u128: {err:?}");
+        None => {
+            println!("Error string_to_u128");
             1
         }
     }
 //);
 }
 
-fn is_run_app_stringtou128(difficulty_str: &String) -> Result<&str, &str> {
-    let l = (&difficulty_str).as_str().len();
-    match l {
-        34 => Ok(&(difficulty_str).as_str()),
-        _ => Err("difficulty length must be 34 char"),
-    };
-    Ok("")
+fn is_run_app_stringtou128(difficulty_str: &String) -> Option<String> {
+    // let l = (&difficulty_str).as_str().len();
+    // match l {
+    //     34 => Ok(&(difficulty_str).as_str()),
+    //     _ => Err("difficulty length must be 34 char"),
+    // };
+    Some((&(difficulty_str).as_str()).to_string())
+    
 }
