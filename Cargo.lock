@@ -96,6 +96,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "tracing-subscriber",
+ "utils",
 ]
 
 [[package]]
