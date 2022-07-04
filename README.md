@@ -26,6 +26,8 @@
 
 [Docs.rs](https://docs.rs/crate/blockchain-scratch-rust/latest)
 
+[Package Manager Crates.io](https://crates.io/search?q=blockchain-scratch-rust)
+
 ### Instructions for working with
 
 ```
