@@ -29,19 +29,15 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                         }],
                         "outputs":[{
                             "to_addr": "Alice",
-                            "value": "50"
+                            "value": "100"
                         },{
                             "to_addr": "Bob",
-                            "value": "10"
+                            "value": "20"
                         }]
                 }] ,
                 "transaction2":[{
                         "inputs":[{                    
-                            "to_addr": "Alice",
-                            "value": "49"
-                        },{
-                            "to_addr": "Bob",
-                            "value": "9"
+                                                
                         }],
                         "outputs":[{
                             "to_addr": "Mina",
@@ -57,11 +53,7 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                 "transactions":[{
                     "transaction1":[{
                             "inputs":[{
-                                "to_addr": "Mina",
-                                "value": "48"
-                            },{
-                                "to_addr": "Nuha",
-                                "value": "3"
+                            
                             }],
                             "outputs":[{
                                 "to_addr": "Tina",
@@ -72,12 +64,7 @@ pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomErr
                             }]
                     }],
                     "transaction2":[{
-                            "inputs":[{                            
-                                "to_addr": "Tina",
-                                "value": "10"
-                            },{
-                                "to_addr": "Bina",
-                                "value": "10"
+                            "inputs":[{                                                          
                             }],
                             "outputs":[{                             
                             }]

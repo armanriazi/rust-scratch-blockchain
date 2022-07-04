@@ -64,7 +64,7 @@ where
             if _i == 0 {
                 let mut genesis_block = Block::new(0, now(), vec![0; 32], &mut Rc::clone(rc), difficulty);
                 prev_hash = genesis_block.mine().unwrap().into_boxed_slice();
-                info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
+                //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
                 blockchain.update_with_block(genesis_block);
                 //update_blockchain_result(&mut blockchain, genesis_block,&_i);
                 
@@ -72,7 +72,7 @@ where
                 let mut maked_block: Block =
                     Block::new(_i as u32, now(), prev_hash.clone().to_vec(), &mut Rc::clone(rc), difficulty);
                 prev_hash = maked_block.mine().unwrap().into_boxed_slice();
-                info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
+                //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());
                 blockchain.update_with_block(maked_block);
                 //update_blockchain_result(&mut blockchain, maked_block,&_i);                
             }

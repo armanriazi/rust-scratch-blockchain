@@ -11,7 +11,8 @@ pub mod transaction;
 type Hash = Vec<u8>;
 type Address = String;
 
-use std::fmt;
+use std::fmt::{self, Formatter};
+use std::os::unix::prelude::MetadataExt;
 // Credit: https://stackoverflow.com/a/44378174/2773837
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -96,6 +97,17 @@ pub enum BlockainFactoryError {
     IsNullTransaction,
     Other,
 }
+#[derive(Debug)]
+pub enum BlockValidationError {
+    MismatchedIndex,
+    InvalidHash,
+    AchronologicalTimestamp,
+    MismatchedPreviousHash,
+    InvalidGenesisBlockFormat,
+    InvalidInput,
+    InsufficientInputValue,
+    InvalidCoinbaseTransaction,
+}
 /// Allow the use of "{:?}" format specifier
 #[derive(Debug)]
 pub enum CustomError {
@@ -103,20 +115,47 @@ pub enum CustomError {
     SerdeJson(serde_json::Error),
     IO(std::io::Error),
     BlockchainFactory(BlockainFactoryError),
+    BlockValidation(BlockValidationError),    
     InvalidOption(String),
     Other,
 }
 
+impl fmt::Display for crate::BlockainFactoryError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match *self {
+                BlockainFactoryError::IsNullTransaction => write!(f, "BlockainFactory:IsNullTransaction Error"),
+                BlockainFactoryError::ZeroBlock => write!(f, "BlockainFactory:ZeroBlock Error"),
+                BlockainFactoryError::ZeroBlockchain => write!(f, "BlockainFactory:ZeroBlockchain Error"),
+                BlockainFactoryError::Other => write!(f, "BlockainFactory:Unknown Error"),                
+            }
+        }
+}
+
+impl fmt::Display for crate::BlockValidationError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match *self {
+                BlockValidationError::AchronologicalTimestamp => write!(f, "BlockValidation:AchronologicalTimestamp Error"),
+                BlockValidationError::InsufficientInputValue => write!(f, "BlockValidation:InsufficientInputValue Error"),
+                BlockValidationError::InvalidCoinbaseTransaction => write!(f, "BlockValidation:InvalidCoinbaseTransaction Error"),
+                BlockValidationError::InvalidGenesisBlockFormat => write!(f, "BlockValidation:InvalidGenesisBlockFormat Error"),
+                BlockValidationError::InvalidHash => write!(f, "BlockValidation:InvalidHash Error"),
+                BlockValidationError::InvalidInput=> write!(f, "BlockValidation:InvalidInput Error"),
+                BlockValidationError::MismatchedIndex=> write!(f, "BlockValidation:MismatchedIndex Error"),
+                BlockValidationError::MismatchedPreviousHash=> write!(f, "BlockValidation:MismatchedPreviousHash Error"),
+            }
+        }
+}
 // Allow the use of "{}" format specifier
 impl fmt::Display for CustomError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            CustomError::String(_) => write!(f, "String Error"),
-            CustomError::SerdeJson(ref cause) => write!(f, "SerdeJson Error: {}", cause),
-            CustomError::IO(ref cause) => write!(f, "IO Error: {}", cause),
-            CustomError::BlockchainFactory(_) => write!(f, "BlockchainFactory error!"),
-            CustomError::Other => write!(f, "Unknown error!"),
-            CustomError::InvalidOption(_) => write!(f, "Invalid Option!"),
+            CustomError::String(_) => write!(f, "\nString Error"),
+            CustomError::SerdeJson(ref cause) => write!(f, "\nSerdeJson Error: {}", cause),
+            CustomError::IO(ref cause) => write!(f, "\nIO Error: {}", cause),
+            CustomError::BlockchainFactory(ref cause) => write!(f, "\nBlockchainFactory Error: {}", cause),
+            CustomError::BlockValidation(ref cause) => write!(f, "\nBlockValidation Error: {}", cause),
+            CustomError::Other => write!(f, "\nUnknown error!"),
+            CustomError::InvalidOption(_) => write!(f, "\nInvalid Option!"),
         }
     }
 }
@@ -134,6 +173,7 @@ impl std::error::Error for CustomError {
             CustomError::SerdeJson(ref cause) => Some(cause),
             CustomError::IO(ref cause) => Some(cause),
             CustomError::BlockchainFactory(_) => None,
+            CustomError::BlockValidation(_) => None,
             CustomError::Other => None,
             CustomError::InvalidOption(_) => None,
         }
@@ -154,5 +194,15 @@ impl From<serde_json::Error> for CustomError {
 impl From<std::io::Error> for CustomError {
     fn from(cause: std::io::Error) -> CustomError {
         CustomError::IO(cause)
+    }
+}
+impl From<BlockValidationError> for CustomError {
+    fn from(cause: BlockValidationError) -> CustomError {
+        CustomError::BlockValidation(cause)
+    }
+}
+impl From<BlockainFactoryError> for CustomError {
+    fn from(cause: BlockainFactoryError) -> CustomError {
+        CustomError::BlockchainFactory(cause)
     }
 }

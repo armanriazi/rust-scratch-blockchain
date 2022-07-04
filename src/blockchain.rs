@@ -7,17 +7,7 @@ use crate::transaction::IO;
 use crate::transaction::IOH;
 use std::collections::HashSet;
 
-#[derive(Debug)]
-pub enum BlockValidationErr {
-    MismatchedIndex,
-    InvalidHash,
-    AchronologicalTimestamp,
-    MismatchedPreviousHash,
-    InvalidGenesisBlockFormat,
-    InvalidInput,
-    InsufficientInputValue,
-    InvalidCoinbaseTransaction,
-}
+
 
 /// On update_with_block() we check (+)Overspending, (+)Double Spending, (-)Impersonate
 pub struct Blockchain  {
@@ -41,31 +31,44 @@ impl  Blockchain  {
         }
     }
 
-    pub fn update_with_block(&mut self, block: Block ) -> Result<(), BlockValidationErr> {
+    pub fn update_with_block(&mut self, block: Block ) -> Result<(), CustomError> {
         let i = self.blocks.len();
 
         if block.index != i as u32 {
-            return Err(BlockValidationErr::MismatchedIndex);
+            return Err(CustomError::BlockValidation(
+                BlockValidationError::MismatchedIndex,
+            ));
+            
         } else if !block::check_difficulty(&block.hash(), block.difficulty) {
-            return Err(BlockValidationErr::InvalidHash);
+            return Err(CustomError::BlockValidation(
+                BlockValidationError::InvalidHash,
+            ));
         } else if i != 0 {
             // Not genesis block
             let prev_block = &self.blocks[i - 1];
             if block.timestamp <= prev_block.timestamp {
-                return Err(BlockValidationErr::AchronologicalTimestamp);
+                return Err(CustomError::BlockValidation(
+                    BlockValidationError::AchronologicalTimestamp,
+                ));
             } else if block.prev_block_hash != prev_block.hash {
-                return Err(BlockValidationErr::MismatchedPreviousHash);
+                return Err(CustomError::BlockValidation(
+                    BlockValidationError::MismatchedPreviousHash,
+                ));
             }
         } else {
             // Genesis block
             if block.prev_block_hash != vec![0; 32] {
-                return Err(BlockValidationErr::InvalidGenesisBlockFormat);
+                return Err(CustomError::BlockValidation(
+                    BlockValidationError::InvalidGenesisBlockFormat,
+                ));
             }
         }
 
         if let Some((coinbase, option_transactions)) = block.transactions.split_first() {
             if !coinbase.is_coinbase() {
-                return Err(BlockValidationErr::InvalidCoinbaseTransaction);
+                return Err(CustomError::BlockValidation(
+                    BlockValidationError::InvalidCoinbaseTransaction,
+                ));
             }
 
             let mut block_spent: HashSet<Hash> = HashSet::new();
@@ -76,22 +79,28 @@ impl  Blockchain  {
                 let input_hashes = transaction.returns_closure_io_hash(&IOH::Input);
                 let output_hashes = transaction.returns_closure_io_hash(&IOH::Output);
 
+                info!("---------------------------\n");
                 info!("input_hashes {:?}\n",input_hashes());
                 info!("output_hashes {:?}\n",output_hashes());
                 info!("unspent_outputs {:?}\n",&self.unspent_outputs);
                 info!("block_spent {:?}\n",&block_spent);
+                info!("---------------------------\n");
                 
                 if !(&input_hashes() - &self.unspent_outputs).is_empty()
                     || !(&input_hashes() & &block_spent).is_empty()
                 {
-                    return Err(BlockValidationErr::InvalidInput);
+                    return Err(CustomError::BlockValidation(
+                        BlockValidationError::InvalidInput,
+                    ));
                 }
 
                 let input_value = transaction.returns_closure_io(&IO::Input);
                 let output_value = transaction.returns_closure_io(&IO::Output);
 
                 if &output_value() > &input_value() {
-                    return Err(BlockValidationErr::InsufficientInputValue);
+                    return Err(CustomError::BlockValidation(
+                        BlockValidationError::InsufficientInputValue,
+                    ));
                 }
 
                 let fee = &input_value() - &output_value();
@@ -105,7 +114,9 @@ impl  Blockchain  {
             let coinbase_output_value = coinbase.returns_closure_io(&IO::Output);
 
             if coinbase_output_value() < total_fee {
-                return Err(BlockValidationErr::InvalidCoinbaseTransaction);
+                return Err(CustomError::BlockValidation(
+                    BlockValidationError::InvalidCoinbaseTransaction,
+                ));
             } else {
                 let coinbase_output_hashes = coinbase.returns_closure_io_hash(&IOH::Output);
                 block_created.extend(coinbase_output_hashes());
