@@ -7,15 +7,6 @@ edition = "2021"
 readme = "README.md"
 license = "MIT"
 
-keywords = ["msrv", "rust-version", "toolchain", "find", "utils"]
-categories = ["development-tools", "development-tools::cargo-plugins", "command-line-utilities"]
-
-[package.metadata]
-msrv="1.31.0"
-
-#[build]
-#target = "stable-x86_64-unknown-linux-gnu"
-
 [lib]
 name = "library_utils"
 path = "./lib.rs"

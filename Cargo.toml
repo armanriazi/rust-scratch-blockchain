@@ -14,11 +14,6 @@ categories = ["development-tools", "development-tools::cargo-plugins", "command-
 [package.metadata]
 msrv="1.31.0"
 
-#[build]
-#target = "stable-x86_64-unknown-linux-gnu"
-
-#[build-dependencies]
-#utils = "0.0.1"
 
 [lib]
 name = "library_blockchain"
@@ -40,6 +35,7 @@ members = [
 ]
 
 [dev-dependencies]
+#utils = { path = "./utils", version = "0.0.1" }
 proptest = "1"
 env_logger = "0.9.0"
 log = "0.4.0"
@@ -57,7 +53,7 @@ serde_derive = { version = "1.0.137"}
 [dependencies]
 log = "0.4.0"
 env_logger = "0.9.0"
-utils = { path = "./utils", version = "0.0.1" }
+#utils = { path = "./utils", version = "0.0.1" }
 concat-string = "1.0.1"
 json = "0.12.4"
 hex = "0.3.2"
