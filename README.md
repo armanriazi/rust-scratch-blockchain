@@ -22,6 +22,10 @@
 
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
+### Documents Crate
+
+[Docs.rs](https://docs.rs/crate/blockchain-scratch-rust/latest)
+
 ### Instructions for working with
 
 ```

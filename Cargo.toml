@@ -8,7 +8,7 @@ readme = "README.md"
 license = "MIT"
 homepage = "https://armanriazi.github.io/site/public/programming/rust/rust-scratch-blockchain"
 repository = "https://github.com/armanriazi/rust-scratch-blockchain"
-keywords = ["msrv", "rust-version", "toolchain", "find", "blockchain","proof","dao","substrate","decentralized","cryptocurrency"]
+keywords = ["msrv", "rust-version", "toolchain", "find", "blockchain","proof","dao","substrate","decentralized","cryptocurrency","json"]
 categories = ["development-tools", "development-tools::cargo-plugins", "command-line-utilities"]
 
 [package.metadata]
