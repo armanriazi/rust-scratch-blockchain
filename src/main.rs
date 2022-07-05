@@ -26,7 +26,7 @@ extern crate log;
 extern crate concat_string;
 
 /// DIFFICULTY=0x000fffffffffffffffffffffffffffff cargo run
-/// RUST_LOG=INFO DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run file sample-bolocks.json 
+/// RUST_LOG=INFO DIFFICULTY=0x00ffffffffffffffffffffffffffffff time cargo run file sample-bolocks.json 
 fn main() -> Result<(), CustomError> {
 
   
