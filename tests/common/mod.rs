@@ -6,7 +6,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use std::collections::HashSet;
 use std::{
     cell::{Cell},
-    os::unix::prelude::OsStrExt,
+    os::unix::{prelude::OsStrExt},
     rc::Rc,
 };
 
