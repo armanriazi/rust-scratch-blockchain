@@ -26,7 +26,7 @@
 
 [Docs.rs](https://docs.rs/crate/blockchain-scratch-rust/latest)
 
-[Package Manager Crates.io](https://crates.io/search?q=blockchain-scratch-rust)
+[Package Manager crates.io](https://crates.io/search?q=blockchain-scratch-rust)
 
 ### Instructions for working with
 
@@ -54,6 +54,12 @@ cargo watch -x run
 cargo test
 ```
 *Using time and watch is optional and depends on your purpose*
+
+### Instructions for installing-bin
+
+```
+curl -LSfs https://japaric.github.io/trust/install.sh | sh -s -- --git armanriazi/rust-scratch-blockchain
+```
 
 ### Features
 

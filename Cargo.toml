@@ -8,22 +8,36 @@ readme = "README.md"
 license = "MIT"
 homepage = "https://armanriazi.github.io/site/public/programming/rust/rust-scratch-blockchain"
 repository = "https://github.com/armanriazi/rust-scratch-blockchain"
-keywords = ["msrv", "rust-version", "toolchain", "find", "blockchain","proof","dao","substrate","decentralized","cryptocurrency","json"]
+keywords = ["proof","blockchain","decentralized","cryptocurrency","json"]
 categories = ["development-tools", "development-tools::cargo-plugins", "command-line-utilities"]
+autobins = true
+autoexamples = false
+autotests = false
+autobenches = false
 
 [package.metadata]
 msrv="1.31.0"
 
-#[build]
-#target = "stable-x86_64-unknown-linux-gnu"
 
 [lib]
 name = "library_blockchain"
 path = "src/lib.rs"
+test = true            # Is tested by default.
+doctest = true         # Documentation examples are tested by default.
+bench = false           # Is benchmarked by default.
+doc = true             # Is documented by default.
+plugin = false         # Used as a compiler plugin (deprecated).
+proc-macro = false     # Set to `true` for a proc-macro library.
+harness = false         # Use libtest harness.
+edition = "2021"       # The edition of the target.
+crate-type = ["lib"]   # The crate types to generate.
+required-features = [] # Features required to build this target (N/A for lib).
 
 [[bin]]
 name = "blockchain"
 path = "src/main.rs"
+test = false
+bench = false
 
 #[features]
 #unstable-doc-cfg = []
@@ -31,10 +45,10 @@ path = "src/main.rs"
 #[package.metadata.docs.rs]
 #features = ["unstable-doc-cfg"]
 
-[workspace]
-members = [
-    "utils"
-]
+#[workspace]
+#members = [
+    #"library_utils"
+#]
 
 [dev-dependencies]
 proptest = "1"
@@ -54,7 +68,8 @@ serde_derive = { version = "1.0.137"}
 [dependencies]
 log = "0.4.0"
 env_logger = "0.9.0"
-utils = { path = "./utils", version = "0.0.1" }
+#library_utils = { path = "library_utils", version = "0.0.1" , optional = true}
+library_utils = "0.0.2"
 concat-string = "1.0.1"
 json = "0.12.4"
 hex = "0.3.2"

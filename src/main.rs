@@ -5,7 +5,7 @@ use env_logger::{Builder, Target};
 
 use crate::factory::blockchain_factory;
 use library_blockchain::*;
-use library_utils::stringtou128::string_to_u128;
+use  library_utils::{*, stringtou128::string_to_u128};
 use std::env;
 use std::env::set_var;
 use std::fs::File;
@@ -20,12 +20,13 @@ pub mod sample;
 #[allow(dead_code)]
 #[allow(unused_mut)]
 #[macro_use]
+//extern crate library_utils;
 extern crate log;
 #[macro_use(concat_string)]
 extern crate concat_string;
 
 /// DIFFICULTY=0x000fffffffffffffffffffffffffffff cargo run
-/// RUST_LOG=INFO DIFFICULTY=0x00000fffffffffffffffffffffffffff time cargo run file sample-bolocks.json 
+/// RUST_LOG=INFO DIFFICULTY=0x00ffffffffffffffffffffffffffffff time cargo run file sample-blocks.json 
 fn main() -> Result<(), CustomError> {
 
   
