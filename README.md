@@ -58,7 +58,7 @@ cargo test
 ### Instructions for installing-bin
 
 ```
-curl -LSfs https://japaric.github.io/trust/install.sh | sh -s -- --git armanriazi/rust-scratch-blockchain
+curl -LSfs https://github.com/armanriazi/armanriazi/blob/main/install-0.sh | sh -s -- --git armanriazi/rust-scratch-blockchain
 ```
 
 ### Features
