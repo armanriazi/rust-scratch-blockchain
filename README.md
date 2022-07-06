@@ -146,12 +146,40 @@ Due to the file sample-three-block-noerror.json in the repo you might copy it an
     }    
 ```
 
-4. Everything is Ok and it is working fine.
+4. Run of one of above commands.
 
 ```
 RUST_LOG=info DIFFICULTY=0x0000ffffffffffffffffffffffffffff time cargo run file sample-three-block-noerror.json
 ```
 
+5. Everything is Ok and it is working fine.
+
+```
+    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target/debug/consume-rust-scratch-blockchain file sample-three-block-noerror.json`
+Hello, world!
+[2022-07-06T13:30:22Z INFO  library_blockchain::blockchain_executive] ------------Welcome to env_logger------------
+[2022-07-06T13:30:22Z INFO  library_blockchain::blockchain_executive] Starting Up...
+**************************************************************
+Selected mode is file!
+**BlOcKcHaIn SiGnAls:**
+Block[0]: 17b9180cd95fef6c0e8ab81702ab9cfd835b4af373fdc7ee45d13cba69c40000 at: 1657114222903 with: 1 trx, nonce: 131263
+
+[2022-07-06T13:30:24Z INFO  library_blockchain::factory] Success updated With the block 1.
+    
+**BlOcKcHaIn SiGnAls:**
+Block[1]: eeb73730eb18ef3efbadbe7b5f3cc1a07c0d97b6c97e7df8945e61089b280000 at: 1657114224538 with: 2 trx, nonce: 257740
+
+[2022-07-06T13:30:30Z INFO  library_blockchain::factory] Success updated With the block 2.
+    
+**BlOcKcHaIn SiGnAls:**
+Block[2]: 3674f23d58002856c17816590f7e2ff195005ad477c67e704d61eead25710000 at: 1657114230226 with: 1 trx, nonce: 37407
+
+[2022-07-06T13:30:30Z INFO  library_blockchain::factory] Success updated With the block 3.
+    
+7.67user 0.16system 0:08.03elapsed 97%CPU (0avgtext+0avgdata 25300maxresident)k
+2280inputs+0outputs (13major+6505minor)pagefaults 0swaps
+```
 ### Features
 
 - [✓] Modular
