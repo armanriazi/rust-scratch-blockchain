@@ -10,7 +10,7 @@ homepage = "https://armanriazi.github.io/site/public/programming/rust/rust-scrat
 repository = "https://github.com/armanriazi/rust-scratch-blockchain"
 keywords = ["proof","blockchain","decentralized","cryptocurrency","json"]
 categories = ["development-tools", "development-tools::cargo-plugins", "command-line-utilities"]
-autobins = true
+autobins = false
 autoexamples = false
 autotests = false
 autobenches = false
@@ -33,11 +33,11 @@ edition = "2021"       # The edition of the target.
 crate-type = ["lib"]   # The crate types to generate.
 required-features = [] # Features required to build this target (N/A for lib).
 
-[[bin]]
-name = "blockchain"
-path = "src/main.rs"
-test = false
-bench = false
+#[[bin]]
+#name = "blockchain"
+#path = "src/main.rs"
+#test = false
+#bench = false
 
 #[features]
 #unstable-doc-cfg = []
