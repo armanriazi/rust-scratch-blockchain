@@ -1,6 +1,6 @@
+use library_blockchain::CustomError;
 use serde_json::json;
 
-use crate::CustomError;
 
 pub fn sample_trx_json_data_from_module() -> Result<serde_json::Value, CustomError> {
     Ok(json!({

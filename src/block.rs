@@ -85,12 +85,12 @@ impl Block {
     /// mining sterategy:
     /// </br>
     /// 1.Generate nonce 2.Hash bytes 3.Check hash against difficulty(Insufficant? Go Step1 and Sufficient Go Step 4) 4. Add block to chain 5. Submit to peers
-    pub fn mine(&mut self) -> Result<Hash, CustomError> {
+    pub fn blockchain_mine(&mut self) -> Result<Hash, CustomError> {
         for nonce_attempt in 0..(u64::max_value()) {
             self.nonce = nonce_attempt;
             let hash = self.hash();
 
-            if check_difficulty(&hash, self.difficulty) {
+            if blockchain_check_difficulty(&hash, self.difficulty) {
                 self.hash = hash;
                 return Ok(self.hash.clone())
              
@@ -108,17 +108,17 @@ impl Hashable for Block {
     fn bytes(&self) -> Vec<u8> {
         let mut bytes = vec![];
 
-        bytes.extend(&u32_bytes(&self.index));
-        bytes.extend(&u128_bytes(&self.timestamp));
+        bytes.extend(&lib_block_u32_bytes(&self.index));
+        bytes.extend(&lib_block_u128_bytes(&self.timestamp));
         bytes.extend(&self.prev_block_hash);
-        bytes.extend(&u64_bytes(&self.nonce));
+        bytes.extend(&lib_block_u64_bytes(&self.nonce));
         bytes.extend(
             self.transactions                
                 .iter()
                 .flat_map(|transaction| transaction.bytes())
                 .collect::<Vec<u8>>(),
         );
-        bytes.extend(&u128_bytes(&self.difficulty));
+        bytes.extend(&lib_block_u128_bytes(&self.difficulty));
 
         bytes
     }
@@ -127,7 +127,7 @@ impl Hashable for Block {
 /// Verify four things:
 /// Actual Index, Block's hash fits stored difficulty value, Time is always increase, Actual previous block's hash
 /// Difficulty: the most significant 16 bytes of the hash of a block must be less than before it is considered "valid"(if those bytes are interoreted as a single number instead of a serices of bytes.)
-pub fn check_difficulty(hash: &Hash, difficulty: u128) -> bool {
-    let result = difficulty_bytes_as_u128(&hash);
+pub fn blockchain_check_difficulty(hash: &Hash, difficulty: u128) -> bool {
+    let result = lib_block_difficulty_bytes_as_u128(&hash);
     difficulty > result
 }

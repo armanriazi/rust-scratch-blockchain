@@ -38,7 +38,7 @@ impl  Blockchain  {
     /// Define BlockValidationError for violation of the rules POW
     /// Call input and output hash function  
     /// Retain unspent_outputs of the Blockchain
-    pub fn update_with_block(&mut self, block: Block ) -> Result<&Vec<Block>, CustomError> {
+    pub fn blockchain_update_with_block(&mut self, block: Block ) -> Result<&Vec<Block>, CustomError> {
         let i = &self.blocks.len();
 
         if block.index != *i as u32 {
@@ -46,7 +46,7 @@ impl  Blockchain  {
                 BlockValidationError::MismatchedIndex,
             ));
             
-        } else if !block::check_difficulty(&block.hash(), block.difficulty) {
+        } else if !block::blockchain_check_difficulty(&block.hash(), block.difficulty) {
             return Err(CustomError::BlockValidation(
                 BlockValidationError::InvalidHash,
             ));

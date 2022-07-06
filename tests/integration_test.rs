@@ -13,6 +13,14 @@ mod tests {
     }
 
     #[test]
+    pub fn blockchain_concat_string(){
+        let wordlist="transaction1";
+        let list=library_utils::slicer::split_comma_wordlist(wordlist);
+        let output=list.as_slice();
+            concat_string!(output);    
+    }
+
+    #[test]
     fn it_adds_one() {
         init();
 

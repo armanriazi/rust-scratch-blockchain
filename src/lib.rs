@@ -1,13 +1,13 @@
 // #![recursion_limit="5000000"]
-// pub mod de;
-// pub mod error;
+#![no_main] 
 mod block;
+pub mod blockchain_execute;
 pub use crate::block::Block;
 mod hashable;
 pub use crate::{blockchain::Blockchain, hashable::Hashable};
 mod blockchain;
 pub mod transaction;
-
+pub mod factory;
 type Hash = Vec<u8>;
 type Address = String;
 
@@ -16,13 +16,24 @@ use std::os::unix::prelude::MetadataExt;
 // Credit: https://stackoverflow.com/a/44378174/2773837
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub fn now() -> u128 {
+
+/// In the stable version rust that we used is concat macro.
+/// </br>
+/// 🔬 For a nightly-only experimental API. (slice_concat_trait #27747)
+/// https://doc.rust-lang.org/std/slice/trait.Concat.html#
+pub fn blockchain_concat_two_str(str:String,num:String)-> String {    
+    let output=concat_string!(str,num);    
+    output
+}
+#[macro_use(concat_string)]
+extern crate concat_string;
+pub fn lib_block_now() -> u128 {
     let duration = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
 
     duration.as_secs() as u128 * 1000 + duration.subsec_millis() as u128
 }
 
-pub fn u32_bytes(u: &u32) -> [u8; 4] {
+pub fn lib_block_u32_bytes(u: &u32) -> [u8; 4] {
     [
         (u >> 8 * 0x0) as u8,
         (u >> 8 * 0x1) as u8,
@@ -31,7 +42,7 @@ pub fn u32_bytes(u: &u32) -> [u8; 4] {
     ]
 }
 
-pub fn u64_bytes(u: &u64) -> [u8; 8] {
+pub fn lib_block_u64_bytes(u: &u64) -> [u8; 8] {
     [
         (u >> 8 * 0x0) as u8,
         (u >> 8 * 0x1) as u8,
@@ -44,7 +55,7 @@ pub fn u64_bytes(u: &u64) -> [u8; 8] {
     ]
 }
 
-pub fn u128_bytes(u: &u128) -> [u8; 16] {
+pub fn lib_block_u128_bytes(u: &u128) -> [u8; 16] {
     [
         (u >> 8 * 0x0) as u8,
         (u >> 8 * 0x1) as u8,
@@ -65,7 +76,7 @@ pub fn u128_bytes(u: &u128) -> [u8; 16] {
     ]
 }
 
-pub fn difficulty_bytes_as_u128(v: &Vec<u8>) -> u128 {
+pub fn lib_block_difficulty_bytes_as_u128(v: &Vec<u8>) -> u128 {
     ((v[31] as u128) << 0xf * 8)
         | ((v[30] as u128) << 0xe * 8)
         | ((v[29] as u128) << 0xd * 8)

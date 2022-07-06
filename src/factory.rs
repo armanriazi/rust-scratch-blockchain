@@ -1,12 +1,12 @@
 use super::*;
-use library_blockchain::transaction::{Amount, Transaction};
-
+use transaction::{Amount, Transaction};
+use log::info;
 use std::cell::{Cell};
 use std::rc::Rc;
 
 #[allow(dead_code)]
 #[allow(unused_mut)]
-// #[deny(elided_lifetimes_in_paths)]
+
 pub fn blockchain_factory<F>(
     mut blockchain: Blockchain,
     difficulty: u128,
@@ -42,11 +42,11 @@ where
                     //info!("\n{:?}\n",trx);
 
                     for c in 1..length {
-                        let trx_name = concat_string!("transaction", c.to_string());
+                        let trx_name = blockchain_concat_two_str("transaction".to_string(), c.to_string());
                         let trx = (transactions[0].as_object().unwrap())
                             .get(&trx_name)
                             .unwrap();
-                        let puts: Transaction = transaction_split(trx).unwrap();
+                        let puts: Transaction = blockchain_transaction_split(trx).unwrap();
                         //info!("\n{:?}\n",puts);
                         maked_transactions_of_a_block.push(puts);
                     }
@@ -58,28 +58,28 @@ where
             let mut rc: &mut Rc<Cell<Vec<Transaction>>> = &mut r;
 
             if _i == 0 {
-                let mut genesis_block = Block::new(0, now(), vec![0; 32], &mut Rc::clone(rc), difficulty);
-                prev_hash = genesis_block.mine().unwrap().into_boxed_slice();
+                let mut genesis_block = Block::new(0, lib_block_now(), vec![0; 32], &mut Rc::clone(rc), difficulty);
+                prev_hash = genesis_block.blockchain_mine().unwrap().into_boxed_slice();
                 //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());                
-                update_blockchain_result(&mut blockchain, genesis_block,&_i);
+                blockchain_update_blockchain_result(&mut blockchain, genesis_block,&_i);
                 
             } else if _i > 0 {
                 let mut maked_block: Block =
-                    Block::new(_i as u32, now(), prev_hash.clone().to_vec(), &mut Rc::clone(rc), difficulty);
-                prev_hash = maked_block.mine().unwrap().into_boxed_slice();
+                    Block::new(_i as u32, lib_block_now(), prev_hash.clone().to_vec(), &mut Rc::clone(rc), difficulty);
+                prev_hash = maked_block.blockchain_mine().unwrap().into_boxed_slice();
                 //info!("**Mined_hash:**\n{:?}\n",prev_hash.clone());                
-                update_blockchain_result(&mut blockchain, maked_block,&_i);                
+                blockchain_update_blockchain_result(&mut blockchain, maked_block,&_i);                
             }
         });
 
     Ok(())
 }
 
-fn update_blockchain_result(blockchain: &mut Blockchain, block: Block,& i:&usize) {
+fn blockchain_update_blockchain_result(blockchain: &mut Blockchain, block: Block,& i:&usize) {
     
     //std::process::exit(
         
-        match blockchain.update_with_block(block) {
+        match blockchain.blockchain_update_with_block(block) {
         Ok(_) => {
             info!("Success updated With the block {}.\n", 1+i.to_owned());
             //info!("**Maked_hash:**\n{:?}\n",&blockchain.blocks[i].prev_block_hash.clone());
@@ -93,7 +93,7 @@ fn update_blockchain_result(blockchain: &mut Blockchain, block: Block,& i:&usize
     //);
 }
 
-fn transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError> {
+fn blockchain_transaction_split(trx: &serde_json::Value) -> Result<Transaction, CustomError> {
     let mut trx_inputs_model_vec: Vec<Amount> = vec![];
     let new_option_transaction: Transaction;
 
