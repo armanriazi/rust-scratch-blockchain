@@ -2,34 +2,29 @@
 #![deny(rust_2018_idioms)]
 #![warn(rust_2018_idioms)]
 use env_logger::{Builder, Target};
-use library_utils::{*, stringtou128::string_to_u128};
+use library_utils::{stringtou128::string_to_u128};
 use std::env;
 use std::env::set_var;
 use std::fs::File;
 use std::io::BufReader;
-use log::{log_enabled, info, Level};
+use log::{log_enabled, info, Level, warn};
 use crate::{factory::blockchain_factory, CustomError, Blockchain};
 use serde_json::json;
 
 //#[deny(elided_lifetimes_in_paths)]
 #[allow(dead_code)]
 #[allow(unused_mut)]
-// #[macro_use]
-// extern crate log;
-// #[macro_use(concat_string)]
-// extern crate concat_string;
 
 /// DIFFICULTY=0x000fffffffffffffffffffffffffffff cargo run
 /// RUST_LOG=INFO DIFFICULTY=0x00ffffffffffffffffffffffffffffff time cargo run file sample-blocks.json 
-#[no_mangle]
-pub extern "Rust" fn blockchain_execute() -> Result<(), CustomError> {
+
+pub fn blockchain_execute() -> Result<(), CustomError> {
 
   
     blockchain_init_env_logger(true);
 
     info!("Starting Up...");
-
-
+   
     let difficulty_str = blockchain_var_ret_difficulty("0x00ffffffffffffffffffffffffffffff");
     if difficulty_str.is_empty() {
         set_var("DIFFICULTY", "0x00ffffffffffffffffffffffffffffff");

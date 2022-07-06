@@ -41,8 +41,9 @@ where
                     let length = &trx.keys().len() + 1;
                     //info!("\n{:?}\n",trx);
 
-                    for c in 1..length {
-                        let trx_name = blockchain_concat_two_str("transaction".to_string(), c.to_string());
+                    for c in 1..length {                        
+                        let mut  trx_name_string="transaction".to_string().to_owned();
+                        let trx_name=lib_block_concat_two_string(trx_name_string, c.to_string());                                                                        
                         let trx = (transactions[0].as_object().unwrap())
                             .get(&trx_name)
                             .unwrap();

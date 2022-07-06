@@ -8,7 +8,7 @@ extern crate serde;
 /// The field of to_addr is the name of a account for example Lucy
 /// </br></br>
 /// The field of to_amount is the value of a account for 10000. Do not write 10_000 because of deserialized mechanism used in the program.
-#[derive( Clone, serde::Serialize)]
+#[derive( Debug,Clone, serde::Serialize)]
 pub struct Amount  {
     pub to_addr:  Address,
     pub amount:   u64,
@@ -20,7 +20,7 @@ pub struct Amount  {
 /// </br></br>
 /// We implement coinbase TRXs model: do not require inputs, produce an output - allow the miner to collect all the trx fees in that block and that block's block reward (coin genesis)
 
-#[derive(Clone,Serialize)]
+#[derive(Debug,Clone,Serialize)]
 pub struct Transaction  {
     pub inputs: Vec<Amount>,
     pub outputs: Vec<Amount>,

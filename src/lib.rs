@@ -17,16 +17,8 @@ use std::os::unix::prelude::MetadataExt;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 
-/// In the stable version rust that we used is concat macro.
-/// </br>
-/// 🔬 For a nightly-only experimental API. (slice_concat_trait #27747)
-/// https://doc.rust-lang.org/std/slice/trait.Concat.html#
-pub fn blockchain_concat_two_str(str:String,num:String)-> String {    
-    let output=concat_string!(str,num);    
-    output
-}
-#[macro_use(concat_string)]
-extern crate concat_string;
+
+
 pub fn lib_block_now() -> u128 {
     let duration = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
 
@@ -93,6 +85,26 @@ pub fn lib_block_difficulty_bytes_as_u128(v: &Vec<u8>) -> u128 {
         | ((v[18] as u128) << 0x2 * 8)
         | ((v[17] as u128) << 0x1 * 8)
         | ((v[16] as u128) << 0x0 * 8)
+}
+
+/// In the stable version rust that we used is concat macro.
+/// </br>
+/// 🔬 For a nightly-only experimental API. (slice_concat_trait #27747)
+/// https://doc.rust-lang.org/std/slice/trait.Concat.html#
+/// Another Solution </br>
+/// #[macro_use(concat_string)]</br>
+/// ```
+/// extern crate concat_string;
+/// pub fn blockchain_concat_two_str(str:String,num:String)-> String {    
+///     let output=concat_string!(str,num);    
+///     output
+/// }
+/// ```
+pub fn lib_block_concat_two_string(str1:String,str2:String) -> String{
+    let mut str =&mut str1.to_string().to_owned();
+    str.push_str(&str2);
+    let output:String =str.chars().filter(|c| !c.is_whitespace()).collect();
+    output
 }
 
 #[derive(Debug)]
