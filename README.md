@@ -28,6 +28,25 @@
 
 [Package Manager crates.io](https://crates.io/search?q=blockchain-scratch-rust)
 
+### Features
+
+- [✓] Modular
+
+- [✓] WebAssembly
+
+- [✓] Customized Error Handling
+
+- [✓] Json & String Data Deserialized
+
+- [✓] Functional Programming(Closure)
+
+- [✓] Cryptography-Hashing Alogrithm SHA-256
+
+- [-] Unit & Integration Testing(structure-need more time in the future)
+
+- [-] Configuration Files(devOps-need more time in the future)
+
+
 ### Instructions for working with
 
 ```
@@ -186,22 +205,11 @@ Block[2]: 3674f23d58002856c17816590f7e2ff195005ad477c67e704d61eead25710000 at: 1
 2280inputs+0outputs (13major+6505minor)pagefaults 0swaps
 ```
 
-### Features
-
-- [✓] Modular
-
-- [✓] Customized Error Handling
-
-- [✓] Json & String Data Deserialized
-
-- [✓] Functional Programming(Closure)
-
-- [✓] Cryptography-Hashing Alogrithm SHA-256
-
-- [-] Unit & Integration Testing(structure-need more time in the future)
-
-- [-] Configuration Files(devOps-need more time in the future)
-
+### WASM
+For consume the library we used some WASM compiling strategy:
+[Bindgen](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-bindgen0)
+[Bindgen](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-wasmer-llvm)
+[Binary of rust-scratch-blockchain](https://github.com/armanriazi/rust-scratch-blockchain-bin)
 
 ### Used Concepts
 
