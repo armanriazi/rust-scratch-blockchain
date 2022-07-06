@@ -110,6 +110,7 @@ Due to the file sample-three-block-noerror.json in the repo you might copy it an
 
    <details>
     <summary><em>Json File</em></summary>
+	
 ```
 {
     "blocks":[{    
@@ -176,7 +177,9 @@ Due to the file sample-three-block-noerror.json in the repo you might copy it an
      }] 
     }    
 ```
-	</details>
+
+</details>
+
 6. Run of one of above commands.
 ```
 RUST_LOG=info DIFFICULTY=0x0000ffffffffffffffffffffffffffff time cargo run file sample-three-block-noerror.json
