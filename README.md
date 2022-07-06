@@ -208,7 +208,9 @@ Block[2]: 3674f23d58002856c17816590f7e2ff195005ad477c67e704d61eead25710000 at: 1
 ### WASM
 For consume the library we used some WASM compiling strategy:
 > [Bindgen](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-bindgen0)
+> 
 > [Wasmer-LLVM](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-wasmer-llvm)
+> 
 > [Binary of rust-scratch-blockchain](https://github.com/armanriazi/rust-scratch-blockchain-bin)
 
 ### Used Concepts
