@@ -5,7 +5,6 @@
 use env_logger::{Builder, Target};
 extern crate core; // Required to use the `core` crate in Rust 2015.
 use core::any;
-use self::{factory::blockchain_factory, CustomError, Blockchain};
 use serde_json::{json};
 use  library_utils::{*, stringtou128::string_to_u128};
 use std::env;
@@ -13,6 +12,8 @@ use std::env::set_var;
 use std::fs::File;
 use std::io::BufReader;
 use log::{log_enabled, info, Level};
+
+use crate::{Blockchain, factory::blockchain_factory, CustomError};
 
 //pub mod sample;
 
