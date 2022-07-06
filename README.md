@@ -61,6 +61,97 @@ cargo test
 curl -LSfs https://github.com/armanriazi/armanriazi/blob/main/install-0.sh | sh -s -- --git armanriazi/rust-scratch-blockchain
 ```
 
+### How to consume the library
+
+1.
+```
+cargo new yourprojectname
+```
+2.
+```
+use library_blockchain::*;
+fn main() {
+    println!("Hello, world!");
+
+    library_blockchain::blockchain_executive::main();
+}
+```
+3.
+Due to the file sample-three-block-noerror.json in the repo you might copy it and manipulate it, in spite of that you can use generators of your database or ORMs for producing a file.json as the same as following content. Get attention to keys in the file for example we must have transaction{number} and if we write 'mytransaction 1' and run it we will get error.
+
+```
+{
+    "blocks":[{    
+        "block1":[{
+            "transactions":[{
+                "transaction1":[{
+                    "inputs":[{
+                                    
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Alice",
+                        "value": "50"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "7"                           
+                    }]    
+                }]                        
+            }]                 
+        }] ,
+        "block2":[{
+            "transactions":[{
+                "transaction1":[{
+                    "inputs":[{
+                     
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Chris",
+                        "value": "536"                         
+                    }]    
+                }],
+                "transaction2":[{
+                    "inputs":[{
+                        "to_addr": "Alice",
+                        "value": "50"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "7"      
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Alice",
+                        "value": "49"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "6"                        
+                    }]    
+                }]                          
+            }]                 
+        }],
+        "block3":[{
+            "transactions":[{
+                "transaction1":[{
+                    "inputs":[{                                                                    
+                    }],    
+                    "outputs":[{
+                        "to_addr": "Alice",
+                        "value": "49"                           
+                    },{
+                        "to_addr": "Bob",
+                        "value": "6"                           
+                    }]    
+                }]                        
+            }]                 
+        }]        
+     }] 
+    }    
+```
+
+4. Everything is Ok and it is working fine.
+
+```
+RUST_LOG=info DIFFICULTY=0x0000ffffffffffffffffffffffffffff time cargo run file sample-three-block-noerror.json
+```
+
 ### Features
 
 - [✓] Modular
