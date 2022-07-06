@@ -1,15 +1,21 @@
-#![no_main]
-#![deny(rust_2018_idioms)]
-#![warn(rust_2018_idioms)]
+// #![no_main]
+// #![deny(rust_2018_idioms)]
+// #![warn(rust_2018_idioms)]
+
 use env_logger::{Builder, Target};
-use library_utils::{stringtou128::string_to_u128};
+extern crate core; // Required to use the `core` crate in Rust 2015.
+use core::any;
+use self::{factory::blockchain_factory, CustomError, Blockchain};
+use serde_json::{json};
+use  library_utils::{*, stringtou128::string_to_u128};
 use std::env;
 use std::env::set_var;
 use std::fs::File;
 use std::io::BufReader;
-use log::{log_enabled, info, Level, warn};
-use crate::{factory::blockchain_factory, CustomError, Blockchain};
-use serde_json::json;
+use log::{log_enabled, info, Level};
+
+//pub mod sample;
+
 
 //#[deny(elided_lifetimes_in_paths)]
 #[allow(dead_code)]
@@ -18,7 +24,7 @@ use serde_json::json;
 /// DIFFICULTY=0x000fffffffffffffffffffffffffffff cargo run
 /// RUST_LOG=INFO DIFFICULTY=0x00ffffffffffffffffffffffffffffff time cargo run file sample-blocks.json 
 
-pub fn blockchain_execute() -> Result<(), CustomError> {
+pub fn main() -> Result<(), CustomError> {
 
   
     blockchain_init_env_logger(true);

@@ -1,11 +1,12 @@
 // #![recursion_limit="5000000"]
+
 #![no_main] 
-mod block;
-pub mod blockchain_execute;
+pub mod block;
+pub mod blockchain_executive;
 pub use crate::block::Block;
-mod hashable;
+pub mod hashable;
 pub use crate::{blockchain::Blockchain, hashable::Hashable};
-mod blockchain;
+pub mod blockchain;
 pub mod transaction;
 pub mod factory;
 type Hash = Vec<u8>;

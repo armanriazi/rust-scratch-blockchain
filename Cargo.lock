@@ -28,9 +28,9 @@ dependencies = [
 
 [[package]]
 name = "attohttpc"
-version = "0.18.0"
+version = "0.19.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e69e13a99a7e6e070bb114f7ff381e58c7ccc188630121fc4c2fe4bcf24cd072"
+checksum = "262c3f7f5d61249d8c00e5546e2685cd15ebeeb1bc0f3cc5449350a1cb07319e"
 dependencies = [
  "flate2",
  "http",
@@ -637,9 +637,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.5.6"
+version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d83f127d94bdbcda4c8cc2e50f6f84f4b611f69c902699ca385a39c3a75f9ff1"
+checksum = "4c4eb3267174b8c6c2f654116623910a0fef09c4753f8dd83db29c48a0df988b"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -648,9 +648,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.26"
+version = "0.6.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49b3de9ec5dc0a3417da371aab17d729997c15010e7fd24ff707773a33bddb64"
+checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
 
 [[package]]
 name = "remove_dir_all"
@@ -663,9 +663,9 @@ dependencies = [
 
 [[package]]
 name = "rust-releases"
-version = "0.22.1"
+version = "0.22.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9e0ea7389a0f37d1dadb2f20356c6b6b8b7346c433da5fff8f57662a368f562"
+checksum = "a538ac2a985798cd7de29b357d6dae99cbea07f64dc85d70f539718e0dfef816"
 dependencies = [
  "rust-releases-core",
  "rust-releases-rust-changelog",
@@ -673,9 +673,9 @@ dependencies = [
 
 [[package]]
 name = "rust-releases-core"
-version = "0.22.0"
+version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "46524c222c42be935cb0e2094c29460ae2e8da0400cbbfce39a730a8930a8391"
+checksum = "ab24b622b63d8b2a63530f7174157ee741b573c81ee55ca81106f3e246631f3a"
 dependencies = [
  "semver",
  "thiserror",
@@ -683,9 +683,9 @@ dependencies = [
 
 [[package]]
 name = "rust-releases-io"
-version = "0.22.0"
+version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72bbd10c746821eb7b0fc1766ca894119211b6f38c3542fd2a9616ec65f9b703"
+checksum = "46e11703d425f574fff6935d0b1c3bd5280aacde4e3e1638e8e0ffd0474a3e3e"
 dependencies = [
  "attohttpc",
  "directories-next",
@@ -694,9 +694,9 @@ dependencies = [
 
 [[package]]
 name = "rust-releases-rust-changelog"
-version = "0.22.1"
+version = "0.22.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65f91898f4bebca218217ccf11b974ee5f5381e76452171a605ae960216f1eaf"
+checksum = "081816b0eebfa1ccb3bd4486fc6ff8591f6ec53572be1b3bb4175f0248a643bf"
 dependencies = [
  "rust-releases-core",
  "rust-releases-io",
