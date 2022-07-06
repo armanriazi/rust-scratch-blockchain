@@ -67,7 +67,16 @@ curl -LSfs https://github.com/armanriazi/armanriazi/blob/main/install-0.sh | sh 
 ```
 cargo new yourprojectname
 ```
-2.
+2. Add new dependency
+```
+[dependencies]
+blockchain-scratch-rust = "0.3.0"
+```
+3. To update dependencies
+```
+cargo update
+```
+4. Your main.rs of the program
 ```
 use library_blockchain::*;
 fn main() {
@@ -76,7 +85,7 @@ fn main() {
     library_blockchain::blockchain_executive::main();
 }
 ```
-3.
+5.
 Due to the file sample-three-block-noerror.json in the repo you might copy it and manipulate it, in spite of that you can use generators of your database or ORMs for producing a file.json as the same as following content. Get attention to keys in the file for example we must have transaction{number} and if we write 'mytransaction 1' and run it we will get error.
 
 ```
@@ -145,15 +154,11 @@ Due to the file sample-three-block-noerror.json in the repo you might copy it an
      }] 
     }    
 ```
-
-4. Run of one of above commands.
-
+6. Run of one of above commands.
 ```
 RUST_LOG=info DIFFICULTY=0x0000ffffffffffffffffffffffffffff time cargo run file sample-three-block-noerror.json
 ```
-
-5. Everything is Ok and it is working fine.
-
+7. Everything is Ok and it is working fine.
 ```
     Finished dev [unoptimized + debuginfo] target(s) in 0.07s
      Running `target/debug/consume-rust-scratch-blockchain file sample-three-block-noerror.json`
@@ -180,6 +185,7 @@ Block[2]: 3674f23d58002856c17816590f7e2ff195005ad477c67e704d61eead25710000 at: 1
 7.67user 0.16system 0:08.03elapsed 97%CPU (0avgtext+0avgdata 25300maxresident)k
 2280inputs+0outputs (13major+6505minor)pagefaults 0swaps
 ```
+
 ### Features
 
 - [✓] Modular
