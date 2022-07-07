@@ -22,14 +22,16 @@
 
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
-[[Rust 2021 A Scratch Blockchain-1]]
-[Rust 2021 A Scratch Blockchain-1](../public/programming/rust/rust-scratch-blockchain.md)
-</br>
-https://img.youtube.com/vi/gK0dFhtbB-M/
-</br>
 [[Rust 2021 A Scratch Blockchain-2]]
-[Rust 2021 A Scratch Blockchain-2](../public/programming/rust/rust-scratch-blockchain.md)
-https://youtu.be/gK0dFhtbB-M
+([../public/programming/rust/rust-scratch-blockchain.md](https://armanriazi.github.io/site/public/programming/rust/rust/))
+[Youtube-Rust 2021 A Scratch Blockchain-1](https://youtu.be/hiYHzmqn6MY)
+
+
+>
+
+[[Rust 2021 A Scratch Blockchain-2]]
+([../public/programming/rust/rust-scratch-blockchain.md](https://armanriazi.github.io/site/public/programming/rust/rust/))
+[Youtube-Rust 2021 A Scratch Blockchain-2](https://youtu.be/gK0dFhtbB-M)
 
 ### Documents Crate
 
