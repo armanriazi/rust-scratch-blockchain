@@ -22,7 +22,7 @@
 
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
-[[Rust 2021 A Scratch Blockchain-2]](https://armanriazi.github.io/site/public/programming/rust/rust/)
+[[Rust 2021 A Scratch Blockchain-1]](https://armanriazi.github.io/site/public/programming/rust/rust/)
 [Youtube-Rust 2021 A Scratch Blockchain-1](https://youtu.be/hiYHzmqn6MY)
 
 >
