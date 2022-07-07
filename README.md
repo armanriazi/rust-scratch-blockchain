@@ -569,6 +569,4 @@ nom is the fruit of the work of many contributors over the years, many thanks fo
 
 [Convert-string-to-u128](https://users.rust-lang.org/t/convert-string-to-u128/77183)
 
-[Error the method `take` exists for struct `Rc<Cell<&’a Vec<>>>](https://users.rust-lang.org/t/error-the-method-take-exists-for-struct-rc-cell-a-vec/77602/)
 
-[Blockchain Without Copy,Clone Block-Refcell ](https://users.rust-lang.org/t/blockchain-without-copy-clone-block-refcell/77448/)
