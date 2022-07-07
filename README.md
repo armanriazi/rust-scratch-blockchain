@@ -24,11 +24,11 @@
 
 [[Rust 2021 A Scratch Blockchain-1]]
 [Rust 2021 A Scratch Blockchain-1](../public/programming/rust/rust-scratch-blockchain.md)
-<iframe width="975" height="506" src="https://www.youtube.com/embed/hiYHzmqn6MY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://youtu.be/hiYHzmqn6MY
 
 [[Rust 2021 A Scratch Blockchain-2]]
 [Rust 2021 A Scratch Blockchain-2](../public/programming/rust/rust-scratch-blockchain.md)
-<iframe width="975" height="506" src="https://www.youtube.com/embed/gK0dFhtbB-M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://youtu.be/gK0dFhtbB-M
 
 ### Documents Crate
 
