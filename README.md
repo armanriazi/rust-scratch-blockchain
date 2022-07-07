@@ -218,13 +218,13 @@ RUST_LOG=info DIFFICULTY=0x0000ffffffffffffffffffffffffffff time cargo run file 
 	
 </details>
 
-### WASM
+### WASM(future work)
 For consume the library we used some WASM compiling strategy:
 > [Bindgen](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-bindgen0)
 > 
 > [Wasmer-LLVM](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-wasmer-llvm)
 >
-> [Wasmer-LLVM](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-wasmer-wasi)
+> [Wasmer-Wasi](https://github.com/armanriazi/rust-scratch-blockchain-bin/tree/armanriazi-wasmer-wasi)
 > 
 > [Binary of rust-scratch-blockchain](https://github.com/armanriazi/rust-scratch-blockchain-bin)
 
