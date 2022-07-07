@@ -24,7 +24,9 @@
 
 [[Rust 2021 A Scratch Blockchain-1]]
 [Rust 2021 A Scratch Blockchain-1](../public/programming/rust/rust-scratch-blockchain.md)
-<video id="player-obj" controls="" src="https://redirector.googlevideo.com/videoplayback?ratebypass=yes&amp;mt=1510077993----SKIPPED----amp;utmg=ytap1,,hd720"><source>Your browser does not support HTML5 video.</video>
+</br>
+<video id="player-obj" controls="" src="https://youtu.be/gK0dFhtbB-M">Your browser does not support HTML5 video.</video>
+</br>
 [[Rust 2021 A Scratch Blockchain-2]]
 [Rust 2021 A Scratch Blockchain-2](../public/programming/rust/rust-scratch-blockchain.md)
 https://youtu.be/gK0dFhtbB-M
