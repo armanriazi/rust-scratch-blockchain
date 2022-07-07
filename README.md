@@ -22,6 +22,14 @@
 
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
+[[Rust 2021 A Scratch Blockchain-1]]
+[Rust 2021 A Scratch Blockchain-1](../public/programming/rust/rust-scratch-blockchain.md)
+<iframe width="975" height="506" src="https://www.youtube.com/embed/hiYHzmqn6MY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[[Rust 2021 A Scratch Blockchain-2]]
+[Rust 2021 A Scratch Blockchain-2](../public/programming/rust/rust-scratch-blockchain.md)
+<iframe width="975" height="506" src="https://www.youtube.com/embed/gK0dFhtbB-M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ### Documents Crate
 
 [Docs.rs](https://docs.rs/crate/blockchain-scratch-rust/latest)
@@ -32,8 +40,6 @@
 
 - [✓] Modular
 
-- [✓] WebAssembly
-
 - [✓] Customized Error Handling
 
 - [✓] Json & String Data Deserialized
@@ -41,6 +47,8 @@
 - [✓] Functional Programming(Closure)
 
 - [✓] Cryptography-Hashing Alogrithm SHA-256
+
+- [-] WebAssembly(Next future video)
 
 - [-] Unit & Integration Testing(structure-need more time in the future)
 
