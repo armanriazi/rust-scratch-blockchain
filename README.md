@@ -1,6 +1,6 @@
 
 
-## Welcome To The Home Blockchain Of 🦀Rustaceans
+## Welcome To The Home Blockchain Of my 🦀Rustaceans
 
 > The repo is a **prerequisite of the Substrate-Framework** and it would be nicer to practice too.
 
@@ -20,6 +20,21 @@
 
 > Currently Status: Under refactoring with contributors
 
+## Business Of Work
+### Calculating Account Totals
+
+>Consider three blocks with multiple transactions in each block. The timestamp has been omitted here to give a simplified view:
+
+![transactions0.JPG](https://github.com/armanriazi/armanriazi/blob/main/trannsactions0.JPG)
+
+> This would mean the accounts totals for each accounts are as follows, after executing all transactions:
+
+```
+A: 20
+B: 70
+C: 60
+D: 150
+```
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
 [[Rust 2021 A Scratch Blockchain-1]](https://armanriazi.github.io/site/public/programming/rust/rust/)
