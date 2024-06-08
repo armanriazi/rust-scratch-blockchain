@@ -2,32 +2,27 @@
 
 ## Welcome To The Home Blockchain Of my 🦀Rustaceans
 
-> The repo is a **prerequisite of the Substrate-Framework** and it would be nicer to practice too.
-
-> The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of providing **testbed environment of Blockchain**.
- 
-> The Next reason is to using some **features of Rust-Lang** that I had wanted to implement it after learning Rust.
-
-> Used json in the main runner of the project so that consume **json** transactions as a **offchain** blockchain.
-
-> As you follow materials you can see (future work) which means you can add these concepts to the project. I have some **idea** that you can affort on it to completing future works.
-
-> *Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
+The repo is a **prerequisite of the Substrate-Framework** and it would be nicer to practice too.
+The repo is included Rust syntax, configuration and the goal of creating scratch codes like one is becuase of providing **testbed environment of Blockchain**.
+The Next reason is to using some **features of Rust-Lang** that I had wanted to implement it after learning Rust.
+Used json in the main runner of the project so that consume **json** transactions as a **offchain** blockchain.
+As you follow materials you can see (future work) which means you can add these concepts to the project. I have some **idea** that you can affort on it to completing future works.
+*Smart Contracts, MultiSignature, RPC, Make A Better CLI, and something that you can implementing* (Do not worry sice most of your works will merge to main branch. We will not create a framework or complete Blockchain because we just need to **learning** more and used it use-cases)
 
 ### The difference between the current work and the prev works
 
-> I have tried to use fundamental concepts correctly, for example, all of us know any block have not any copy so because of it we are calling blockchain! Unlike many repositories on GitHub(testbed/scratched projects-non productive) that almost use Copy/Clone attributes of Rust-Lang for creating block. In the following, there are some features that cause a different project.
+> I have tried to use fundamental concepts correctly e.g, all of us know any block have not any copy so because of it we are calling blockchain! Unlike many repositories on GitHub(testbed/scratched projects-non productive) that almost use Copy/Clone attributes of Rust-Lang for creating block. In the following, there are some features that cause a different project.
 
-> Currently Status: Under refactoring with contributors
+`Currently Status: Under refactoring with contributors`
 
 ## Business Of Work
 ### Calculating Account Totals
 
->Consider three blocks with multiple transactions in each block. The timestamp has been omitted here to give a simplified view:
+> Consider three blocks with multiple transactions in each block. The timestamp has been omitted here to give a simplified view:
 
 ![transactions0.JPG](https://github.com/armanriazi/armanriazi/blob/main/trannsactions0.JPG)
 
-> This would mean the accounts totals for each accounts are as follows, after executing all transactions:
+This would mean the accounts totals for each accounts are as follows, after executing all transactions:
 
 ```
 A: 20
@@ -35,14 +30,13 @@ B: 70
 C: 60
 D: 150
 ```
+
 ### How To Contribute [Easy](https://github.com/armanriazi/armanriazi/blob/main/HowToContribute.md)
 
-[[Rust 2021 A Scratch Blockchain-1]](https://armanriazi.github.io/site/public/programming/rust/rust/)
+- [Rust 2021 A Scratch Blockchain-1](https://armanriazi.github.io/site/public/programming/rust/rust/)
 [Youtube-Rust 2021 A Scratch Blockchain-1](https://youtu.be/hiYHzmqn6MY)
 
->
-
-[Rust 2021 A Scratch Blockchain-2](https://armanriazi.github.io/site/public/programming/rust/rust/)
+- [Rust 2021 A Scratch Blockchain-2](https://armanriazi.github.io/site/public/programming/rust/rust/)
 [Youtube-Rust 2021 A Scratch Blockchain-2](https://youtu.be/gK0dFhtbB-M)
 
 ### Documents Crate
@@ -50,6 +44,10 @@ D: 150
 [Docs.rs](https://docs.rs/crate/blockchain-scratch-rust/latest)
 
 [Package Manager crates.io](https://crates.io/search?q=blockchain-scratch-rust)
+
+### Listed Project
+
+[Repology](https://repology.org/project/rust:blockchain-scratch-rust)
 
 ### Features
 
